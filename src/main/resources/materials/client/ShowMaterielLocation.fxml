@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javfx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.material.client.ShowMaterielLocationController"
+      spacing="15" style="-fx-padding: 20; -fx-background-color: #f5f5f5;">
+
+    <Label text="Détails du Matériel" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+
+    <ImageView fx:id="imageView" fitWidth="300" fitHeight="200"/>
+
+    <GridPane hgap="10" vgap="10" style="-fx-padding: 10;">
+        <columnConstraints>
+            <ColumnConstraints prefWidth="100"/>
+            <ColumnConstraints prefWidth="200"/>
+        </columnConstraints>
+
+        <Label text="Nom:" GridPane.rowIndex="0" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <Label fx:id="nomLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Prix/jour:" GridPane.rowIndex="1" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <Label fx:id="prixLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Disponibilité:" GridPane.rowIndex="2" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <Label fx:id="disponibiliteLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Date d'ajout:" GridPane.rowIndex="3" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <Label fx:id="createdAtLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <Label text="Description:" style="-fx-font-weight: bold;"/>
+    <TextArea fx:id="descriptionLabel" editable="false" wrapText="true"
+              style="-fx-min-height: 100; -fx-background-color: white; -fx-border-color: #ddd;"/>
+</VBox>
