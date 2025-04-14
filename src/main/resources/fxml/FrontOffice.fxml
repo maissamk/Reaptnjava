@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.FrontOfficeController"
+            stylesheets="@../styles/style.css"
+            prefHeight="900.0" prefWidth="1400.0">
+
+    <!-- Top Navigation Bar -->
+    <top>
+        <HBox styleClass="front-nav" spacing="20">
+            <padding>
+                <Insets top="20" right="40" bottom="20" left="40"/>
+            </padding>
+            
+            <!-- Logo and Brand -->
+
+            
+            <!-- Search Bar -->
+            <HBox alignment="CENTER" HBox.hgrow="ALWAYS" styleClass="search-container">
+                <padding>
+                    <Insets left="20" right="20"/>
+                </padding>
+                <TextField fx:id="searchField" promptText="Search products..." styleClass="search-box-field" HBox.hgrow="ALWAYS"/>
+                <Button text="Search" styleClass="search-button"/>
+            </HBox>
+            
+            <!-- Cart and Account -->
+            <HBox alignment="CENTER_RIGHT" spacing="20" HBox.hgrow="NEVER">
+                <Button fx:id="cartButton" styleClass="cart-button">
+                    <graphic>
+                        <HBox spacing="10" alignment="CENTER">
+                            <Label text="Cart"/>
+                            <Label fx:id="cartItemCount" styleClass="cart-count" text="0"/>
+                        </HBox>
+                    </graphic>
+                </Button>
+            </HBox>
+        </HBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="main-scroll">
+            <VBox spacing="40">
+                <padding>
+                    <Insets top="40" right="40" bottom="40" left="40"/>
+                </padding>
+
+                <!-- Featured Section -->
+                <VBox styleClass="section-container">
+                    <Label text="Featured Products" styleClass="section-header"/>
+                    <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" styleClass="featured-scroll" VBox.vgrow="NEVER">
+                        <HBox fx:id="featuredProducts" spacing="30" styleClass="featured-container">
+                            <padding>
+                                <Insets top="20" right="20" bottom="20" left="20"/>
+                            </padding>
+                        </HBox>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Main Products Grid -->
+                <HBox spacing="40">
+                    <!-- Filters Sidebar -->
+                    <VBox spacing="25" styleClass="filters-sidebar">
+                        <padding>
+                            <Insets top="30" right="30" bottom="30" left="30"/>
+                        </padding>
+                        
+                        <Label text="Filters" styleClass="filter-header"/>
+                        
+                        <!-- Category Filter -->
+                        <VBox spacing="15">
+                            <Label text="Categories" styleClass="filter-section-header"/>
+                            <VBox fx:id="categoryFilters" spacing="10"/>
+                        </VBox>
+                        
+                        <!-- Price Range Filter -->
+                        <VBox spacing="15">
+                            <Label text="Price Range" styleClass="filter-section-header"/>
+                            <Slider fx:id="priceSlider"/>
+                            <HBox spacing="10">
+                                <Label fx:id="minPrice" />
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label fx:id="maxPrice" />
+                            </HBox>
+                        </VBox>
+                        
+                        <!-- Sort Options -->
+                        <VBox spacing="15">
+                            <Label text="Sort By" styleClass="filter-section-header"/>
+                            <ComboBox fx:id="sortComboBox" styleClass="sort-combo"/>
+                        </VBox>
+                    </VBox>
+
+                    <!-- Products Grid -->
+                    <VBox HBox.hgrow="ALWAYS" spacing="30">
+                        <FlowPane fx:id="productsGrid" hgap="30" vgap="30" styleClass="products-grid">
+                            <padding>
+                                <Insets top="20" right="20" bottom="20" left="20"/>
+                            </padding>
+                        </FlowPane>
+                        
+                        <!-- Pagination -->
+                        <HBox alignment="CENTER">
+                            <Pagination fx:id="productPagination" styleClass="custom-pagination"/>
+                        </HBox>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <!-- Footer -->
+    <bottom>
+        <VBox styleClass="footer">
+            <padding>
+                <Insets top="40" right="40" bottom="40" left="40"/>
+            </padding>
+            
+            <HBox spacing="80" alignment="CENTER">
+                <VBox spacing="15">
+                    <Label text="About Fruitables" styleClass="footer-header"/>
+                    <Label text="Fresh and organic products" styleClass="footer-text"/>
+                    <Label text="Quality you can trust" styleClass="footer-text"/>
+                </VBox>
+                
+                <VBox spacing="15">
+                    <Label text="Contact Us" styleClass="footer-header"/>
+                    <Label text="Email: info@fruitables.com" styleClass="footer-text"/>
+                    <Label text="Phone: (123) 456-7890" styleClass="footer-text"/>
+                    <Label text="Address: 123 Fresh Street" styleClass="footer-text"/>
+                </VBox>
+                
+                <VBox spacing="15">
+                    <Label text="Follow Us" styleClass="footer-header"/>
+                    <HBox spacing="20" styleClass="social-links">
+                        <Label text="Facebook" styleClass="social-link"/>
+                        <Label text="Instagram" styleClass="social-link"/>
+                        <Label text="Twitter" styleClass="social-link"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+            
+            <Separator styleClass="footer-separator">
+                <VBox.margin>
+                    <Insets top="30" bottom="30"/>
+                </VBox.margin>
+            </Separator>
+            
+            <Label text="© 2024 Fruitables. All rights reserved." styleClass="copyright-text" alignment="CENTER"/>
+        </VBox>
+    </bottom>
+</BorderPane> 
