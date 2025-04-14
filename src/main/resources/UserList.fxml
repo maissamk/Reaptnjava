@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<BorderPane xmlns="http://javafx.com/javafx/20.0.2"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.UserListController"
+            style="-fx-background-color: #f5f9f4;">
+
+    <top>
+        <VBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #4a934a; -fx-padding: 20;">
+            <Label text="User Management" style="-fx-text-fill: white; -fx-font-size: 24; -fx-font-weight: bold;"/>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="20" style="-fx-padding: 20;">
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <TextField fx:id="searchField" promptText="Search users..." style="-fx-pref-width: 300;"/>
+                <Button text="Search" onAction="#handleSearch" style="-fx-background-color: #4a934a; -fx-text-fill: white;"/>
+                <Button text="Refresh" onAction="#handleRefresh" style="-fx-background-color: #4285F4; -fx-text-fill: white;"/>
+            </HBox>
+
+            <TableView fx:id="usersTable">
+                <columns>
+                    <TableColumn text="ID" prefWidth="50">
+                        <cellValueFactory><PropertyValueFactory property="id"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Name" prefWidth="150">
+                        <cellValueFactory><PropertyValueFactory property="nom"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Email" prefWidth="200">
+                        <cellValueFactory><PropertyValueFactory property="email"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Role" prefWidth="100">
+                        <cellValueFactory><PropertyValueFactory property="roles"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Status" prefWidth="80">
+                        <cellValueFactory><PropertyValueFactory property="status"/></cellValueFactory>
+                    </TableColumn>
+                </columns>
+            </TableView>
+
+            <HBox alignment="CENTER_RIGHT">
+                <Label fx:id="countLabel" style="-fx-font-weight: bold;"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>
