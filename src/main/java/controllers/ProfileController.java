@@ -56,19 +56,15 @@ public class ProfileController {
 
     @FXML
     private void handleEditProfile() {
-
         NavigationUtil.navigateTo("/EditProfile.fxml", welcomeLabel);
     }
 
     @FXML
     private void handleBack() {
-
         NavigationUtil.navigateTo("/Home.fxml", welcomeLabel);
     }
 
     public void handleUserList(ActionEvent actionEvent) {
         NavigationUtil.navigateTo("/UserList.fxml", welcomeLabel);
-
-
     }
 }

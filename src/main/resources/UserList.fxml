@@ -13,7 +13,11 @@
 
     <top>
         <VBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #4a934a; -fx-padding: 20;">
-            <Label text="User Management" style="-fx-text-fill: white; -fx-font-size: 24; -fx-font-weight: bold;"/>
+            <Label fx:id="welcomeLabel" text="Your Profile" style="-fx-text-fill: white;">
+                <font>
+                    <Font size="28.0"/>
+                </font>
+            </Label>
         </VBox>
     </top>
 
@@ -42,6 +46,9 @@
                     <TableColumn text="Status" prefWidth="80">
                         <cellValueFactory><PropertyValueFactory property="status"/></cellValueFactory>
                     </TableColumn>
+                    <TableColumn text="Actions" prefWidth="100">
+                        <!-- Cell factory will be added in controller -->
+                    </TableColumn>
                 </columns>
             </TableView>
 
@@ -50,4 +57,10 @@
             </HBox>
         </VBox>
     </center>
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="20" style="-fx-padding: 20;">
+            <Button text="Back to Home" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: BOLD;"
+                    onAction="#handleBack"/>
+        </HBox>
+    </bottom>
 </BorderPane>

@@ -74,8 +74,21 @@ public class UserServices implements UserCrud<user> {
         }
     }
 
+
     @Override
     public void delete(user user) {
+        String sql = "DELETE FROM user WHERE id = ?";
+        try {
+            PreparedStatement st = cnx.prepareStatement(sql);
+            st.setInt(1, user.getId());
+            int rowsAffected = st.executeUpdate();
+
+            if (rowsAffected == 0) {
+                throw new SQLException("Deleting user failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delete user: " + e.getMessage(), e);
+        }
     }
 
     @Override

@@ -8,11 +8,13 @@ import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import services.UserServices;
+import utils.NavigationUtil;
 
 public class UserListController {
     @FXML private TableView<user> usersTable;
     @FXML private TextField searchField;
     @FXML private Label countLabel;
+    @FXML private Label welcomeLabel;
 
     private final UserServices userService = new UserServices();
     private ObservableList<user> usersList = FXCollections.observableArrayList();
@@ -22,6 +24,7 @@ public class UserListController {
     public void initialize() {
         loadUsers();
         setupSearch();
+        addDeleteButtonToTable();
     }
 
     private void loadUsers() {
@@ -58,6 +61,49 @@ public class UserListController {
         usersTable.setItems(sortedData);
     }
 
+    private void addDeleteButtonToTable() {
+        TableColumn<user, Void> colBtn = new TableColumn<>("Actions");
+
+        colBtn.setCellFactory(param -> new TableCell<>() {
+            private final Button deleteBtn = new Button("Delete");
+
+            {
+                deleteBtn.setOnAction(event -> {
+                    user user = getTableView().getItems().get(getIndex());
+                    handleDeleteUser(user);
+                });
+                deleteBtn.setStyle("-fx-background-color: #ff4444; -fx-text-fill: white;");
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(deleteBtn);
+                }
+            }
+        });
+
+        usersTable.getColumns().add(colBtn);
+    }
+
+    private void handleDeleteUser(user user) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Deletion");
+        alert.setHeaderText("Delete User");
+        alert.setContentText("Are you sure you want to delete " + user.getNom() + "?");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                userService.delete(user);
+                usersList.remove(user);
+                countLabel.setText("Total Users: " + usersList.size());
+            }
+        });
+    }
+
     @FXML
     private void handleRefresh() {
         loadUsers();
@@ -66,5 +112,9 @@ public class UserListController {
     @FXML
     private void handleSearch() {
         // Search is handled by the listener
+    }
+    @FXML
+    private void handleBack() {
+        NavigationUtil.navigateTo("/Home.fxml", welcomeLabel);
     }
 }
