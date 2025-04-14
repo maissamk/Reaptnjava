@@ -111,7 +111,7 @@ public class Register {
         newUser.setTelephone(telephoneField.getText());
         newUser.setEmail(emailField.getText());
         newUser.setPassword(passwordField.getText());
-        newUser.setRoles(agriculteurRadio.isSelected() ? "Agriculteur" : "Client");
+        newUser.setRoles(agriculteurRadio.isSelected() ? "ROLE_AGRICULTEUR" : "ROLE_CLIENT");
         newUser.setStatus("active");
         return newUser;
     }
