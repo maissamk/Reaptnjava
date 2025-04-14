@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.Ajouterparcelles"
+            prefHeight="600.0" prefWidth="800.0">
+
+    <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+
+        <Label text="Ajouter une parcelle"
+               style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+        <GridPane hgap="20" vgap="15">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50"/>
+                <ColumnConstraints percentWidth="50"/>
+            </columnConstraints>
+
+            <!-- Colonne gauche -->
+            <VBox spacing="10" GridPane.columnIndex="0">
+                <Label text="Titre"/>
+                <TextField fx:id="titreField" promptText="Titre de la parcelle" prefWidth="300"/>
+                <Label fx:id="titreErrorLabel" textFill="red" style="-fx-font-size: 12px;"/>
+
+                <Label text="Prix"/>
+                <TextField fx:id="prixField" promptText="Prix en TND" prefWidth="300"/>
+                <Label fx:id="prixErrorLabel" textFill="red" style="-fx-font-size: 12px;"/>
+
+                <Label text="Statut"/>
+                <ComboBox fx:id="statutCombo" promptText="Louer / Vendre" prefWidth="300"/>
+
+                <Label text="Taille (m²)"/>
+                <TextField fx:id="tailleField" prefWidth="300"/>
+
+                <Label text="Date de création"/>
+                <DatePicker fx:id="dateCreation" prefWidth="300"/>
+
+                <Label text="Date de mise à jour"/>
+                <DatePicker fx:id="dateMaj" prefWidth="300"/>
+
+                <Label text="Type de terrain"/>
+                <ComboBox fx:id="typeTerrain" promptText="Agricole, Résidentiel..." prefWidth="300"/>
+            </VBox>
+
+            <!-- Colonne droite -->
+            <VBox spacing="10" GridPane.columnIndex="1">
+                <Label text="Emplacement"/>
+                <TextField fx:id="emplacementField" prefWidth="300"/>
+
+                <Label text="Nom du propriétaire"/>
+                <TextField fx:id="nomProprio" prefWidth="300"/>
+
+                <Label text="Contact du propriétaire"/>
+                <TextField fx:id="contactProprio" prefWidth="300"/>
+
+                <Label text="Email"/>
+                <TextField fx:id="emailField" promptText="exemple@mail.com" prefWidth="300"/>
+                <Label fx:id="emailErrorLabel" textFill="red" style="-fx-font-size: 12px;"/>
+
+                <Label text="Est disponible"/>
+                <CheckBox fx:id="disponibleCheckBox" text="Disponible"/>
+
+                <Label text="Image"/>
+                <HBox spacing="10">
+                    <Button text="Choisir un fichier" onAction="#handleFileSelect"/>
+                    <Label fx:id="fileNameLabel" text="Aucun fichier choisi"/>
+                </HBox>
+            </VBox>
+        </GridPane>
+
+        <!-- Boutons -->
+        <HBox spacing="20" alignment="CENTER">
+            <Button text="Enregistrer"
+                    onAction="#handleEnregistrer"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white;"
+                    prefWidth="150"/>
+            <Button text="Afficher les parcelles"
+                    onAction="#handleAfficherListe"
+                    style="-fx-background-color: #2196F3; -fx-text-fill: white;"
+                    prefWidth="150"/>
+            <Button text="Annuler"
+                    style="-fx-background-color: #f44336; -fx-text-fill: white;"
+                    prefWidth="150"/>
+            <Button text="Ajouter Contrat"
+                    onAction="#handleAjouterContrat"
+                    style="-fx-background-color: #FF5722; -fx-text-fill: white;"
+                    prefWidth="150"/>
+        </HBox>
+    </VBox>
+</AnchorPane>

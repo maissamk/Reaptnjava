@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.layout.HBox?>
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.Ajoutercontrat"
+      spacing="20"
+      prefWidth="400"
+      prefHeight="550"
+      style="-fx-background-color: #ffffff;">
+
+    <padding>
+        <Insets top="25" right="30" bottom="25" left="30"/>
+    </padding>
+
+    <Label text="Créer un Nouveau Contrat"
+           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+    <VBox spacing="15">
+        <!-- Section Dates -->
+        <VBox spacing="10">
+            <Label text="Dates du contrat" style="-fx-font-weight: bold;"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <DatePicker fx:id="dateDebutField" promptText="Début (j/mm/aaaa)" style="-fx-pref-width: 150;"/>
+                <Label text="-"/>
+                <DatePicker fx:id="dateFinField" promptText="Fin (j/mm/aaaa)" style="-fx-pref-width: 150;"/>
+            </HBox>
+        </VBox>
+
+        <!-- Section Acteurs -->
+        <VBox spacing="10">
+            <Label text="Parties contractantes" style="-fx-font-weight: bold;"/>
+            <TextField fx:id="nomAcheteurField" promptText="Nom acheteur"/>
+            <TextField fx:id="nomVendeurField" promptText="Nom vendeur"/>
+        </VBox>
+
+        <!-- Section Détails -->
+        <VBox spacing="10">
+            <Label text="Détails du contrat" style="-fx-font-weight: bold;"/>
+            <TextField fx:id="infoContratField" promptText="Informations contrat"/>
+            <TextField fx:id="signatureField" promptText="Signature"/>
+        </VBox>
+
+        <!-- Bouton d'enregistrement -->
+        <Button fx:id="addContratButton" text="Enregistrer"
+                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"/>
+
+        <Button text="Afficher les contrats" onAction="#goToAfficherContrats"/>
+    </VBox>
+</VBox>

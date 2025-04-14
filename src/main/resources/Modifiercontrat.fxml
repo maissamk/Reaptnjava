@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.Modifiercontrat"
+      spacing="20"
+      style="-fx-padding: 20; -fx-background-color: #f5f6fa;"
+      prefWidth="400"
+      prefHeight="500">
+
+    <Label text="Modifier le Contrat"
+           style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <Label text="Date Début:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="dateDebutPicker" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Date Fin:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="dateFinPicker" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Acheteur:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="nomAcheteurField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Vendeur:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="nomVendeurField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Informations:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <TextField fx:id="infoContratField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+        <Label text="Signature:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <TextField fx:id="signatureField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <Button text="Sauvegarder"
+            onAction="#handleSave"
+            style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"/>
+</VBox>

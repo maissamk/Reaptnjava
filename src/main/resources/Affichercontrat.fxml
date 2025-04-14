@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.Affichercontrat"
+            prefWidth="1200" prefHeight="800"
+            style="-fx-background-color: #ffffff;">
+
+    <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <Label text="Liste des Contrats"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+            <HBox spacing="10" HBox.hgrow="NEVER">
+                <Button text="Actualiser" fx:id="btnActualiser" onAction="#handleActualiser"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+                <Button text="Retour" fx:id="btnRetour" onAction="#handleRetour"
+                        style="-fx-background-color: #95a5a6; -fx-text-fill: white;"/>
+            </HBox>
+        </HBox>
+
+        <ListView fx:id="listView" VBox.vgrow="ALWAYS">
+            <placeholder>
+                <Label text="Aucun contrat disponible" style="-fx-font-size: 16px;"/>
+            </placeholder>
+        </ListView>
+    </VBox>
+</AnchorPane>

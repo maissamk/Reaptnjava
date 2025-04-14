@@ -1,0 +1,87 @@
+/* contrats.css */
+.header-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 0 0 15px 0;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #34495e;
+    -fx-padding: 0 0 5px 3px;
+}
+
+.date-picker {
+    -fx-pref-width: 180px;
+    -fx-pref-height: 35px;
+    -fx-font-size: 14px;
+}
+
+.input-field {
+    -fx-pref-height: 35px;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5px;
+    -fx-border-color: #bdc3c7;
+    -fx-border-radius: 5px;
+}
+
+.combo-box {
+    -fx-pref-width: 340px;
+    -fx-pref-height: 35px;
+    -fx-font-size: 14px;
+}
+
+.separator {
+    -fx-font-size: 16px;
+    -fx-text-fill: #7f8c8d;
+    -fx-padding: 0 5px;
+}
+
+.save-button {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-pref-width: 340px;
+    -fx-pref-height: 40px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+
+.save-button:hover {
+    -fx-background-color: #219a52;
+}
+
+/* Style général des DatePickers */
+.date-picker > .arrow-button {
+    -fx-background-color: #3498db;
+}
+
+.date-picker > .arrow-button:hover {
+    -fx-background-color: #2980b9;
+}
+.list-cell {
+    -fx-padding: 10px;
+    -fx-background-color: transparent;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #f8f9fa;
+}
+
+.separator *.line {
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+}
+.button {
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+.button:hover {
+    -fx-opacity: 0.9;
+}
