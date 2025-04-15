@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.indexOffreBack">
+    <VBox spacing="20.0" alignment="CENTER" layoutX="20" layoutY="20" prefWidth="800">
+
+        <TableView fx:id="offreTable" prefHeight="300.0" prefWidth="760.0">
+            <columns>
+                <TableColumn fx:id="idColumn" text="ID" />
+                <TableColumn fx:id="idaColumn" text="Admin ID" />
+                <TableColumn fx:id="ideColumn" text="Employee ID" />
+                <TableColumn fx:id="statutColumn" text="Statut" />
+                <TableColumn fx:id="descrColumn" text="Description" />
+                <TableColumn fx:id="titreColumn" text="Titre" />
+                <TableColumn fx:id="compColumn" text="Compétence" />
+            </columns>
+        </TableView>
+
+        <GridPane hgap="10" vgap="10">
+            <Label text="Admin ID:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="idaField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <Label text="Employee ID:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextField fx:id="ideField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label text="Titre:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <TextField fx:id="titreField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+            <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <TextField fx:id="descrField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+            <Label text="Compétence:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+            <TextField fx:id="compField" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+            <Label text="Statut (true/false):" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+            <TextField fx:id="statutField" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+        </GridPane>
+
+        <HBox spacing="15.0" alignment="CENTER">
+            <Button fx:id="addButton" text="Ajouter" onAction="#addOffre" />
+            <Button fx:id="updateButton" text="Mettre à jour" onAction="#updateOffre" />
+            <Button fx:id="deleteButton" text="Supprimer" onAction="#deleteOffre" />
+        </HBox>
+
+    </VBox>
+</AnchorPane>
