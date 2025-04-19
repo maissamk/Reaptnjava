@@ -1,0 +1,50 @@
+.step-box {
+    -fx-alignment: center;
+    -fx-spacing: 5;
+    -fx-padding: 10;
+    -fx-border-width: 2;
+    -fx-border-color: lightgray;
+    -fx-background-radius: 10;
+}
+
+.step-active {
+    -fx-border-color: green;
+    -fx-text-fill: green;
+    -fx-font-weight: bold;
+}
+
+.step-inactive {
+    -fx-border-color: gray;
+    -fx-text-fill: gray;
+}
+
+.delivery-box {
+    -fx-padding: 20;
+    -fx-spacing: 15;
+    -fx-background-color: #f9f9f9;
+    -fx-border-radius: 10;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1;
+}
+
+.delivery-header {
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+}
+
+.delivery-info {
+    -fx-spacing: 15;
+    -fx-padding: 10;
+}
+
+.confirmation-box {
+    -fx-padding: 20;
+    -fx-background-color: #e8f5e9;
+    -fx-border-radius: 10;
+}
+
+.title {
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+    -fx-text-fill: green;
+}

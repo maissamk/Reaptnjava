@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterCommandeController">
+
+    <VBox layoutX="20" layoutY="20" prefWidth="660" spacing="10">
+        <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Gestion des Commandes" />
+
+        <HBox spacing="10">
+            <TextField fx:id="quantiteField" promptText="Quantité" />
+            <DatePicker fx:id="dateField" />
+            <TextField fx:id="totaleField" promptText="Totale" />
+        </HBox>
+
+        <HBox spacing="10">
+            <Button onAction="#handleAjouter" text="Ajouter" />
+            <Button onAction="#handleModifier" text="Modifier" />
+            <Button onAction="#handleSupprimer" text="Supprimer" />
+        </HBox>
+   
+        <TableView fx:id="tableCommandes" prefHeight="356.0" prefWidth="706.0">
+            <columns>
+                <TableColumn fx:id="colId" prefWidth="50" text="ID" />
+                <TableColumn fx:id="colQuantite" prefWidth="100" text="Quantité" />
+                <TableColumn fx:id="colDate" prefWidth="200" text="Date Commande" />
+                <TableColumn fx:id="colTotale" prefWidth="100" text="Totale" />
+            </columns>
+        </TableView>
+    </VBox>
+</AnchorPane>

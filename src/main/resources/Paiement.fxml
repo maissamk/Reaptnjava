@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.PaiementController" spacing="0">
+
+    <!-- En-tête avec image -->
+    <StackPane>
+        <ImageView fitWidth="902.0" fitHeight="150" preserveRatio="true">
+            <image>
+                <Image url="@/images/cart-page-header-img.jpg" />
+            </image>
+        </ImageView>
+        <VBox alignment="CENTER" spacing="5">
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" text="Paiement" />
+            <HBox alignment="CENTER" spacing="5">
+                <Label style="-fx-text-fill: white;" text="Accueil / " />
+                <Label style="-fx-font-weight: bold; -fx-text-fill: white;" text="Paiement" />
+            </HBox>
+        </VBox>
+    </StackPane>
+
+    <!-- Contenu principal -->
+    <HBox alignment="TOP_CENTER" prefHeight="987.0" prefWidth="902.0" spacing="7" style="-fx-padding: 20;">
+        <!-- Partie Adresse -->
+        <VBox alignment="CENTER_LEFT" prefWidth="390.0" spacing="5">
+            <Label style="-fx-font-weight: bold;" text="Adresse" />
+            <Label text="Numéro de maison, rue:" />
+            <TextField fx:id="numeroRueField" />
+            <Label fx:id="numeroRueError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" />
+
+            <Label text="Ville*:" />
+            <TextField fx:id="villeField" />
+            <Label fx:id="villeError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" />
+
+            <Label text="Pays*:" />
+            <TextField fx:id="paysField" />
+            <Label fx:id="paysError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" />
+
+            <Label text="Code Postal*:" />
+            <TextField fx:id="codePostalField" />
+            <Label fx:id="codePostalError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" />
+
+            <Label text="Numéro de téléphone*:" />
+            <TextField fx:id="telephoneField" />
+            <Label fx:id="telephoneError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" />
+
+            <Label text="Notes de commande:" />
+            <TextArea fx:id="notesCommandeArea" prefHeight="81.0" prefRowCount="3" prefWidth="420.0" promptText="(facultatif)" />
+        </VBox>
+
+        <!-- Partie Méthode de Paiement -->
+        <VBox alignment="CENTER" spacing="20">
+            <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Méthode de paiement" />
+
+            <VBox alignment="CENTER_LEFT" spacing="10">
+                <!-- Option Carte Bancaire -->
+                <VBox spacing="5">
+                    <RadioButton fx:id="carteRadio" style="-fx-font-size: 14px;" text="Carte Bancaire" />
+                    <VBox fx:id="carteDetails" managed="false" spacing="15" style="-fx-padding: 15; -fx-border-color: #e0e0e0; -fx-border-radius: 5;" visible="false">
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="Détails de la Carte Bancaire" />
+                        <GridPane hgap="10" vgap="10">
+                            <columnConstraints>
+                                <ColumnConstraints halignment="RIGHT" minWidth="150" />
+                                <ColumnConstraints minWidth="250" />
+                            </columnConstraints>
+                            <Label text="Numéro de carte:" GridPane.rowIndex="0" />
+                            <TextField GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                            <Label text="Date expiration (MM/AA):" GridPane.rowIndex="1" />
+                            <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <TextField prefWidth="80" />
+                                <Label text="CVV:" />
+                                <TextField prefWidth="50" />
+                            </HBox>
+                            <Label text="Nom du titulaire:" GridPane.rowIndex="2" />
+                            <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                            <Label text="Image du Recto:" GridPane.rowIndex="3" />
+                            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                <Button style="-fx-background-color: #f0f0f0;" text="Choisir un fichier" />
+                                <Label style="-fx-text-fill: #808080;" text="Aucun fichier choisi" />
+                            </VBox>
+                            <Label text="Image du Verso:" GridPane.rowIndex="4" />
+                            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                <Button style="-fx-background-color: #f0f0f0;" text="Choisir un fichier" />
+                                <Label style="-fx-text-fill: #808080;" text="Aucun fichier choisi" />
+                            </VBox>
+                        </GridPane>
+                        <Button style="-fx-background-color: #e0e0e0; -fx-font-weight: bold;" text="Extraire les Détails" />
+                    </VBox>
+                </VBox>
+
+                <!-- Option PayPal -->
+                <VBox spacing="5">
+                    <RadioButton fx:id="paypalRadio" style="-fx-font-size: 14px;" text="PayPal" />
+                    <VBox fx:id="paypalDetails" managed="false" spacing="10" style="-fx-padding: 15; -fx-border-color: #e0e0e0; -fx-border-radius: 5;" visible="false">
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="Connectez-vous à PayPal" />
+                        <Label style="-fx-text-fill: #606060;" text="Redirection vers la page de paiement sécurisée de PayPal après confirmation." wrapText="true" />
+                    </VBox>
+                </VBox>
+
+                <!-- Option Virement Bancaire -->
+                <VBox spacing="5">
+                    <RadioButton fx:id="virementRadio" style="-fx-font-size: 14px;" text="Virement Bancaire" />
+                    <VBox fx:id="virementDetails" managed="false" spacing="10" style="-fx-padding: 15; -fx-border-color: #e0e0e0; -fx-border-radius: 5;" visible="false">
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="Détails pour le Virement Bancaire" />
+                        <Label style="-fx-text-fill: #606060;" text="Vous recevrez les instructions pour effectuer le virement une fois la commande validée." wrapText="true" />
+                    </VBox>
+                </VBox>
+            </VBox>
+
+            <!-- Bouton de confirmation -->
+            <Button onAction="#validerPaiement" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20;" text="CONFIRMER LE PAIEMENT" />
+        </VBox>
+    </HBox>
+</VBox>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.SuiviLivraisonController"
+      spacing="20" alignment="TOP_CENTER" style="-fx-background-color: #ffffff; -fx-padding: 30;">
+
+    <!-- Étapes de livraison -->
+    <HBox spacing="40" alignment="CENTER">
+        <VBox fx:id="step1Box" alignment="CENTER">
+            <Label text="✔" style="-fx-font-size: 24px;" />
+            <Label text="Validation en cours" />
+        </VBox>
+        <VBox fx:id="step2Box" alignment="CENTER">
+            <Label text="📦" style="-fx-font-size: 24px;" />
+            <Label text="Préparation" />
+        </VBox>
+        <VBox fx:id="step3Box" alignment="CENTER">
+            <Label text="🚚" style="-fx-font-size: 24px;" />
+            <Label text="Expédition" />
+        </VBox>
+        <VBox fx:id="step4Box" alignment="CENTER">
+            <Label text="📍" style="-fx-font-size: 24px;" />
+            <Label text="Livraison" />
+        </VBox>
+    </HBox>
+
+
+
+    <!-- Détails de la livraison -->
+    <VBox spacing="10" style="-fx-background-color: #ffe600; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10;">
+        <Label text="Détails de la Livraison" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+        <HBox spacing="40">
+            <Label fx:id="adresseLabel" style="-fx-font-size: 14px;" />
+            <Label fx:id="dateLabel" style="-fx-font-size: 14px;" />
+            <Label fx:id="statusLabel" style="-fx-font-size: 14px;" />
+        </HBox>
+    </VBox>
+
+    <!-- Message de confirmation -->
+    <VBox spacing="10" style="-fx-background-color: #f0f0f0; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10;">
+        <Label text="Merci pour votre commande !" style="-fx-text-fill: green; -fx-font-size: 16px; -fx-font-weight: bold;" />
+        <Label text="Nous vous remercions pour votre confiance. Si vous avez des questions, n’hésitez pas à nous contacter." />
+        <Label text="Nous espérons vous revoir bientôt ! 😊" />
+    </VBox>
+
+</VBox>

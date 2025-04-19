@@ -1,0 +1,45 @@
+/* styles.css */
+
+.root {
+    -fx-background-color: #ffffff;
+    -fx-padding: 30;
+}
+
+.step-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: gray;
+}
+
+.step-icon {
+    -fx-font-size: 24px;
+}
+
+.step-active .step-label {
+    -fx-text-fill: green;
+    -fx-font-size: 16px;
+}
+
+.livraison-details {
+    -fx-background-color: #ffe600;
+    -fx-padding: 20;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.livraison-message {
+    -fx-background-color: #f0f0f0;
+    -fx-padding: 20;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.title-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.confirmation-message {
+    -fx-text-fill: green;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
