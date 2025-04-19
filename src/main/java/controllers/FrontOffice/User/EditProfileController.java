@@ -1,4 +1,4 @@
-package controllers;
+package controllers.FrontOffice.User;
 
 import Models.user;
 import javafx.fxml.FXML;
@@ -107,7 +107,7 @@ public class EditProfileController {
             SessionManager.getInstance().startSession(currentUser);
 
             showAlert("Success", "Profile Updated", "Your changes have been saved successfully");
-            NavigationUtil.navigateTo("/profile.fxml", firstNameField);
+            NavigationUtil.navigateTo("/FrontOffice/user/profile.fxml", firstNameField);
 
         } catch (Exception e) {
             showAlert("Error", "Update Failed", "Failed to update profile: " + e.getMessage());
@@ -150,7 +150,7 @@ public class EditProfileController {
 
     @FXML
     private void handleCancel() {
-        NavigationUtil.navigateTo("/profile.fxml", firstNameField);
+        NavigationUtil.navigateTo("/FrontOffice/user/profile.fxml", firstNameField);
     }
 
     private void showAlert(String title, String header, String content) {

@@ -8,7 +8,7 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <BorderPane xmlns="http://javafx.com/javafx/20.0.2"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.UserListController"
+            fx:controller="controllers.BackOffice.user.UserListController"
             style="-fx-background-color: #f5f9f4;">
 
     <top>

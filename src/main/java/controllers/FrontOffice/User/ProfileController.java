@@ -1,4 +1,4 @@
-package controllers;
+package controllers.FrontOffice.User;
 
 import Models.user;
 import javafx.event.ActionEvent;
@@ -56,15 +56,15 @@ public class ProfileController {
 
     @FXML
     private void handleEditProfile() {
-        NavigationUtil.navigateTo("/EditProfile.fxml", welcomeLabel);
+        NavigationUtil.navigateTo("/FrontOffice/user/EditProfile.fxml", welcomeLabel);
     }
 
     @FXML
     private void handleBack() {
-        NavigationUtil.navigateTo("/Home.fxml", welcomeLabel);
+        NavigationUtil.navigateTo("/FrontOffice/Home.fxml", welcomeLabel);
     }
 
     public void handleUserList(ActionEvent actionEvent) {
-        NavigationUtil.navigateTo("/UserList.fxml", welcomeLabel);
+        NavigationUtil.navigateTo("/BackOffice/UserList.fxml", welcomeLabel);
     }
 }

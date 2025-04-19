@@ -11,14 +11,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<BorderPane prefHeight="100.0" prefWidth="1250.0" stylesheets="@home-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Home">
+<BorderPane prefHeight="100.0" prefWidth="1250.0" stylesheets="/css/home.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.Home">
 
    <!-- Top Navigation Bar -->
    <top>
       <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header">
          <!-- Logo -->
          <ImageView fitHeight="71.0" fitWidth="280.0" preserveRatio="true" styleClass="logo">
-            <Image url="@images/logoapp.jpg" />
+            <Image url="@/images/logoapp.jpg" />
          </ImageView>
 
          <!-- User Info -->
@@ -41,7 +41,7 @@
          <Button fx:id="produitsButton" styleClass="nav-button" text="Produits" />
          <Button fx:id="produitsDetailButton" styleClass="nav-button" text="Produits Detail" />
          <Button fx:id="parcelleButton" styleClass="nav-button" text="Parcelle" />
-         <Button fx:id="offersButton" styleClass="nav-button" text="Offers" />
+         <Button fx:id="offersButton" onAction="#handleOffers" styleClass="nav-button" text="Offers" />
          <Button fx:id="masterfulButton" styleClass="featured-button" text="Masterful Agricole" />
 
          <Region HBox.hgrow="ALWAYS" />
@@ -62,12 +62,12 @@
 
          <!-- Hero Image -->
          <ImageView fitHeight="400" fitWidth="800" pickOnBounds="true" preserveRatio="true" styleClass="hero-image">
-            <Image url="@images/agriculture-hero.jpg" />
+            <Image url="@/images/agriculture-hero.jpg" />
          </ImageView>
 
          <!-- Call to Action -->
          <HBox alignment="CENTER" spacing="20">
-            <Button styleClass="featured-button" text="Explore Our Products" />
+            <Button fx:id="HomeBackButton" onAction="#HomeBack" styleClass="featured-button" text="Back" />
 
          </HBox>
       </VBox>

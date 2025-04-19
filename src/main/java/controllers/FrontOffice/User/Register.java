@@ -1,4 +1,4 @@
-package controllers;
+package controllers.FrontOffice.User;
 
 import Models.user;
 import javafx.event.ActionEvent;
@@ -121,7 +121,7 @@ public class Register {
                 "Utilisateur enregistré avec succès!");
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/Login.fxml"));
             Parent root = loader.load();
             nomField.getScene().setRoot(root);
         } catch (IOException e) {
@@ -147,7 +147,7 @@ public class Register {
     @FXML
     private void redirectToLogin(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/Login.fxml"));
             Parent root = loader.load();
             emailField.getScene().setRoot(root);
         } catch (IOException e) {

@@ -1,4 +1,4 @@
-package controllers;
+package controllers.BackOffice.user;
 
 import Models.user;
 import javafx.collections.FXCollections;
@@ -115,6 +115,6 @@ public class UserListController {
     }
     @FXML
     private void handleBack() {
-        NavigationUtil.navigateTo("/Home.fxml", welcomeLabel);
+        NavigationUtil.navigateTo("/FrontOffice/Home.fxml", welcomeLabel);
     }
 }

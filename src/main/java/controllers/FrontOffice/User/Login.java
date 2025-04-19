@@ -1,4 +1,4 @@
-package controllers;
+package controllers.FrontOffice.User;
 
 import Models.user;
 import javafx.event.ActionEvent;
@@ -50,7 +50,7 @@ public class Login {
     }
 
     private void redirectToHome() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Home.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
         Parent root = loader.load();
 
         Stage stage = (Stage) loginButton.getScene().getWindow();
@@ -68,7 +68,7 @@ public class Login {
     @FXML
     void CreateAccount(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Register.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/Register.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
@@ -84,7 +84,7 @@ public class Login {
         try {
             SessionManager.getInstance().logout();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Home.fxml")); // or "/Login.fxml"
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml")); // or "/Login.fxml"
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();

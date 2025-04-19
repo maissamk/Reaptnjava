@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/20.0.2"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EditProfileController"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.User.EditProfileController"
             style="-fx-background-color: #f5f9f4;">
 
     <!-- Top Section - Header -->

@@ -6,12 +6,12 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Register">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.User.Register">
 
     <!-- Background Image -->
     <ImageView fitHeight="600.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="false">
         <image>
-            <Image url="@images/backgroundlog.jpg" />
+            <Image url="@../../images/backgroundlog.jpg" />
         </image>
     </ImageView>
 
@@ -30,7 +30,7 @@
             <!-- Name Field -->
             <ImageView fitHeight="25.0" fitWidth="27.0" layoutX="16.0" layoutY="80.0" opacity="0.61" pickOnBounds="true" preserveRatio="true">
                 <image>
-                    <Image url="@images/nomicon.png" />
+                    <Image url="@../../images/nomicon.png" />
                 </image>
             </ImageView>
             <TextField fx:id="nomField" layoutX="50.0" layoutY="80.0" prefWidth="200.0" promptText="Nom" />
@@ -38,7 +38,7 @@
             <!-- First Name Field -->
             <ImageView fitHeight="25.0" fitWidth="27.0" layoutX="16.0" layoutY="130.0" opacity="0.61" pickOnBounds="true" preserveRatio="true">
                 <image>
-                    <Image url="@images/prenomicon.png" />
+                    <Image url="@../../images/prenomicon.png" />
                 </image>
             </ImageView>
             <TextField fx:id="prenomField" layoutX="50.0" layoutY="130.0" prefWidth="200.0" promptText="Prénom" />
@@ -46,7 +46,7 @@
             <!-- Phone Field -->
             <ImageView fitHeight="25.0" fitWidth="27.0" layoutX="16.0" layoutY="180.0" opacity="0.61" pickOnBounds="true" preserveRatio="true">
                 <image>
-                    <Image url="@images/phoneicon.png" />
+                    <Image url="@../../images/phoneicon.png" />
                 </image>
             </ImageView>
             <TextField fx:id="telephoneField" layoutX="50.0" layoutY="180.0" prefWidth="200.0" promptText="Téléphone" />
@@ -54,7 +54,7 @@
             <!-- Email Field -->
             <ImageView fitHeight="25.0" fitWidth="27.0" layoutX="16.0" layoutY="230.0" opacity="0.61" pickOnBounds="true" preserveRatio="true">
                 <image>
-                    <Image url="@images/emailicon.png" />
+                    <Image url="@../../images/emailicon.png" />
                 </image>
             </ImageView>
             <TextField fx:id="emailField" layoutX="50.0" layoutY="230.0" prefWidth="200.0" promptText="Email" />
@@ -62,7 +62,7 @@
             <!-- Password Field -->
             <ImageView fitHeight="25.0" fitWidth="27.0" layoutX="16.0" layoutY="280.0" opacity="0.61" pickOnBounds="true" preserveRatio="true">
                 <image>
-                    <Image url="@images/lock1.png" />
+                    <Image url="@../../images/lock1.png" />
                 </image>
             </ImageView>
             <PasswordField fx:id="passwordField" layoutX="50.0" layoutY="280.0" prefWidth="200.0" promptText="Mot de passe" />
@@ -86,7 +86,7 @@
         <!-- Left side with logo -->
         <ImageView fitHeight="154.0" fitWidth="213.0" layoutX="56.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@images/logoapp.png" />
+                <Image url="@../../images/logoapp.png" />
             </image>
         </ImageView>
 
