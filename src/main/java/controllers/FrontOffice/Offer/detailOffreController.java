@@ -1,4 +1,6 @@
 package controllers.FrontOffice.Offer;
+import controllers.FrontOffice.BaseFrontController;
+
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +20,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TextField;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+
 public class detailOffreController {
 
     @FXML private Label titreLabel;
@@ -32,6 +40,9 @@ public class detailOffreController {
 
 
     public void setOffre(Offre offre) {
+
+        System.out.println("Selected offer ID: " + offre.getId()); // ⬅️ Add this
+
         if (offre != null) {
             currentOffre = offre; // ✅ This was missing!
             titreLabel.setText(offre.getTitre());
@@ -48,11 +59,24 @@ public class detailOffreController {
     @FXML
     private void handleEditOffre(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/modifierOffre.fxml"));
-            Scene scene = new Scene(loader.load());
-            modifierOffreController controller = loader.getController();
-            controller.prefillForm(currentOffre);  // Set the current data
 
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/Frontoffice/baseFront.fxml"));
+            Parent baseRoot = baseLoader.load();
+            BaseFrontController baseController = baseLoader.getController();
+
+
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/modifierOffre.fxml"));
+            Parent content = contentLoader.load(); // content with its own controller & methods
+
+
+            // Inject the page content into base layout
+            baseController.getContentPane().getChildren().setAll(content);
+
+            modifierOffreController modifierController = contentLoader.getController();
+            modifierController.prefillForm(currentOffre);  // Set the current data
+
+            // Now show the complete scene
+            Scene scene = new Scene(baseRoot);
             Stage stage = (Stage) editButton.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -64,21 +88,28 @@ public class detailOffreController {
     @FXML
     private void handleDeleteOffre(ActionEvent event) {
         try {
-            // Delete the offer (assuming delete logic is implemented)
             OffreService service = new OffreService();
             service.delete(currentOffre.getId());
 
-            // Return to indexOffre.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/indexOffre.fxml"));
-            Scene scene = new Scene(loader.load());
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
+            Parent baseRoot = baseLoader.load();
+            BaseFrontController baseController = baseLoader.getController();
 
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/indexOffre.fxml"));
+            Parent content = contentLoader.load();
+
+            baseController.getContentPane().getChildren().setAll(content);
+
+            Scene scene = new Scene(baseRoot);
             Stage stage = (Stage) deleteButton.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     //*******************************************************************************************************//
     //////////////////////////////////////PARTIE EMPLOYE///////////////////////////////////////////////////////

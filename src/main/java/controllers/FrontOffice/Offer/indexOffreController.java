@@ -14,6 +14,20 @@ import services.OffreService;
 import java.sql.SQLException;
 import java.util.List;
 
+import javafx.fxml.Initializable;
+import javafx.fxml.FXML;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
+
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -25,6 +39,7 @@ public class indexOffreController {
     @FXML private ListView<Offre> offersListView;
     @FXML private Button loadMoreButton;
     @FXML private Button addOffreButton;
+    private Offre selectedOffre;
 
     private ObservableList<Offre> offersList = FXCollections.observableArrayList();
     private OffreService offreService = new OffreService(); // Instance of OffreService
@@ -37,23 +52,39 @@ public class indexOffreController {
             e.printStackTrace();
         }
 
-        // Set the cell factory to display offer titles
+        // Set the cell factory to customize how each offer is displayed
         offersListView.setCellFactory(param -> new ListCell<Offre>() {
             @Override
             protected void updateItem(Offre offre, boolean empty) {
                 super.updateItem(offre, empty);
                 if (empty || offre == null) {
                     setText(null);
+                    setGraphic(null);
                 } else {
-                    setText(offre.getTitre()); // Display the title of each offer
+                    // Create VBox card
+                    VBox card = new VBox(5);
+                    card.setStyle("-fx-background-color: #a5d6a7; -fx-background-radius: 15; -fx-padding: 12;");
+
+                    Label titleLabel = new Label(offre.getTitre());
+                    titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+                    Label competenceLabel = new Label("Compétence: " + offre.getComp());
+                    Label statutLabel = new Label("Statut: " + (offre.isStatut() ? "Actif" : "Inactif"));
+
+                    card.getChildren().addAll(titleLabel, competenceLabel, statutLabel);
+
+                    // Hover effect
+                    card.setOnMouseEntered(e -> card.setStyle("-fx-background-color: #81c784; -fx-background-radius: 15; -fx-padding: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 2);"));
+                    card.setOnMouseExited(e -> card.setStyle("-fx-background-color: #a5d6a7; -fx-background-radius: 15; -fx-padding: 12;"));
+
+                    setGraphic(card);
                 }
             }
         });
 
-        // Add a listener to handle selection of an offer from the ListView
+        // Handle click on item
         offersListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                // Open the details page for the selected offer
                 openDetailOffrePage(newValue);
             }
         });
@@ -96,25 +127,35 @@ public class indexOffreController {
         stage.show();
     }
 
-    // Method to open the details page for the selected offer
     private void openDetailOffrePage(Offre selectedOffre) {
         try {
-            // Load the detailOffre.fxml page
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/detailOffre.fxml"));
-            Parent root = loader.load();
+            // Load base layout
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
+            Parent baseRoot = baseLoader.load();
+            BaseFrontController baseController = baseLoader.getController();
 
-            // Get the controller for the detailOffre page
-            detailOffreController controller = loader.getController();
-            controller.setOffre(selectedOffre);  // Pass the selected offer details
+            // Load the detail content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/detailOffre.fxml"));
+            Parent content = contentLoader.load();
 
-            // Open the details window
-            Stage detailStage = new Stage();
-            Scene detailScene = new Scene(root);
-            detailStage.setScene(detailScene);
-            detailStage.show();
+            // Inject detail page into the base layout
+            baseController.getContentPane().getChildren().setAll(content);
+
+            // Get the detail controller and pass the selected Offre
+            detailOffreController detailController = contentLoader.getController();
+            detailController.setOffre(selectedOffre);
+
+            // Display everything
+            Scene scene = new Scene(baseRoot);
+            Stage stage = (Stage) offersListView.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
+
 }

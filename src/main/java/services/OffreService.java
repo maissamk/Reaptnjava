@@ -66,12 +66,11 @@ public class OffreService implements IService<Offre> {
     @Override
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM offre WHERE id = ?";
-        try (Connection conn = MaConnexion.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-             stmt.setInt(1, id);
-             stmt.executeUpdate();
-        }
-
+        Connection conn = MaConnexion.getInstance().getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, id);
+        stmt.executeUpdate();
+        stmt.close(); // No conn.close()
     }
 
     @Override
@@ -86,7 +85,7 @@ public class OffreService implements IService<Offre> {
 
             while (res.next()) {
                 Offre offre=new Offre();
-                offre.setIda(res.getInt("ida"));
+                offre.setId(res.getInt("id"));
                 offre.setStatut(res.getBoolean("statut"));
                 offre.setDescr(res.getString("descr"));
                 offre.setTitre(res.getString("titre"));

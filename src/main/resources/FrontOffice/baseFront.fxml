@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<AnchorPane stylesheets="/css/home.css" xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.FrontOffice.BaseFrontController">
+<AnchorPane  stylesheets="/css/home.css" xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.FrontOffice.BaseFrontController">
     <VBox spacing="10" prefWidth="800" prefHeight="600">
 
         <!-- Header -->
@@ -35,7 +35,7 @@
         </VBox>
 
         <!-- Content placeholder -->
-        <AnchorPane fx:id="contentPane" VBox.vgrow="ALWAYS"/>
+        <AnchorPane fx:id="contentPane" VBox.vgrow="ALWAYS" />
 
         <!-- Footer -->
         <HBox style="-fx-background-color: #ecf0f1;" prefHeight="30" alignment="CENTER">

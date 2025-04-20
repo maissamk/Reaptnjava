@@ -1,6 +1,8 @@
 package controllers.FrontOffice.Offer;
 
+import controllers.FrontOffice.BaseFrontController;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.TextField;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Button;
@@ -14,13 +16,15 @@ import java.io.IOException;
 import java.sql.SQLException;
 import javafx.scene.control.Alert;
 
+
+
 public class modifierOffreController {
     @FXML private TextField titreField;
     @FXML private TextField descrField;
     @FXML private TextField competenceField;
     @FXML private CheckBox statutCheckBox;
     @FXML private Button saveButton;
-    @FXML private Button cancelButton;
+    @FXML private Button RetourButton;
 
     private Offre currentOffre;
 
@@ -47,6 +51,8 @@ public class modifierOffreController {
             currentOffre.setComp(competenceField.getText());
             currentOffre.setStatut(statutCheckBox.isSelected());
 
+            System.out.println("Saving offer with ID: " + currentOffre.getId());
+
             // Save the updated Offre using the service
             OffreService service = new OffreService();
             service.update(currentOffre); // Update the Offer in the database
@@ -54,9 +60,18 @@ public class modifierOffreController {
             // Optionally, show a success message to the user
             showAlert("Success", "Offer updated successfully!");
 
+
             // Return to the previous screen (e.g., indexOffre.fxml) after saving
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/Frontoffice/baseFront.fxml"));
+            Parent baseRoot = baseLoader.load();
+            BaseFrontController baseController = baseLoader.getController();
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/indexOffre.fxml"));
-            Scene scene = new Scene(loader.load());
+            Parent content = loader.load();
+
+            baseController.getContentPane().getChildren().setAll(content);
+
+            Scene scene = new Scene(baseRoot);
             Stage stage = (Stage) saveButton.getScene().getWindow(); // Ensure you're working with the correct window
             stage.setScene(scene);
             stage.show();
@@ -72,14 +87,29 @@ public class modifierOffreController {
         }
     }
 
+
+
+    // Navigate back to the index page (indexOffre.fxml)
     @FXML
-    private void handleCancel(ActionEvent event) {
+    private void handleRetour() {
+        // You can implement navigation logic here (go back to the previous screen)
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/indexOffre.fxml"));
-            Scene scene = new Scene(loader.load());
-            Stage stage = (Stage) titreField.getScene().getWindow();
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/Frontoffice/baseFront.fxml"));
+            Parent baseRoot = baseLoader.load();
+            BaseFrontController baseController = baseLoader.getController();
+
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/Frontoffice/Offre/indexOffre.fxml"));
+            Parent content = contentLoader.load(); // content with its own controller & methods
+
+            // Inject the page content into base layout
+            baseController.getContentPane().getChildren().setAll(content);
+
+            // Now show the complete scene
+            Scene scene = new Scene(baseRoot);
+            Stage stage = (Stage) RetourButton.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
