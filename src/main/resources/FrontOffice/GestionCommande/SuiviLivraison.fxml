@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.SuiviLivraisonController"
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.FrontOffice.GestionCommande.SuiviLivraisonController"
       spacing="20" alignment="TOP_CENTER" style="-fx-background-color: #ffffff; -fx-padding: 30;">
 
     <!-- Étapes de livraison -->

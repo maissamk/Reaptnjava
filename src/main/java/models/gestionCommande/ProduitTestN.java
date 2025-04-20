@@ -1,4 +1,4 @@
-package models;
+package models.gestionCommande;
 
 public class ProduitTestN {
     private String nom;

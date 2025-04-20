@@ -1,7 +1,7 @@
-package utils;
+package utils.gestionCommande;
 
-import models.PanierItem;
-import models.ProduitTestN;
+import models.gestionCommande.PanierItem;
+import models.gestionCommande.ProduitTestN;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,17 +1,16 @@
-package controllers;
+package controllers.FrontOffice.GestionCommande;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.geometry.*;
-import javafx.stage.Stage;
-import models.Commande;
-import models.PanierItem;
-import services.CommandeService;
-import utils.PanierSession;
+import models.gestionCommande.Commande;
+import models.gestionCommande.PanierItem;
+import services.gestionCommande.CommandeService;
+import services.gestionCommande.SmsService;
+import utils.gestionCommande.PanierSession;
 
 import java.io.IOException;
 import java.util.Date;
@@ -25,10 +24,15 @@ public class PanierController {
     @FXML private Label totalLabel;
     @FXML private Label reductionLabel;
     @FXML private Label totalRemiseLabel;
-
+    @FXML private Label messageErreurLabel;
+    @FXML private Button obtenirCodePromoButton;
+    @FXML private Button appliquerCodeButton;
+    @FXML private TextField codePromoField;
     @FXML
     public void initialize() {
         afficherPanier();
+        obtenirCodePromoButton.setOnAction(e -> obtenirCodePromo());
+        appliquerCodeButton.setOnAction(e -> appliquerCodePromo());
     }
 
     private void afficherPanier() {
@@ -46,16 +50,16 @@ public class PanierController {
             imagePlaceholder.setPrefSize(80, 80);
             imagePlaceholder.setStyle("-fx-background-color: #f0f0f0;");
 
-            // Nom (colonne)
+            // Nom
             Label nomLabel = new Label(item.getProduit().getNom());
             nomLabel.setStyle("-fx-font-weight: bold;");
             nomLabel.setPrefWidth(100);
 
-            // Prix (colonne)
+            // Prix unitaire
             Label prixLabel = new Label(item.getProduit().getPrix() + " DT");
             prixLabel.setPrefWidth(80);
 
-            // Contrôle de quantité
+            // Quantité avec boutons
             HBox quantityBox = new HBox(5);
             quantityBox.setAlignment(Pos.CENTER);
             Button decrementBtn = new Button("-");
@@ -67,17 +71,16 @@ public class PanierController {
             quantityBox.getChildren().addAll(decrementBtn, quantityLabel, incrementBtn);
             quantityBox.setPrefWidth(100);
 
-            // Total pour l'article
+            // Total de l'article
             Label totalItemLabel = new Label(item.getTotal() + " DT");
             totalItemLabel.setStyle("-fx-font-weight: bold;");
             totalItemLabel.setPrefWidth(80);
 
-            // Bouton de suppression
+            // Bouton suppression
             Button deleteBtn = new Button("✗");
             deleteBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: red;");
             deleteBtn.setPrefWidth(60);
 
-            // Ajouter tous les éléments dans le bon ordre (colonne par colonne)
             itemBox.getChildren().addAll(
                     imagePlaceholder,
                     nomLabel,
@@ -90,7 +93,7 @@ public class PanierController {
 
             sousTotal += item.getTotal();
 
-            // Gestion des événements
+            // Actions boutons
             decrementBtn.setOnAction(e -> {
                 PanierSession.retirerProduit(item.getProduit());
                 afficherPanier();
@@ -107,8 +110,6 @@ public class PanierController {
             });
         }
 
-
-        // Mise à jour des totaux
         updateTotals(sousTotal);
     }
 
@@ -124,18 +125,57 @@ public class PanierController {
         float total = sousTotal + tva + taxeFixe;
         totalLabel.setText(String.format("%.2f DT", total));
 
-        float reduction = total * 0.3f;
-        reductionLabel.setText(String.format("Réduction de 30%% : -%.2f DT", reduction));
-
-        float totalRemise = total - reduction;
-        totalRemiseLabel.setText(String.format("%.2f DT", totalRemise));
+        if (reductionAppliquee) {
+            float reduction = total * 0.3f;
+            reductionLabel.setText(String.format("Réduction de 30%% : -%.2f DT", reduction));
+            float totalRemise = total - reduction;
+            totalRemiseLabel.setText(String.format("%.2f DT", totalRemise));
+        } else {
+            reductionLabel.setText("Aucune réduction appliquée");
+            totalRemiseLabel.setText(String.format("%.2f DT", total));
+        }
     }
-    @FXML private Label messageErreurLabel;
+
+    // Variable pour stocker le code promo envoyé
+    private String codePromoEnvoye;
+
+    private void obtenirCodePromo() {
+        // Remplacez par le numéro de téléphone réel
+        String numeroTelephone = "+21651084072"; // Remplacez avec votre numéro
+
+        // Envoie le code promo par SMS et stocke le code
+        codePromoEnvoye = SmsService.envoyerCodePromo(numeroTelephone);
+
+        // Affiche le code dans le champ de texte pour l'utilisateur
+        codePromoField.setText(codePromoEnvoye); // Affiche le code dans le champ (si nécessaire)
+        System.out.println("Code promo envoyé par SMS: " + codePromoEnvoye);
+    }
+    private boolean reductionAppliquee = false;
+
+    private void appliquerCodePromo() {
+        String codePromo = codePromoField.getText();
+
+        if (reductionAppliquee) {
+            messageErreurLabel.setText("Le code promo a déjà été appliqué.");
+            return;
+        }
+
+        if (codePromoEnvoye != null && codePromoEnvoye.equals(codePromo)) {
+            reductionAppliquee = true;
+            messageErreurLabel.setText("Code promo appliqué avec succès !");
+            afficherPanier(); // Réaffiche le panier avec réduction appliquée
+        } else {
+            messageErreurLabel.setText("Code promo invalide.");
+        }
+    }
+
+    private boolean reductionActive = false;
+
 
     @FXML
     private void payerCommande() {
         if (PanierSession.getPanier().isEmpty()) {
-            messageErreurLabel.setText(" Votre panier est vide !");
+            messageErreurLabel.setText("Votre panier est vide !");
             return;
         }
 
@@ -147,19 +187,25 @@ public class PanierController {
             quantiteTotal += item.getQuantite();
         }
 
-        Commande commande = new Commande(quantiteTotal, new Date(), total);
-        CommandeService service = new CommandeService();
-        service.add(commande); // Ajoute dans la base
+        // Calcul des totaux avec réduction
+        float tva = total * 0.19f;
+        float taxeFixe = 5.0f;
+        float montantAvecTaxes = total + tva + taxeFixe;
+        float totalFinal = reductionActive ? montantAvecTaxes * 0.7f : montantAvecTaxes;
 
-        // Ouvrir interface de paiement
+        float reduction = montantAvecTaxes * 0.3f;
+
+        Commande commande = new Commande(quantiteTotal, new Date(), totalFinal);
+        CommandeService service = new CommandeService();
+        service.add(commande);
+
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Paiement.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/GestionCommande/Paiement.fxml"));
             Parent root = loader.load();
 
             PaiementController controller = loader.getController();
             controller.setCommande(commande);
 
-            // Remplacer la scène actuelle (dans la même fenêtre)
             messageErreurLabel.getScene().setRoot(root);
 
             PanierSession.viderPanier();
@@ -168,7 +214,5 @@ public class PanierController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
-
 }

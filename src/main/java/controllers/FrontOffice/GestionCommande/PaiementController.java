@@ -1,4 +1,4 @@
-package controllers;
+package controllers.FrontOffice.GestionCommande;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -6,12 +6,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import models.Commande;
-import models.Livraison;
-import models.Paiement;
-import services.LivraisonService;
-import services.PaiementService;
+import javafx.stage.FileChooser;
+import kong.unirest.json.JSONObject;
+import models.gestionCommande.Commande;
+import models.gestionCommande.Livraison;
+import models.gestionCommande.Paiement;
+import services.gestionCommande.LivraisonService;
+import services.gestionCommande.PaiementService;
+import kong.unirest.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
@@ -42,6 +46,14 @@ public class PaiementController implements Initializable {
     @FXML private VBox carteDetails;
     @FXML private VBox paypalDetails;
     @FXML private VBox virementDetails;
+    @FXML private TextField numeroCarteField;
+    @FXML private TextField dateExpirationField;
+    @FXML private TextField cvvField;
+    @FXML private TextField nomTitulaireField;
+    @FXML private Label rectoLabel;
+    @FXML private Label versoLabel;
+    @FXML private Button extraireDetailsButton;
+
 
     private ToggleGroup toggleGroup;
     private Commande commande;
@@ -49,6 +61,53 @@ public class PaiementController implements Initializable {
     public void setCommande(Commande commande) {
         this.commande = commande;
     }
+    private File imageRecto;
+    private File imageVerso;
+
+    @FXML
+    private void choisirImageVerso() {
+        FileChooser fileChooser = new FileChooser();
+        imageVerso = fileChooser.showOpenDialog(null);
+        if (imageVerso != null) {
+            versoLabel.setText(imageVerso.getName());
+        }
+    }
+
+    @FXML
+    private void extraireDetailsCarte() {
+        if (imageRecto == null || imageVerso == null) {
+            new Alert(Alert.AlertType.WARNING, "Veuillez sélectionner les images du recto et du verso.").show();
+            return;
+        }
+
+        HttpResponse<JsonNode> response = Unirest.post("http://localhost:5000/api/extract-card-details")
+                .field("front_image", imageRecto)
+                .field("back_image", imageVerso)
+                .asJson();
+
+        if (response.getStatus() == 200) {
+            JSONObject data = response.getBody().getObject().getJSONObject("data");
+            numeroCarteField.setText(data.getString("Numéro de carte"));
+            dateExpirationField.setText(data.getString("Date d'expiration"));
+            cvvField.setText(data.getString("CVV"));
+            nomTitulaireField.setText(data.getString("Titulaire"));
+        } else {
+            new Alert(Alert.AlertType.ERROR, "Erreur lors de l'extraction : " + response.getBody().toString()).show();
+        }
+    }
+
+    @FXML
+    private void choisirImageRecto() {
+        FileChooser fileChooser = new FileChooser();
+        imageRecto = fileChooser.showOpenDialog(null);
+        if (imageRecto != null) {
+            rectoLabel.setText(imageRecto.getName());
+        }
+    }
+
+
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -201,7 +260,7 @@ public class PaiementController implements Initializable {
         livraisonService.ajouter(livraison);
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/SuiviLivraison.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/GestionCommande/SuiviLivraison.fxml"));
             Parent root = loader.load();
 
             SuiviLivraisonController controller = loader.getController();

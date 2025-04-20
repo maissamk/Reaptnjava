@@ -10,7 +10,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.StackPane?>
-<VBox prefHeight="563.0" prefWidth="618.0" spacing="10" style="-fx-padding: 10px; -fx-background-color: #f9f9f9;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controllers.PanierController">
+<VBox prefHeight="563.0" prefWidth="618.0" spacing="10" style="-fx-padding: 10px; -fx-background-color: #f9f9f9;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controllers.FrontOffice.GestionCommande.PanierController">
     <StackPane>
         <ImageView fitWidth="518" fitHeight="150" preserveRatio="false">
             <image>
@@ -41,9 +41,10 @@
     </VBox>
 
     <HBox alignment="CENTER_LEFT" spacing="10">
-        <Button style="-fx-background-color: transparent; -fx-text-fill: #0066cc;" text="Obtenir un code promo" />
-        <TextField promptText="Code promo" style="-fx-pref-width: 150px;" />
-        <Button style="-fx-background-color: #0066cc; -fx-text-fill: white;" text="Appliquer le code" />
+        <Button fx:id="obtenirCodePromoButton" style="-fx-background-color: transparent; -fx-text-fill: #0066cc;" text="Obtenir un code promo" />
+        <TextField fx:id="codePromoField" promptText="Code promo" style="-fx-pref-width: 150px;" />
+        <Button fx:id="appliquerCodeButton" style="-fx-background-color: #0066cc; -fx-text-fill: white;" text="Appliquer le code" />
+
     </HBox>
 
     <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 20px;">

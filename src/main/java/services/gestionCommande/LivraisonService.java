@@ -1,7 +1,7 @@
-package services;
+package services.gestionCommande;
 
-import models.Commande;
-import models.Livraison;
+import models.gestionCommande.Commande;
+import models.gestionCommande.Livraison;
 import utils.MaConnexion;
 
 import java.sql.Connection;

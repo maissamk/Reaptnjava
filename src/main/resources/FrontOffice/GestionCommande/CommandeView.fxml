@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterCommandeController">
+<AnchorPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.GestionCommande.AjouterCommandeController">
 
     <VBox layoutX="20" layoutY="20" prefWidth="660" spacing="10">
         <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Gestion des Commandes" />

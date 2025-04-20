@@ -1,12 +1,10 @@
-package services;
+package services.gestionCommande;
 
-import models.Paiement;
+import models.gestionCommande.Commande;
+import models.gestionCommande.Paiement;
 import utils.MaConnexion;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 
 public class PaiementService {
     private Connection connection;
@@ -37,4 +35,32 @@ public class PaiementService {
             System.err.println("Erreur lors de l'ajout du paiement : " + e.getMessage());
         }
     }
+
+
+    public Paiement findByCommandeId(int commandeId) {
+        String sql = "SELECT * FROM paiement WHERE commande_id = ?";
+        Paiement paiement = null;
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, commandeId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                paiement = new Paiement();
+                paiement.setId(rs.getInt("id"));
+                paiement.setDatePaiement(rs.getTimestamp("date_paiement"));
+                paiement.setMethodePaiement(rs.getString("methode_paiement"));
+
+                Commande commande = new Commande();
+                commande.setId(commandeId);
+                paiement.setCommande(commande);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération du paiement : " + e.getMessage());
+        }
+
+        return paiement;
+    }
+
 }

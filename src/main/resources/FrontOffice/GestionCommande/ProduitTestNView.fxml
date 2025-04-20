@@ -4,7 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="355.0" prefWidth="519.0" spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controllers.ProduitTestNController">
+<VBox alignment="CENTER" prefHeight="355.0" prefWidth="519.0" spacing="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controllers.FrontOffice.GestionCommande.ProduitTestNController">
     <Label style="-fx-font-size: 20px;" text="Liste des Produits" />
     <VBox fx:id="produitsContainer" spacing="10" />
     <Button onAction="#openPanier" text="🛒 Voir Panier" />

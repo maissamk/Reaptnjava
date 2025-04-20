@@ -1,4 +1,4 @@
-package models;
+package models.gestionCommande;
 
 import java.util.Date;
 

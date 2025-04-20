@@ -1,4 +1,4 @@
-package models;
+package models.gestionCommande;
 
 public class PanierItem {
     private ProduitTestN produit;

@@ -1,7 +1,10 @@
-package services;
+package services.gestionCommande;
 
 import interfaces.IService;
-import models.Commande;
+import models.gestionCommande.Commande;
+import models.gestionCommande.CommandeDetails;
+import models.gestionCommande.Livraison;
+import models.gestionCommande.Paiement;
 import utils.MaConnexion;
 
 import java.sql.*;
@@ -88,6 +91,20 @@ public class CommandeService implements IService<Commande> {
         }
         return commandes;
     }
+    public List<CommandeDetails> getCommandesAvecDetails() {
+        List<CommandeDetails> detailsList = new ArrayList<>();
+        LivraisonService livraisonService = new LivraisonService();
+        PaiementService paiementService = new PaiementService();
+
+        for (Commande commande : getAll()) {
+            Livraison livraison = livraisonService.findByCommandeId(commande.getId());
+            Paiement paiement = paiementService.findByCommandeId(commande.getId());
+            CommandeDetails details = new CommandeDetails(commande, livraison, paiement);
+            detailsList.add(details);
+        }
+
+        return detailsList;
+    }
 
     @Override
     public Commande getById(int id) {
@@ -112,4 +129,18 @@ public class CommandeService implements IService<Commande> {
 
         return commande;
     }
+
+    public void updateStatutLivraison(Livraison livraison) {
+        try {
+            String sql = "UPDATE livraison SET status = ? WHERE id = ?";
+            PreparedStatement ps = cnx.prepareStatement(sql);
+            ps.setString(1, livraison.getStatus());
+            ps.setInt(2, livraison.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

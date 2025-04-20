@@ -1,4 +1,4 @@
-package controllers;
+package controllers.FrontOffice.GestionCommande;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -6,8 +6,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import models.Livraison;
-import services.LivraisonService;
+import models.gestionCommande.Livraison;
+import services.gestionCommande.LivraisonService;
 
 import java.util.Timer;
 import java.util.TimerTask;

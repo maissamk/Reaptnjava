@@ -1,11 +1,11 @@
-package controllers;
+package controllers.FrontOffice.GestionCommande;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import models.Commande;
-import services.CommandeService;
+import models.gestionCommande.Commande;
+import services.gestionCommande.CommandeService;
 
 import java.time.LocalDate;
 import java.util.Date;
