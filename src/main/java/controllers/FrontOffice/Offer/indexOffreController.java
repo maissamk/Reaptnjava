@@ -1,4 +1,6 @@
-package controllers;
+package controllers.FrontOffice.Offer;
+
+import controllers.FrontOffice.BaseFrontController;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
@@ -11,7 +13,7 @@ import models.Offre;
 import services.OffreService;
 import java.sql.SQLException;
 import java.util.List;
-import javafx.application.Application;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -75,9 +77,21 @@ public class indexOffreController {
     // Handle the "Ajouter Offre" button click to go to the offer creation page
     @FXML
     private void handleAjouterOffre(ActionEvent event) throws IOException {
+
+        FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
+        Parent baseRoot = baseLoader.load();
+        BaseFrontController baseController = baseLoader.getController();
+
+
+        FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/ajouterOffre.fxml"));
+        Parent content = contentLoader.load(); // content with its own controller & methods
+
+        // Inject the page content into base layout
+        baseController.getContentPane().getChildren().setAll(content);
+
+        //display
+        Scene scene = new Scene(baseRoot);
         Stage stage = (Stage) addOffreButton.getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ajouterOffre.fxml"));
-        Scene scene = new Scene(loader.load());
         stage.setScene(scene);
         stage.show();
     }
@@ -86,7 +100,7 @@ public class indexOffreController {
     private void openDetailOffrePage(Offre selectedOffre) {
         try {
             // Load the detailOffre.fxml page
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/detailOffre.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/detailOffre.fxml"));
             Parent root = loader.load();
 
             // Get the controller for the detailOffre page

@@ -1,10 +1,11 @@
-package controllers;
+package controllers.BackOffice.Offer;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import models.Offre;
 import services.OffreService;
+import javafx.scene.control.CheckBox;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -49,6 +50,7 @@ public class indexOffreBack {
     @FXML
     private Button deleteButton;
 
+
     private OffreService offreService;
 
     public indexOffreBack() {
@@ -86,6 +88,7 @@ public class indexOffreBack {
         offre.setDescr(descrField.getText());
         offre.setComp(compField.getText());
         offre.setStatut(statutCheckBox.isSelected());
+
 
         try {
             offreService.add(offre);

@@ -1,4 +1,4 @@
-package controllers;
+package controllers.FrontOffice;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,8 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.event.ActionEvent;
-import javafx.scene.Node;
+
 import java.io.IOException;
 
 
@@ -31,6 +30,7 @@ public class Home implements Initializable {
     @FXML private Button offersButton;
     @FXML private Button masterfulButton;
     @FXML private Button loginButton;
+
 
     // Main content
     @FXML private StackPane mainContentPane;
@@ -91,14 +91,24 @@ public class Home implements Initializable {
         System.out.println("Parcelle clicked");
     }
 
+    @FXML
     private void handleOffers() {
         System.out.println("Offers disponibles clicked");
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/indexOffre.fxml")); // adjust path if needed
-            Parent root = loader.load();
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/Frontoffice/baseFront.fxml"));
+            Parent baseRoot = baseLoader.load();
+            BaseFrontController baseController = baseLoader.getController();
 
-            Stage stage = (Stage) offersButton.getScene().getWindow(); // use your button to get the stage
-            stage.setScene(new Scene(root));
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/Frontoffice/Offre/indexOffre.fxml"));
+            Parent content = contentLoader.load(); // content with its own controller & methods
+
+            // Inject the page content into base layout
+            baseController.getContentPane().getChildren().setAll(content);
+
+            // Now show the complete scene
+            Scene scene = new Scene(baseRoot);
+            Stage stage = (Stage) offersButton.getScene().getWindow();
+            stage.setScene(scene);
             stage.show();
 
         } catch (IOException e) {

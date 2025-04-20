@@ -4,8 +4,32 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.modifierOffreController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.FrontOffice.Offer.modifierOffreController">
     <VBox spacing="15" alignment="CENTER" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+        <!-- Top Navigation Bar -->
+        <HBox>
+            <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header">
+
+
+
+
+
+
+                <!-- Navigation Buttons -->
+                <Button fx:id="accueilButton" styleClass="nav-button" text="Accueil" />
+                <Button fx:id="produitsButton" styleClass="nav-button" text="Produits" />
+                <Button fx:id="produitsDetailButton" styleClass="nav-button" text="Produits Detail" />
+                <Button fx:id="parcelleButton" styleClass="nav-button" text="Parcelle" />
+                <Button fx:id="offersButton" styleClass="nav-button" text="Offers" />
+                <Button fx:id="masterfulButton" styleClass="featured-button" text="Masterful Agricole" />
+
+
+
+                <!-- Auth Buttons -->
+                <Button fx:id="loginButton" styleClass="auth-button" text="Login" />
+                <Button fx:id="profileButton" styleClass="profile-button" text="My Profile" />
+            </HBox>
+        </HBox>
         <Label text="Modifier Offre" style="-fx-font-size: 22px; -fx-font-weight: bold;" />
 
         <GridPane hgap="10" vgap="10">

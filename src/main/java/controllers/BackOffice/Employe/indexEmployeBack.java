@@ -1,4 +1,4 @@
-package controllers;
+package controllers.BackOffice.Employe;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;

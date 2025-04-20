@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane stylesheets="/css/home.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controllers.FrontOffice.Offer.ajouterOffreController">
+
+    <VBox>
+      <children>
+
+          <VBox>
+              <VBox>
+                  <Text layoutX="150" layoutY="30" style="-fx-font-family: 'Arial'; -fx-font-size: 16; -fx-font-weight: bold;" text="Ajouter une Offre" />
+      
+      
+                  <!-- Form to Add an Offer -->
+                  <Label layoutX="50" layoutY="80" text="ID Offre (ida):" />
+                  <TextField fx:id="idaField" layoutX="150" layoutY="75" />
+      
+                  <Label layoutX="50" layoutY="120" text="Titre:" />
+                  <TextField fx:id="titreField" layoutX="150" layoutY="115" />
+      
+                  <Label layoutX="50" layoutY="160" text="Description:" />
+                  <TextArea fx:id="descField" layoutX="150" layoutY="155" prefHeight="100" prefWidth="300" />
+      
+                  <Label layoutX="50" layoutY="270" text="Compétence:" />
+                  <TextField fx:id="competenceField" layoutX="150" layoutY="265" />
+      
+                  <Label layoutX="50" layoutY="310" text="Statut (Active/Inactive):" />
+                  <CheckBox fx:id="statutCheckBox" layoutX="150" layoutY="305" />
+      
+                  <!-- Button to Submit the Form -->
+                  <Button fx:id="submitButton" layoutX="200" layoutY="360" onAction="#handleAddOffre" text="Ajouter" />
+      
+                  <!-- Back Button -->
+                  <Button layoutX="400" layoutY="360" onAction="#handleRetour" text="Retour" />
+              </VBox>
+          </VBox>
+      </children>
+   </VBox>
+</AnchorPane>

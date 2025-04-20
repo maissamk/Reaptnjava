@@ -1,4 +1,4 @@
-package controllers;
+package controllers.FrontOffice.Offer;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -55,7 +55,7 @@ public class modifierOffreController {
             showAlert("Success", "Offer updated successfully!");
 
             // Return to the previous screen (e.g., indexOffre.fxml) after saving
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/indexOffre.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/indexOffre.fxml"));
             Scene scene = new Scene(loader.load());
             Stage stage = (Stage) saveButton.getScene().getWindow(); // Ensure you're working with the correct window
             stage.setScene(scene);
@@ -75,7 +75,7 @@ public class modifierOffreController {
     @FXML
     private void handleCancel(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/indexOffre.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/indexOffre.fxml"));
             Scene scene = new Scene(loader.load());
             Stage stage = (Stage) titreField.getScene().getWindow();
             stage.setScene(scene);

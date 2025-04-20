@@ -68,8 +68,8 @@ public class OffreService implements IService<Offre> {
         String sql = "DELETE FROM offre WHERE id = ?";
         try (Connection conn = MaConnexion.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
+             stmt.setInt(1, id);
+             stmt.executeUpdate();
         }
 
     }

@@ -1,8 +1,7 @@
-package controllers;
+package controllers.FrontOffice.Offer;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
@@ -15,14 +14,9 @@ import services.EmployeService;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TextField;
-import utils.MaConnexion;
 
 public class detailOffreController {
 
@@ -54,7 +48,7 @@ public class detailOffreController {
     @FXML
     private void handleEditOffre(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/modifierOffre.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/modifierOffre.fxml"));
             Scene scene = new Scene(loader.load());
             modifierOffreController controller = loader.getController();
             controller.prefillForm(currentOffre);  // Set the current data
@@ -75,7 +69,7 @@ public class detailOffreController {
             service.delete(currentOffre.getId());
 
             // Return to indexOffre.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/indexOffre.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/indexOffre.fxml"));
             Scene scene = new Scene(loader.load());
 
             Stage stage = (Stage) deleteButton.getScene().getWindow();

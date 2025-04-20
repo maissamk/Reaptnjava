@@ -12,8 +12,32 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
 
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="789.0" spacing="20" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controllers.detailOffreController">
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="789.0" spacing="20" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controllers.FrontOffice.Offer.detailOffreController" stylesheets="/css/home.css">
     <VBox prefHeight="181.0" prefWidth="222.0">
+        <!-- Top Navigation Bar -->
+        <HBox>
+            <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header">
+
+
+
+
+
+
+                <!-- Navigation Buttons -->
+                <Button fx:id="accueilButton" styleClass="nav-button" text="Accueil" />
+                <Button fx:id="produitsButton" styleClass="nav-button" text="Produits" />
+                <Button fx:id="produitsDetailButton" styleClass="nav-button" text="Produits Detail" />
+                <Button fx:id="parcelleButton" styleClass="nav-button" text="Parcelle" />
+                <Button fx:id="offersButton" styleClass="nav-button" text="Offers" />
+                <Button fx:id="masterfulButton" styleClass="featured-button" text="Masterful Agricole" />
+
+
+
+                <!-- Auth Buttons -->
+                <Button fx:id="loginButton" styleClass="auth-button" text="Login" />
+                <Button fx:id="profileButton" styleClass="profile-button" text="My Profile" />
+            </HBox>
+        </HBox>
         <children>
             <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Détails de l'Offre" />
             <GridPane hgap="10" vgap="10">

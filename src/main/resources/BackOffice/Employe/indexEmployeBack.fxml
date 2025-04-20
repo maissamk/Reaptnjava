@@ -10,8 +10,32 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.indexEmployeBack">
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.BackOffice.Employe.indexEmployeBack">
     <VBox spacing="20.0" alignment="CENTER" layoutX="20" layoutY="20" prefWidth="800">
+        <!-- Top Navigation Bar -->
+        <HBox>
+            <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header">
+
+
+
+
+
+
+                <!-- Navigation Buttons -->
+                <Button fx:id="accueilButton" styleClass="nav-button" text="Accueil" />
+                <Button fx:id="produitsButton" styleClass="nav-button" text="Produits" />
+                <Button fx:id="produitsDetailButton" styleClass="nav-button" text="Produits Detail" />
+                <Button fx:id="parcelleButton" styleClass="nav-button" text="Parcelle" />
+                <Button fx:id="offersButton" styleClass="nav-button" text="Offers" />
+                <Button fx:id="masterfulButton" styleClass="featured-button" text="Masterful Agricole" />
+
+
+
+                <!-- Auth Buttons -->
+                <Button fx:id="loginButton" styleClass="auth-button" text="Login" />
+                <Button fx:id="profileButton" styleClass="profile-button" text="My Profile" />
+            </HBox>
+        </HBox>
 
         <TableView fx:id="employeTable" prefHeight="300.0" prefWidth="760.0">
             <columns>
