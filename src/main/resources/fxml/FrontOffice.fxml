@@ -6,6 +6,8 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.text.Text?>
+<?import components.WeatherWidget?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -13,37 +15,47 @@
             stylesheets="@../styles/style.css"
             prefHeight="900.0" prefWidth="1400.0">
 
-    <!-- Top Navigation Bar -->
+    <!-- Top Navigation Bar - Enhanced with Logo and Better Spacing -->
     <top>
-        <HBox styleClass="front-nav" spacing="20">
-            <padding>
-                <Insets top="20" right="40" bottom="20" left="40"/>
-            </padding>
-            
-            <!-- Logo and Brand -->
-
-            
-            <!-- Search Bar -->
-            <HBox alignment="CENTER" HBox.hgrow="ALWAYS" styleClass="search-container">
+        <VBox>
+            <!-- Main Navigation Bar -->
+            <HBox styleClass="front-nav" spacing="20">
                 <padding>
-                    <Insets left="20" right="20"/>
+                    <Insets top="15" right="40" bottom="15" left="40"/>
                 </padding>
-                <TextField fx:id="searchField" promptText="Search products..." styleClass="search-box-field" HBox.hgrow="ALWAYS"/>
-                <Button text="Search" styleClass="search-button"/>
+                
+                <!-- Logo and Brand -->
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <ImageView fitHeight="50.0" fitWidth="150.0" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/reap-tn-logo.png" />
+                        </image>
+                    </ImageView>
+                    <Label text="Agricultural Management" styleClass="brand-subtitle"/>
+                </HBox>
+                
+                <!-- Search Bar -->
+                <HBox alignment="CENTER" HBox.hgrow="ALWAYS" styleClass="search-container">
+                    <padding>
+                        <Insets left="20" right="20"/>
+                    </padding>
+                    <TextField fx:id="searchField" promptText="Search for fruits, vegetables, and more..." styleClass="search-box-field" HBox.hgrow="ALWAYS"/>
+                    <Button text="Search" styleClass="search-button"/>
+                </HBox>
+                
+                <!-- Cart and Account -->
+                <HBox alignment="CENTER_RIGHT" spacing="20" HBox.hgrow="NEVER">
+                    <Button fx:id="cartButton" styleClass="cart-button">
+                        <graphic>
+                            <HBox spacing="10" alignment="CENTER">
+                                <Label text="Cart"/>
+                                <Label fx:id="cartItemCount" styleClass="cart-count" text="0"/>
+                            </HBox>
+                        </graphic>
+                    </Button>
+                </HBox>
             </HBox>
-            
-            <!-- Cart and Account -->
-            <HBox alignment="CENTER_RIGHT" spacing="20" HBox.hgrow="NEVER">
-                <Button fx:id="cartButton" styleClass="cart-button">
-                    <graphic>
-                        <HBox spacing="10" alignment="CENTER">
-                            <Label text="Cart"/>
-                            <Label fx:id="cartItemCount" styleClass="cart-count" text="0"/>
-                        </HBox>
-                    </graphic>
-                </Button>
-            </HBox>
-        </HBox>
+        </VBox>
     </top>
 
     <!-- Main Content -->
@@ -51,12 +63,35 @@
         <ScrollPane fitToWidth="true" styleClass="main-scroll">
             <VBox spacing="40">
                 <padding>
-                    <Insets top="40" right="40" bottom="40" left="40"/>
+                    <Insets top="30" right="40" bottom="40" left="40"/>
                 </padding>
 
-                <!-- Featured Section -->
+                <!-- Hero Banner Section -->
+                <StackPane styleClass="hero-banner" minHeight="300">
+                    <VBox alignment="CENTER_LEFT" spacing="15">
+                        <padding>
+                            <Insets left="80"/>
+                        </padding>
+                        <Label text="Fresh &amp; Organic" styleClass="hero-subtitle"/>
+                        <Label text="Healthy Products for Your Daily Life" styleClass="hero-title"/>
+                        <Label text="Get the best quality fruits and vegetables delivered to your doorstep" 
+                               styleClass="hero-description" wrapText="true" maxWidth="500"/>
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <padding>
+                                <Insets top="20"/>
+                            </padding>
+                            <Button text="Shop Now" styleClass="hero-button"/>
+                            <Button text="Learn More" styleClass="hero-secondary-button"/>
+                        </HBox>
+                    </VBox>
+                </StackPane>
+
+                <!-- Featured Section - Improved with title description -->
                 <VBox styleClass="section-container">
-                    <Label text="Featured Products" styleClass="section-header"/>
+                    <HBox alignment="BASELINE_LEFT" spacing="20">
+                        <Label text="Featured Products" styleClass="section-header"/>
+                        <Label text="Our best selling items this week" styleClass="section-subheader"/>
+                    </HBox>
                     <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" styleClass="featured-scroll" VBox.vgrow="NEVER">
                         <HBox fx:id="featuredProducts" spacing="30" styleClass="featured-container">
                             <padding>
@@ -66,42 +101,66 @@
                     </ScrollPane>
                 </VBox>
 
-                <!-- Main Products Grid -->
+                <!-- Main Products Grid with Weather Widget -->
                 <HBox spacing="40">
-                    <!-- Filters Sidebar -->
+                    <!-- Filters Sidebar - Enhanced with better organization -->
                     <VBox spacing="25" styleClass="filters-sidebar">
                         <padding>
                             <Insets top="30" right="30" bottom="30" left="30"/>
                         </padding>
                         
-                        <Label text="Filters" styleClass="filter-header"/>
+                        <HBox styleClass="filter-title-container" alignment="CENTER_LEFT" spacing="10">
+                            <Label text="Filters" styleClass="filter-header"/>
+                            <Button text="Reset" styleClass="filter-reset-button"/>
+                        </HBox>
                         
                         <!-- Category Filter -->
-                        <VBox spacing="15">
+                        <VBox spacing="15" styleClass="filter-section">
                             <Label text="Categories" styleClass="filter-section-header"/>
                             <VBox fx:id="categoryFilters" spacing="10"/>
                         </VBox>
                         
                         <!-- Price Range Filter -->
-                        <VBox spacing="15">
+                        <VBox spacing="15" styleClass="filter-section">
                             <Label text="Price Range" styleClass="filter-section-header"/>
                             <Slider fx:id="priceSlider"/>
                             <HBox spacing="10">
-                                <Label fx:id="minPrice" />
+                                <Label fx:id="minPrice" styleClass="price-label"/>
                                 <Region HBox.hgrow="ALWAYS"/>
-                                <Label fx:id="maxPrice" />
+                                <Label fx:id="maxPrice" styleClass="price-label"/>
                             </HBox>
                         </VBox>
                         
                         <!-- Sort Options -->
-                        <VBox spacing="15">
+                        <VBox spacing="15" styleClass="filter-section">
                             <Label text="Sort By" styleClass="filter-section-header"/>
                             <ComboBox fx:id="sortComboBox" styleClass="sort-combo"/>
                         </VBox>
+                        
+                        <!-- Weather Widget Section -->
+                        <VBox spacing="15" styleClass="filter-section">
+                            <Label text="Local Weather" styleClass="filter-section-header"/>
+                            <WeatherWidget fx:id="weatherWidget"/>
+                        </VBox>
+                        
+                        <!-- QR Code Section -->
+                        <VBox spacing="15" styleClass="qr-code-section">
+                            <Label text="Product QR Code" styleClass="filter-section-header"/>
+                            <StackPane fx:id="qrCodeContainer" styleClass="qr-code-container" prefHeight="200" prefWidth="200">
+                                <ImageView fx:id="qrCodeImageView" fitHeight="180" fitWidth="180" preserveRatio="true"/>
+                            </StackPane>
+                            <Label fx:id="qrCodeLabel" text="Select a product to view QR code" wrapText="true" styleClass="qr-code-label"/>
+                            <Button fx:id="saveQrCodeButton" text="Save QR Code" styleClass="save-qr-button"/>
+                        </VBox>
                     </VBox>
 
-                    <!-- Products Grid -->
+                    <!-- Products Grid - Enhanced with title -->
                     <VBox HBox.hgrow="ALWAYS" spacing="30">
+                        <HBox alignment="BASELINE_LEFT" spacing="20">
+                            <Label text="All Products" styleClass="section-header"/>
+                            <Label fx:id="productCount" text="Showing 0 products" styleClass="section-subheader"/>
+                        </HBox>
+                        
                         <FlowPane fx:id="productsGrid" hgap="30" vgap="30" styleClass="products-grid">
                             <padding>
                                 <Insets top="20" right="20" bottom="20" left="20"/>
@@ -117,45 +176,4 @@
             </VBox>
         </ScrollPane>
     </center>
-
-    <!-- Footer -->
-    <bottom>
-        <VBox styleClass="footer">
-            <padding>
-                <Insets top="40" right="40" bottom="40" left="40"/>
-            </padding>
-            
-            <HBox spacing="80" alignment="CENTER">
-                <VBox spacing="15">
-                    <Label text="About Fruitables" styleClass="footer-header"/>
-                    <Label text="Fresh and organic products" styleClass="footer-text"/>
-                    <Label text="Quality you can trust" styleClass="footer-text"/>
-                </VBox>
-                
-                <VBox spacing="15">
-                    <Label text="Contact Us" styleClass="footer-header"/>
-                    <Label text="Email: info@fruitables.com" styleClass="footer-text"/>
-                    <Label text="Phone: (123) 456-7890" styleClass="footer-text"/>
-                    <Label text="Address: 123 Fresh Street" styleClass="footer-text"/>
-                </VBox>
-                
-                <VBox spacing="15">
-                    <Label text="Follow Us" styleClass="footer-header"/>
-                    <HBox spacing="20" styleClass="social-links">
-                        <Label text="Facebook" styleClass="social-link"/>
-                        <Label text="Instagram" styleClass="social-link"/>
-                        <Label text="Twitter" styleClass="social-link"/>
-                    </HBox>
-                </VBox>
-            </HBox>
-            
-            <Separator styleClass="footer-separator">
-                <VBox.margin>
-                    <Insets top="30" bottom="30"/>
-                </VBox.margin>
-            </Separator>
-            
-            <Label text="© 2024 Fruitables. All rights reserved." styleClass="copyright-text" alignment="CENTER"/>
-        </VBox>
-    </bottom>
 </BorderPane> 

@@ -10,6 +10,7 @@ import models.Product;
 import models.ProductType;
 import service.ProductService;
 import service.ProductTypeService;
+import utils.QRCodeGenerator;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,7 +20,18 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
+import javax.imageio.ImageIO;
+import javafx.embed.swing.SwingFXUtils;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import utils.ImageUtils;
+import javafx.geometry.Insets;
+import javafx.scene.control.Separator;
+import components.WeatherWidget;
 
 public class FrontOfficeController implements Initializable {
     @FXML private TextField searchField;
@@ -32,6 +44,13 @@ public class FrontOfficeController implements Initializable {
     @FXML private ComboBox<String> sortComboBox;
     @FXML private FlowPane productsGrid;
     @FXML private Pagination productPagination;
+    @FXML private ImageView qrCodeImageView;
+    @FXML private Label qrCodeLabel;
+    @FXML private Button saveQrCodeButton;
+    @FXML private StackPane qrCodeContainer;
+    @FXML private WeatherWidget weatherWidget;
+    @FXML private Label productCount;
+    @FXML private Button filterResetButton;
 
     private final ProductService productService;
     private final ProductTypeService productTypeService;
@@ -40,6 +59,7 @@ public class FrontOfficeController implements Initializable {
     private final Map<Integer, Integer> cartItems;
     private double maxProductPrice = 100.0;
     private static final int PRODUCTS_PER_PAGE = 12;
+    private Product selectedProduct;
 
     public FrontOfficeController() {
         productService = new ProductService();
@@ -56,6 +76,7 @@ public class FrontOfficeController implements Initializable {
         setupCategoryFilters();
         setupPriceSlider();
         setupSortComboBox();
+        setupQRCodeSection();
         setupPagination();
         displayProducts(0);
         displayFeaturedProducts();
@@ -124,6 +145,11 @@ public class FrontOfficeController implements Initializable {
         sortComboBox.setOnAction(e -> filterProducts());
     }
 
+    private void setupQRCodeSection() {
+        saveQrCodeButton.setOnAction(e -> saveQRCodeToFile());
+        saveQrCodeButton.setDisable(true);
+    }
+
     private void setupPagination() {
         productPagination.setPageCount((int) Math.ceil((double) filteredProducts.size() / PRODUCTS_PER_PAGE));
         productPagination.setCurrentPageIndex(0);
@@ -187,33 +213,38 @@ public class FrontOfficeController implements Initializable {
                     imageContainer.getStyleClass().add("product-image-container");
                     card.getChildren().add(imageContainer);
                 } else {
-                    // If image loading fails, use placeholder
                     addPlaceholder(card, product);
                 }
             } catch (Exception e) {
-                System.out.println("Error loading image for product " + product.getCategory() + ": " + e.getMessage());
-                // If image loading fails, use placeholder
                 addPlaceholder(card, product);
             }
         } else {
-            // If no image path, use placeholder
             addPlaceholder(card, product);
         }
         
-        // Product Details
         Label titleLabel = new Label(product.getCategory());
         titleLabel.getStyleClass().add("product-title");
-        titleLabel.setWrapText(true);
         
         Label priceLabel = new Label(String.format("$%.2f", product.getPrice()));
         priceLabel.getStyleClass().add("product-price");
+        
+        // Button Container
+        HBox buttonContainer = new HBox(10);
+        buttonContainer.setAlignment(Pos.CENTER);
         
         // Add to Cart Button
         Button addToCartBtn = new Button("Add to Cart");
         addToCartBtn.getStyleClass().add("add-to-cart-button");
         addToCartBtn.setOnAction(e -> addToCart(product));
         
-        card.getChildren().addAll(titleLabel, priceLabel, addToCartBtn);
+        // View QR Code Button
+        Button viewQrBtn = new Button("View QR");
+        viewQrBtn.getStyleClass().add("view-qr-button");
+        viewQrBtn.setOnAction(e -> displayQRCode(product));
+        
+        buttonContainer.getChildren().addAll(addToCartBtn, viewQrBtn);
+        
+        card.getChildren().addAll(titleLabel, priceLabel, buttonContainer);
         card.setAlignment(Pos.CENTER);
         
         return card;
@@ -303,5 +334,46 @@ public class FrontOfficeController implements Initializable {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    private void displayQRCode(Product product) {
+        this.selectedProduct = product;
+        
+        // Generate QR code image
+        Image qrImage = QRCodeGenerator.generateQRCodeForProduct(product, 180);
+        qrCodeImageView.setImage(qrImage);
+        
+        // Update label
+        qrCodeLabel.setText("QR Code for: " + product.getCategory());
+        
+        // Enable save button
+        saveQrCodeButton.setDisable(false);
+    }
+    
+    private void saveQRCodeToFile() {
+        if (selectedProduct == null || qrCodeImageView.getImage() == null) {
+            showInfo("No QR Code Available", "Please select a product first to generate a QR code.");
+            return;
+        }
+        
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save QR Code");
+        fileChooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter("PNG Image", "*.png")
+        );
+        fileChooser.setInitialFileName(selectedProduct.getCategory().replace(" ", "_") + "_QR.png");
+        
+        File file = fileChooser.showSaveDialog(qrCodeContainer.getScene().getWindow());
+        if (file != null) {
+            try {
+                // Convert JavaFX image to BufferedImage and save using ImageIO
+                java.awt.image.BufferedImage bufferedImage = SwingFXUtils.fromFXImage(qrCodeImageView.getImage(), null);
+                ImageIO.write(bufferedImage, "png", file);
+                
+                showInfo("QR Code Saved", "QR code has been saved successfully to: " + file.getAbsolutePath());
+            } catch (Exception e) {
+                showError("Error Saving QR Code", "Failed to save QR code: " + e.getMessage());
+            }
+        }
     }
 } 

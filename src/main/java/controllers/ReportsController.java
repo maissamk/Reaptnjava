@@ -15,7 +15,25 @@ import models.Stock;
 import service.ProductService;
 import service.ProductTypeService;
 import service.StockService;
+import javafx.stage.FileChooser;
+import java.io.File;
+import java.io.FileOutputStream;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfWriter;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.ByteArrayOutputStream;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -60,6 +78,10 @@ public class ReportsController {
         // Generate default charts
         generateProductTypeDistribution();
         generateStockLevelReport();
+        
+        // Setup export buttons
+        exportPdfButton.setOnAction(event -> exportToPdf());
+        exportExcelButton.setOnAction(event -> exportToExcel());
     }
     
     private void setupComboBox() {
@@ -251,13 +273,99 @@ public class ReportsController {
     }
     
     private void exportToPdf() {
-        showAlert(Alert.AlertType.INFORMATION, "Feature Coming Soon", 
-                 "Export to PDF functionality will be available in a future update.");
+        try {
+            // Create a file chooser
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save PDF Report");
+            fileChooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+            File file = fileChooser.showSaveDialog(exportPdfButton.getScene().getWindow());
+            
+            if (file != null) {
+                // Create PDF document
+                Document document = new Document();
+                PdfWriter.getInstance(document, new FileOutputStream(file));
+                document.open();
+                
+                // Add title
+                Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+                Paragraph title = new Paragraph("Farm Management Report", titleFont);
+                title.setAlignment(Element.ALIGN_CENTER);
+                document.add(title);
+                document.add(new Paragraph("\n"));
+                
+                // Add report type
+                Font subtitleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14);
+                Paragraph reportType = new Paragraph("Report Type: " + 
+                        reportTypeComboBox.getSelectionModel().getSelectedItem(), subtitleFont);
+                document.add(reportType);
+                document.add(new Paragraph("\n"));
+                
+                // Add timestamp
+                document.add(new Paragraph("Generated on: " + 
+                        java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+                document.add(new Paragraph("\n"));
+                
+                // Take snapshot of the charts and add to PDF
+                if (reportTypeComboBox.getValue().equals("Product Type Distribution")) {
+                    // Add pie chart
+                    document.add(new Paragraph("Product Type Distribution:", subtitleFont));
+                    document.add(new Paragraph("\n"));
+                    addChartToPdf(document, productTypeChart);
+                } else if (reportTypeComboBox.getValue().equals("Stock Level Report")) {
+                    // Add bar chart
+                    document.add(new Paragraph("Stock Level Analysis:", subtitleFont));
+                    document.add(new Paragraph("\n"));
+                    addChartToPdf(document, stockLevelChart);
+                }
+                
+                document.close();
+                
+                // Show success message
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Export Successful");
+                alert.setHeaderText("PDF Export Complete");
+                alert.setContentText("The report has been successfully exported to:\n" + file.getAbsolutePath());
+                alert.showAndWait();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Show error message
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Export Failed");
+            alert.setHeaderText("PDF Export Error");
+            alert.setContentText("Failed to export the report: " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+    
+    private void addChartToPdf(Document document, javafx.scene.Node chart) throws DocumentException, IOException {
+        // Take snapshot of the chart
+        WritableImage snapshot = chart.snapshot(new SnapshotParameters(), null);
+        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(snapshot, null);
+        
+        // Convert to bytes
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "png", baos);
+        byte[] imageBytes = baos.toByteArray();
+        
+        // Add image to PDF
+        Image chartImage = Image.getInstance(imageBytes);
+        float pageWidth = document.getPageSize().getWidth() - document.leftMargin() - document.rightMargin();
+        float chartWidth = pageWidth * 0.9f;
+        chartImage.scaleToFit(chartWidth, chartWidth * 0.75f);
+        chartImage.setAlignment(Element.ALIGN_CENTER);
+        document.add(chartImage);
+        document.add(new Paragraph("\n"));
     }
     
     private void exportToExcel() {
-        showAlert(Alert.AlertType.INFORMATION, "Feature Coming Soon", 
-                 "Export to Excel functionality will be available in a future update.");
+        // Excel export functionality will be implemented here
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Coming Soon");
+        alert.setHeaderText("Excel Export");
+        alert.setContentText("Excel export functionality will be implemented in a future update.");
+        alert.showAndWait();
     }
     
     private void showAlert(Alert.AlertType alertType, String title, String message) {

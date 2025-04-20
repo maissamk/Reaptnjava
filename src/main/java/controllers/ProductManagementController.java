@@ -12,8 +12,10 @@ import models.Product;
 import models.ProductType;
 import service.ProductService;
 import service.ProductTypeService;
+import utils.ImageUtils;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -206,12 +208,14 @@ public class ProductManagementController {
         priceField.setText(String.valueOf(product.getPrice()));
         currentImagePath = product.getImage();
         
+        // Display product image using ImageUtils
         if (currentImagePath != null && !currentImagePath.isEmpty()) {
-            try {
-                Image image = new Image(new File(currentImagePath).toURI().toString());
-                productImageView.setImage(image);
-            } catch (Exception e) {
+            Image productImage = ImageUtils.loadProductImage(currentImagePath, 160, 160);
+            if (productImage != null && !productImage.isError()) {
+                productImageView.setImage(productImage);
+            } else {
                 productImageView.setImage(null);
+                System.err.println("Failed to load image: " + currentImagePath);
             }
         } else {
             productImageView.setImage(null);
@@ -308,29 +312,51 @@ public class ProductManagementController {
     
     private void handleImageUpload() {
         FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Product Image");
         fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
         );
         File selectedFile = fileChooser.showOpenDialog(null);
         
         if (selectedFile != null) {
             try {
                 // Create directory if it doesn't exist
-                Path imagesDir = Paths.get("src/main/resources/images/products");
-                if (!Files.exists(imagesDir)) {
+                Path rootDir = Paths.get(System.getProperty("user.dir"));
+                Path resourcesDir = rootDir.resolve("workshopjdbc3a/src/main/resources");
+                Path imagesDir = resourcesDir.resolve("images");
+                
+                // Create product images subdirectory if needed
+                Path productImagesDir = imagesDir.resolve("products");
+                if (!Files.exists(productImagesDir)) {
+                    Files.createDirectories(productImagesDir);
+                } else if (!Files.exists(imagesDir)) {
                     Files.createDirectories(imagesDir);
                 }
                 
-                // Copy file to resources
-                String fileName = "product_" + System.currentTimeMillis() + "_" + selectedFile.getName();
-                Path targetPath = imagesDir.resolve(fileName);
+                // Generate a unique filename to avoid duplicates
+                String fileExtension = selectedFile.getName().substring(selectedFile.getName().lastIndexOf('.'));
+                String fileName = "product_" + System.currentTimeMillis() + fileExtension;
+                
+                // Store in products directory
+                Path targetPath = productImagesDir.resolve(fileName);
                 Files.copy(selectedFile.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
                 
-                // Set path and display image
-                currentImagePath = targetPath.toString();
+                // Store relative path in database (as it is used in FrontOfficeController)
+                currentImagePath = "products/" + fileName;
+                
+                System.out.println("Image saved to: " + targetPath);
+                System.out.println("Path stored in database: " + currentImagePath);
+                
+                // Display the uploaded image
                 Image image = new Image(targetPath.toUri().toString());
                 productImageView.setImage(image);
+                productImageView.setFitWidth(160);
+                productImageView.setFitHeight(160);
+                productImageView.setPreserveRatio(true);
+                
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Image uploaded successfully!");
             } catch (Exception e) {
+                e.printStackTrace();
                 showAlert(Alert.AlertType.ERROR, "Image Upload Error", "Error uploading image: " + e.getMessage());
             }
         }
