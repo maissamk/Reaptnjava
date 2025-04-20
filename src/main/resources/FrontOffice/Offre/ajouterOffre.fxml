@@ -21,8 +21,7 @@
       
       
                   <!-- Form to Add an Offer -->
-                  <Label layoutX="50" layoutY="80" text="ID Offre (ida):" />
-                  <TextField fx:id="idaField" layoutX="150" layoutY="75" />
+
       
                   <Label layoutX="50" layoutY="120" text="Titre:" />
                   <TextField fx:id="titreField" layoutX="150" layoutY="115" />
@@ -37,10 +36,10 @@
                   <CheckBox fx:id="statutCheckBox" layoutX="150" layoutY="305" />
       
                   <!-- Button to Submit the Form -->
-                  <Button fx:id="submitButton" layoutX="200" layoutY="360" onAction="#handleAddOffre" text="Ajouter" />
+                  <Button fx:id="submitButton" layoutX="200" layoutY="360" onAction="#handleAddOffre" text="Ajouter cette offre" />
       
                   <!-- Back Button -->
-                  <Button layoutX="400" layoutY="360" onAction="#handleRetour" text="Retour" />
+                  <Button fx:id="RetourButton" layoutX="400" layoutY="360" onAction="#handleRetour" text="Annuler" />
               </VBox>
           </VBox>
       </children>

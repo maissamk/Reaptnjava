@@ -18,15 +18,15 @@ public class OffreService implements IService<Offre> {
 
     @Override
     public void add(Offre offre) throws SQLException {
-        String sql = "insert into offre (ida,statut,descr,titre,comp) values( ?,?,?,?,?)";
+        String sql = "insert into offre (statut,descr,titre,comp) values(?,?,?,?)";
 
         try {
             PreparedStatement st =connection.prepareStatement(sql);
-            st.setInt(1,offre.getIda());
-            st.setBoolean(2,offre.isStatut());
-            st.setString(3,offre.getDescr());
-            st.setString(4,offre.getTitre());
-            st.setString(5,offre.getComp());
+
+            st.setBoolean(1,offre.isStatut());
+            st.setString(2,offre.getDescr());
+            st.setString(3,offre.getTitre());
+            st.setString(4,offre.getComp());
             st.executeUpdate();
             System.out.println("Offre ajoutée avec succés");
         } catch (SQLException e) {

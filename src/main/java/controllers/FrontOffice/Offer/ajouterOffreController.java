@@ -1,19 +1,26 @@
 package controllers.FrontOffice.Offer;
 
+import controllers.FrontOffice.BaseFrontController;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import services.OffreService;
 import models.Offre;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class ajouterOffreController {
 
-    @FXML private TextField idaField;
+
     @FXML private TextField titreField;
     @FXML private TextArea descField;
     @FXML private TextField competenceField;
     @FXML private CheckBox statutCheckBox;
+    @FXML private Button RetourButton;
 
 
     private OffreService offreService = new OffreService();
@@ -21,35 +28,25 @@ public class ajouterOffreController {
     // Handle the Add Offer action
     @FXML
     private void handleAddOffre() {
-        String idaText = idaField.getText().trim();
+
         String titre = titreField.getText().trim();
         String description = descField.getText().trim();
         String competence = competenceField.getText().trim();
         boolean statut = statutCheckBox.isSelected();
 
         // 1. Vérifier les champs vides
-        if (idaText.isEmpty() || titre.isEmpty() || description.isEmpty() || competence.isEmpty()) {
+        if (titre.isEmpty() || description.isEmpty() || competence.isEmpty()) {
             showAlert("Champs manquants", "Veuillez remplir tous les champs obligatoires.");
             return;
         }
 
-        // 2. Vérifier que l'ID admin est bien un entier
-        int ida;
-        try {
-            ida = Integer.parseInt(idaText);
-            if (ida <= 0) {
-                showAlert("ID invalide", "L'ID Admin doit être un entier positif.");
-                return;
-            }
-        } catch (NumberFormatException e) {
-            showAlert("Erreur de saisie", "L'ID Admin doit être un nombre entier.");
-            return;
-        }
+
+
 
         // 3. Créer et sauvegarder l'offre
         try {
             Offre newOffre = new Offre();
-            newOffre.setIda(ida);
+
             newOffre.setTitre(titre);
             newOffre.setDescr(description);
             newOffre.setComp(competence);
@@ -70,7 +67,26 @@ public class ajouterOffreController {
     @FXML
     private void handleRetour() {
         // You can implement navigation logic here (go back to the previous screen)
-        System.out.println("Retour clicked!");
+        try {
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/Frontoffice/baseFront.fxml"));
+            Parent baseRoot = baseLoader.load();
+            BaseFrontController baseController = baseLoader.getController();
+
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/Frontoffice/Offre/indexOffre.fxml"));
+            Parent content = contentLoader.load(); // content with its own controller & methods
+
+            // Inject the page content into base layout
+            baseController.getContentPane().getChildren().setAll(content);
+
+            // Now show the complete scene
+            Scene scene = new Scene(baseRoot);
+            Stage stage = (Stage) RetourButton.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Helper method to show alert messages
