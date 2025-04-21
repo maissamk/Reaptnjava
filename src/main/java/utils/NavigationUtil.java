@@ -8,28 +8,30 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class NavigationUtil {
+    private static final double DEFAULT_WIDTH = 1200;
+    private static final double DEFAULT_HEIGHT = 800;
+    private static final double MIN_WIDTH = 800;
+    private static final double MIN_HEIGHT = 600;
+
     public static void navigateTo(String fxmlPath, Node sourceNode) {
         try {
             FXMLLoader loader = new FXMLLoader(NavigationUtil.class.getResource(fxmlPath));
             Parent root = loader.load();
-
             Stage stage = (Stage) sourceNode.getScene().getWindow();
 
-            double width = stage.getWidth();
-            double height = stage.getHeight();
+            double currentWidth = stage.getWidth();
+            double currentHeight = stage.getHeight();
 
-            if (width <= 0 || height <= 0) {
-                width = 800;
-                height = 600;
+            if (currentWidth <= MIN_WIDTH || currentHeight <= MIN_HEIGHT) {
+                currentWidth = DEFAULT_WIDTH;
+                currentHeight = DEFAULT_HEIGHT;
             }
 
-            Scene newScene = new Scene(root, width, height);
-
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
-
+            Scene newScene = new Scene(root, currentWidth, currentHeight);
+            stage.setMinWidth(MIN_WIDTH);
+            stage.setMinHeight(MIN_HEIGHT);
             stage.setScene(newScene);
-
+            stage.centerOnScreen();
         } catch (IOException e) {
             e.printStackTrace();
         }

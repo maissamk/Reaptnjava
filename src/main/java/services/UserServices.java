@@ -40,6 +40,20 @@ public class UserServices implements UserCrud<user> {
         return null;
     }
 
+    public user getUserById(int userId) {
+        String sql = "SELECT * FROM user WHERE id = ?";
+        try (PreparedStatement st = cnx.prepareStatement(sql)) {
+            st.setInt(1, userId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return extractUserFromResultSet(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching user by ID: " + e.getMessage());
+        }
+        return null;
+    }
+
     private user extractUserFromResultSet(ResultSet rs) throws SQLException {
         user user = new user();
         user.setId(rs.getInt("id"));
@@ -74,8 +88,21 @@ public class UserServices implements UserCrud<user> {
         }
     }
 
+
     @Override
     public void delete(user user) {
+        String sql = "DELETE FROM user WHERE id = ?";
+        try {
+            PreparedStatement st = cnx.prepareStatement(sql);
+            st.setInt(1, user.getId());
+            int rowsAffected = st.executeUpdate();
+
+            if (rowsAffected == 0) {
+                throw new SQLException("Deleting user failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delete user: " + e.getMessage(), e);
+        }
     }
 
     @Override
@@ -117,7 +144,7 @@ public class UserServices implements UserCrud<user> {
             Statement st = cnx.createStatement();
             ResultSet rs = st.executeQuery(sql);
             while (rs.next()) {
-                users.add(extractUserFromResultSet(rs));  // Use the helper method
+                users.add(extractUserFromResultSet(rs));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

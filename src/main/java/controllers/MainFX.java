@@ -9,10 +9,10 @@ import javafx.stage.Stage;
 public class MainFX extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
-
+        primaryStage.setFullScreen(true);
         primaryStage.setTitle("Connexion");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
