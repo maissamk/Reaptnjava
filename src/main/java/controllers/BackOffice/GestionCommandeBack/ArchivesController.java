@@ -9,7 +9,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import models.gestionCommande.CommandeDetails;
+import Models.gestionCommande.CommandeDetails;
 import services.gestionCommande.CommandeService;
 
 public class ArchivesController {

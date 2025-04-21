@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.BackOffice.material.EditMaterielVenteController" style="-fx-background-color: #f5f9f5;">
+
+    <top>
+        <HBox style="-fx-background-color: #2e7d32; -fx-padding: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 0, 2, 0, 2);" alignment="CENTER">
+            <Label style="-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" text="Modifier Matériel Agricole">
+                <graphic>
+                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@/images/kamyon.jpg" />
+                    </ImageView>
+                </graphic>
+            </Label>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+            <GridPane style="-fx-padding: 20; -fx-background-color: white; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #c8e6c9;" hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="30" halignment="RIGHT"/>
+                    <ColumnConstraints percentWidth="70"/>
+                </columnConstraints>
+
+                <Label text="Nom*:" style="-fx-text-fill: #2e7d32;" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                <TextField fx:id="nomField" GridPane.rowIndex="0" GridPane.columnIndex="1" style="-fx-background-radius: 3;"/>
+
+                <Label text="Prix (TND)*:" style="-fx-text-fill: #2e7d32;" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                <TextField fx:id="prixField" GridPane.rowIndex="1" GridPane.columnIndex="1" style="-fx-background-radius: 3;"/>
+
+                <Label text="Description*:" style="-fx-text-fill: #2e7d32;" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                <TextArea fx:id="descriptionField" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                          style="-fx-min-height: 150; -fx-background-radius: 3;"/>
+
+                <Label text="Catégorie*:" style="-fx-text-fill: #2e7d32;" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                <ComboBox fx:id="categorieCombo" GridPane.rowIndex="3" GridPane.columnIndex="1" style="-fx-background-radius: 3;"/>
+
+                <Label text="Disponible:" style="-fx-text-fill: #2e7d32;" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+                <CheckBox fx:id="disponibiliteCheck" selected="true" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+
+                <Label text="Image:" style="-fx-text-fill: #2e7d32;" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+                <HBox spacing="5" GridPane.rowIndex="5" GridPane.columnIndex="1">
+                    <TextField fx:id="imageField" style="-fx-pref-width: 250; -fx-background-radius: 3;" editable="false" />
+                    <Button text="Parcourir" onAction="#handleBrowseImage" style="-fx-background-color: #81c784; -fx-text-fill: white; -fx-background-radius: 3;"/>
+                </HBox>
+            </GridPane>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox style="-fx-padding: 15; -fx-spacing: 10;" alignment="CENTER_RIGHT">
+            <Button fx:id="cancelBtn" text="Annuler" style="-fx-background-color: #e57373; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-width: 120; -fx-pref-height: 35; -fx-background-radius: 5;" />
+            <Button fx:id="saveBtn" text="Enregistrer" style="-fx-background-color: #388e3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-width: 150; -fx-pref-height: 35; -fx-background-radius: 5;" />
+        </HBox>
+    </bottom>
+</BorderPane>

@@ -1,10 +1,10 @@
 package services.gestionCommande;
 
 import interfaces.IService;
-import models.gestionCommande.Commande;
-import models.gestionCommande.CommandeDetails;
-import models.gestionCommande.Livraison;
-import models.gestionCommande.Paiement;
+import Models.gestionCommande.Commande;
+import Models.gestionCommande.CommandeDetails;
+import Models.gestionCommande.Livraison;
+import Models.gestionCommande.Paiement;
 import utils.MaConnexion;
 
 import java.sql.*;

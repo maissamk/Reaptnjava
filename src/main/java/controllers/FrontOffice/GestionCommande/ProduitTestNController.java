@@ -8,7 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import models.gestionCommande.ProduitTestN;
+import Models.gestionCommande.ProduitTestN;
 import utils.gestionCommande.PanierSession;
 
 import java.io.IOException;

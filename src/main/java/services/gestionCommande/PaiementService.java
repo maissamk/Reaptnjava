@@ -1,7 +1,7 @@
 package services.gestionCommande;
 
-import models.gestionCommande.Commande;
-import models.gestionCommande.Paiement;
+import Models.gestionCommande.Commande;
+import Models.gestionCommande.Paiement;
 import utils.MaConnexion;
 
 import java.sql.*;

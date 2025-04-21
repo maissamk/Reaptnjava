@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.stage.Stage;
-import models.gestionCommande.CommandeDetails;
+import Models.gestionCommande.CommandeDetails;
 import services.gestionCommande.CommandeService;
 
 import javafx.collections.FXCollections;

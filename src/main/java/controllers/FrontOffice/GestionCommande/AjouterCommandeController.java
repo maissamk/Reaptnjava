@@ -4,7 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import models.gestionCommande.Commande;
+import Models.gestionCommande.Commande;
 import services.gestionCommande.CommandeService;
 
 import java.time.LocalDate;

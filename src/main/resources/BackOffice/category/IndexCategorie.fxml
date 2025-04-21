@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane style="-fx-background-color: #f5f9f5;" xmlns="http://javafx.com/javafx/22"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.BackOffice.category.IndexCategorieController">
+    <top>
+        <HBox alignment="CENTER" style="-fx-background-color: #2e7d32; -fx-padding: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 0, 0, 0, 2);">
+            <Label style="-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" text="Gestion des Catégories Agricoles">
+                <graphic>
+                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@/images/kamyon.jpg" />
+                    </ImageView>
+                </graphic>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="addBtn" style="-fx-background-color: #388e3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Ajouter Catégorie" />
+            <Button style="-fx-background-color: #81c784; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Matériels" onAction="#gotomaterials" />
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="10" style="-fx-padding: 15;">
+            <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 5; -fx-background-color: #e8f5e9; -fx-background-radius: 5;">
+                <TextField fx:id="searchField" promptText="Rechercher catégories..." style="-fx-pref-width: 300; -fx-background-radius: 15; -fx-font-family: 'Segoe UI';" />
+                <Button onAction="#handleSearch" style="-fx-background-color: #388e3c; -fx-text-fill: white; -fx-background-radius: 15; -fx-font-family: 'Segoe UI'; -fx-font-weight: bold; -fx-cursor: hand;" text="Rechercher" />
+                <Region HBox.hgrow="ALWAYS" />
+            </HBox>
+
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+                <GridPane fx:id="categoriesGrid" hgap="20" style="-fx-padding: 10;" vgap="20">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="33" />
+                        <ColumnConstraints percentWidth="33" />
+                        <ColumnConstraints percentWidth="33" />
+                    </columnConstraints>
+                </GridPane>
+            </ScrollPane>
+
+            <Pagination fx:id="pagination" style="-fx-alignment: center; -fx-padding: 10; -fx-page-information-visible: false;" />
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" style="-fx-background-color: #e8f5e9; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 0, -2, 0, 2);">
+            <Label style="-fx-text-fill: #2e7d32; -fx-font-family: 'Segoe UI';" text="© 2025 AgroMat - Gestion des Catégories Agricoles" />
+        </HBox>
+    </bottom>
+</BorderPane>
