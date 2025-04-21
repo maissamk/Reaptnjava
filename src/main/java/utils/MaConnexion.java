@@ -1,14 +1,12 @@
 package utils;
 
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class MaConnexion {
 
-
-    final String URL="jdbc:mysql://localhost:3306/reaptn";
+    final String url="jdbc:mysql://localhost:3306/reaptn";
     final String username="root";
     final String password="";
 
@@ -16,8 +14,10 @@ public class MaConnexion {
 
     Connection connection;
 
-    public static MaConnexion getInstance(){
-        if(instance==null){
+
+    public static MaConnexion getInstance()
+    {
+        if (instance==null){
             instance=new MaConnexion();
         }
         return instance;
@@ -27,12 +27,14 @@ public class MaConnexion {
         return connection;
     }
 
-    private MaConnexion() {
+    private MaConnexion(){
         try {
-            connection = DriverManager.getConnection(URL,username,password);
-            System.out.println("connection etabli avec succes");
-        } catch (SQLException e) {
+            connection = DriverManager.getConnection(url, username, password);
+            System.out.println("Connexion etablie avec succés");
+        }catch (SQLException e){
             System.out.println(e.getMessage());
         }
     }
+
+
 }

@@ -40,6 +40,8 @@
          <Button fx:id="material" styleClass="nav-button" text="Matérielle" />
          <Button fx:id="produitsButton" styleClass="nav-button" text="Produits" />
          <Button fx:id="produitsDetailButton" styleClass="nav-button" text="Produits Detail" />
+         <Button fx:id="commandeButton" onAction="#handleCommande" styleClass="featured-button" text="Commande" />
+
          <Button fx:id="parcelleButton" styleClass="nav-button" text="Parcelle" />
          <Button fx:id="offersButton" onAction="#handleOffers" styleClass="nav-button" text="Offers" />
          <Button fx:id="masterfulButton" styleClass="featured-button" text="Masterful Agricole" />

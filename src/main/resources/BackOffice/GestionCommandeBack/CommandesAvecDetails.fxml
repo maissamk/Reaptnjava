@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BackOffice.GestionCommandeBack.CommandesAvecDetailsController">
+    <children>
+        <VBox spacing="10.0" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
+            <Label text="Liste des Commandes avec Livraison et Paiement" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+            <TableView fx:id="tableView" prefHeight="400.0" prefWidth="800.0">
+                <columns>
+                    <TableColumn fx:id="colIdCommande" text="ID Commande" />
+                    <TableColumn fx:id="colQuantite" text="Quantité" />
+                    <TableColumn fx:id="colTotal" text="Total" />
+                    <TableColumn fx:id="colDateCommande" text="Date Commande" />
+                    <TableColumn fx:id="colAdresse" text="Adresse Livraison" />
+                    <TableColumn fx:id="colStatut" text="Statut Livraison" editable="true" />
+                    <TableColumn fx:id="colDateLivraison" text="Date Livraison" />
+                    <TableColumn fx:id="colPaiement" text="Méthode Paiement" />
+                    <TableColumn fx:id="colDatePaiement" text="Date Paiement" />
+                </columns>
+            </TableView>
+            <Button text="Voir les commandes archivées" onAction="#ouvrirArchives" />
+        </VBox>
+    </children>
+</AnchorPane>

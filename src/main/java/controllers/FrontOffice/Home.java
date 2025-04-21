@@ -37,6 +37,8 @@ public class Home implements Initializable {
     @FXML private Button masterfulButton;
     @FXML private Button loginButton;
     @FXML private Button profileButton;
+    @FXML private Button commandeButton;
+
 
     // User info elements
     @FXML private ImageView userAvatar;
@@ -102,6 +104,7 @@ public class Home implements Initializable {
         // Navigation buttons
         accueilButton.setOnAction(e -> handleAccueil());
 
+        commandeButton.setOnAction(this::handleCommande);
 
         material.setOnAction(this::handleMaterial);
         produitsButton.setOnAction(e -> handleProduitsDetail());
@@ -144,6 +147,10 @@ public class Home implements Initializable {
     // Usage in your button handler:
     @FXML
     private void handleProduits(ActionEvent event) {
+    }
+    @FXML
+    private void handleCommande(ActionEvent event) {
+        navigateTo("/FrontOffice/GestionCommande/ProduitTestNView.fxml", event);
     }
 
     private void handleMaterial(ActionEvent event) {
@@ -240,4 +247,6 @@ public class Home implements Initializable {
         stage.setScene(new Scene(root));
         stage.show();
     }
+
+
 }
