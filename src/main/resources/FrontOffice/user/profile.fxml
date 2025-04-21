@@ -13,6 +13,7 @@
     <!-- Main Content as VBox -->
 
         <VBox>
+
             <!-- Profile Information Grid -->
             <GridPane hgap="20" vgap="20" alignment="CENTER" style="-fx-padding: 30;">
                 <columnConstraints>
@@ -30,6 +31,7 @@
                 </ImageView>
 
                 <!-- Profile Information -->
+                <Label fx:id="welcomeLabel"  />
                 <Label text="Full Name:" style="-fx-font-weight: BOLD;" GridPane.rowIndex="1"/>
                 <Label fx:id="fullNameLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 

@@ -159,11 +159,11 @@ public class Home implements Initializable {
     private void handleOffers() {
         System.out.println("Offers disponibles clicked");
         try {
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/Frontoffice/baseFront.fxml"));
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
             Parent baseRoot = baseLoader.load();
             BaseFrontController baseController = baseLoader.getController();
 
-            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/Frontoffice/Offre/indexOffre.fxml"));
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/indexOffre.fxml"));
             Parent content = contentLoader.load();
 
             baseController.getContentPane().getChildren().setAll(content);
@@ -186,11 +186,11 @@ public class Home implements Initializable {
     @FXML
     private void handleProfile() {
         try {
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/Frontoffice/baseFront.fxml"));
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
             Parent baseRoot = baseLoader.load();
             BaseFrontController baseController = baseLoader.getController();
 
-            FXMLLoader profileLoader = new FXMLLoader(getClass().getResource("/profile.fxml"));
+            FXMLLoader profileLoader = new FXMLLoader(getClass().getResource("/FrontOffice/user/profile.fxml"));
             Parent profileContent = profileLoader.load();
 
             baseController.getContentPane().getChildren().setAll(profileContent);
@@ -220,7 +220,7 @@ public class Home implements Initializable {
                 stage.show();
             } else {
                 // Login logic - redirect to login page
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/Login.fxml"));
                 Parent root = loader.load();
 
                 Stage stage = (Stage) loginButton.getScene().getWindow();
