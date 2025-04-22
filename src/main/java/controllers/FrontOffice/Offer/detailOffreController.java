@@ -19,11 +19,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.sql.SQLException;
 
 
 public class detailOffreController {
@@ -114,12 +117,20 @@ public class detailOffreController {
     //*******************************************************************************************************//
     //////////////////////////////////////PARTIE EMPLOYE///////////////////////////////////////////////////////
 
-    @FXML private TextField userIdentifierField;
-    @FXML private TextField compField;
+
+
+
 
     @FXML private TableView<Employe> employeTable;
     @FXML private TableColumn<Employe, Integer> user_identifierColumn;
     @FXML private TableColumn<Employe, String> compColumn;
+
+    @FXML
+    private TextField userIdField;
+    @FXML
+    private TextField compField;
+
+
 
     private EmployeService employeService = new EmployeService();
 
@@ -136,6 +147,94 @@ public class detailOffreController {
         employeTable.setItems(employes);
     }
 
+    @FXML
+    private void handleAddEmploye() {
+        String userIdText = userIdField.getText().trim();
+        String competence = compField.getText().trim();
 
+
+        // 1. Vérifier les champs vides
+        if (userIdText.isEmpty() || competence.isEmpty()) {
+            showAlert("Champs manquants", "Veuillez remplir tous les champs obligatoires.");
+            return;
+        }
+
+        int userIdentifier;
+        try {
+            userIdentifier = Integer.parseInt(userIdText);
+        } catch (NumberFormatException e) {
+            showAlert("Erreur de format", "L'identifiant utilisateur doit être un nombre entier.");
+            return;
+        }
+
+
+
+        try {
+            if (currentOffre == null) {
+                showAlert("Erreur", "Offre non définie. Impossible de postuler.");
+                return;
+            }
+
+            Employe newEmploye = new Employe();
+            newEmploye.setUser_identifier(userIdentifier);
+            newEmploye.setComp(competence);
+            newEmploye.setOffre_id(currentOffre.getId()); // safe because we checked it's not null
+
+            employeService.add(newEmploye); // this will set date_join inside
+
+            showAlert("Succès", "Candidature envoyée avec succès !");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Une erreur est survenue lors de l'envoi de la candidature.");
+        }
+    }
+
+
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void handleDeleteEmploye() {
+        String userIdText = userIdField.getText().trim();
+
+        if (userIdText.isEmpty()) {
+            showAlert("Champ manquant", "Veuillez entrer l'identifiant de l'utilisateur.");
+            return;
+        }
+
+        int userIdentifier;
+        try {
+            userIdentifier = Integer.parseInt(userIdText);
+        } catch (NumberFormatException e) {
+            showAlert("Erreur de format", "L'identifiant utilisateur doit être un nombre entier.");
+            return;
+        }
+
+        if (currentOffre == null) {
+            showAlert("Erreur", "Offre non définie. Impossible de supprimer la candidature.");
+            return;
+        }
+
+        try {
+            boolean success = employeService.deleteByUserAndOffre(userIdentifier, currentOffre.getId());
+
+            if (success) {
+                showAlert("Succès", "Candidature supprimée avec succès !");
+                loadEmployesForOffre(currentOffre.getId()); // Refresh the table
+            } else {
+                showAlert("Erreur", "Aucune candidature trouvée pour cet utilisateur.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Une erreur est survenue lors de la suppression.");
+        }
+    }
 
 }

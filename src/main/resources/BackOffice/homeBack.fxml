@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/18"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.BackOffice.HomeBack"
+            prefWidth="1200" prefHeight="800"
+            stylesheets="/css/homeback.css">
+
+
+
+    <!-- Left Sidebar - Modern Collapsible Style -->
+    <left>
+        <VBox styleClass="sidebar" spacing="10" prefWidth="220">
+            <Label text="MAIN MENU" styleClass="menu-title"/>
+
+            <Button fx:id="statisticsBtn" text="Statistics" styleClass="side-btn">
+
+            </Button>
+
+            <Button fx:id="farmersBtn" text="Farmers" styleClass="side-btn">
+
+            </Button>
+
+            <Button fx:id="parcelsBtn" text="Parcels" styleClass="side-btn">
+
+            </Button>
+
+            <Button fx:id="harvestBtn" text="Harvest" styleClass="side-btn">
+
+            </Button>
+
+            <Separator styleClass="menu-separator"/>
+
+            <Label text="SYSTEM" styleClass="menu-title"/>
+
+            <Button fx:id="settingsBtn" text="Settings" styleClass="side-btn">
+
+            </Button>
+
+            <Button fx:id="logsBtn" text="System Logs" styleClass="side-btn">
+
+            </Button>
+
+            <!-- Bottom Spacer to push content up -->
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Sidebar Footer -->
+            <VBox styleClass="sidebar-footer" spacing="5">
+                <Label text="v2.4.1" styleClass="version-label"/>
+                <Label text="© 2023 AgriSoft" styleClass="copyright-label"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- Main Content Area - Modern Card Layout -->
+    <center>
+        <StackPane fx:id="contentPane" styleClass="content-pane">
+
+        </StackPane>
+    </center>
+
+
+</BorderPane>

@@ -30,7 +30,7 @@ public class EmployeService implements IService<Employe> {
             st.setTimestamp(4,currentTimestamp);
 
             st.executeUpdate();
-            System.out.println("Offre ajoutée avec succés");
+            System.out.println("Employé ajouté avec succés");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -67,6 +67,16 @@ public class EmployeService implements IService<Employe> {
             System.out.println("Employe deleted successfully");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    public boolean deleteByUserAndOffre(int userId, int offreId) throws SQLException {
+        String sql = "DELETE FROM employe WHERE user_identifier = ? AND offre_id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, offreId);
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
         }
     }
 
