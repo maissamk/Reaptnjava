@@ -6,11 +6,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Home extends Application {
+public class MainFX extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/Ajouterparcelles.fxml")); // Mets ici le bon chemin
+        Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/Home.fxml")); // Mets ici le bon chemin
         primaryStage.setTitle("Ajouter une parcelle");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

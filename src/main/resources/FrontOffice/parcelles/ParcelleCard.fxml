@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="card" spacing="10" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.FrontOffice.parcelles.ParcelleCard"
+      styleClass="parcelle-card">
+    <children>
+        <ImageView fx:id="imageView" fitWidth="280" fitHeight="150" preserveRatio="true"
+                   styleClass="card-image"/>
+        <Label fx:id="titre" styleClass="card-title"/>
+        <Label fx:id="prix" styleClass="card-price"/>
+        <HBox spacing="5">
+            <Label fx:id="statut" styleClass="status-badge"/>
+            <Label fx:id="taille" styleClass="card-info"/>
+        </HBox>
+        <HBox spacing="10" styleClass="action-buttons">
+            <Button fx:id="btnModifier" text="Modifier" styleClass="btn-primary"/>
+            <Button fx:id="btnSupprimer" text="Supprimer" styleClass="btn-danger"/>
+        </HBox>
+    </children>
+</VBox>

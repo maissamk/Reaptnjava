@@ -1,13 +1,17 @@
-package controllers;
+package controllers.FrontOffice.parcelles;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import models.ParcelleProprietes;
 import services.ParcelleProprietesService;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -27,12 +31,16 @@ public class Modifierparcelles {
 
     private File selectedFile;
     private ParcelleProprietes parcelleToEdit;
-
-    ParcelleProprietesService service = new ParcelleProprietesService();
+    private Runnable refreshCallback;
+    private final ParcelleProprietesService service = new ParcelleProprietesService();
 
     public void setParcelleToEdit(ParcelleProprietes parcelle) {
         this.parcelleToEdit = parcelle;
         populateFields();
+    }
+
+    public void setRefreshCallback(Runnable callback) {
+        this.refreshCallback = callback;
     }
 
     private void populateFields() {
@@ -47,7 +55,7 @@ public class Modifierparcelles {
             contactProprio.setText(parcelleToEdit.getContact_proprietaire());
             emailField.setText(parcelleToEdit.getEmail());
             disponibleCheckBox.setSelected(parcelleToEdit.isEst_disponible());
-            fileNameLabel.setText(parcelleToEdit.getImage() != null ? parcelleToEdit.getImage() : "Aucun fichier");
+            fileNameLabel.setText(parcelleToEdit.getImage());
         }
     }
 
@@ -86,16 +94,25 @@ public class Modifierparcelles {
         if (file != null) {
             selectedFile = file;
             fileNameLabel.setText(file.getName());
-        } else {
-            fileNameLabel.setText("Aucun fichier choisi");
         }
     }
 
     @FXML
     private void handleModifier() {
-        if (parcelleToEdit == null) return;
+        if (!validateInputs()) return;
 
-        // 1. Vérification des champs obligatoires
+        updateParcelleFromFields();
+
+        try {
+            service.update(parcelleToEdit);
+            showSuccess("Parcelle modifiée avec succès !");
+            closeWindowAndRefresh();
+        } catch (Exception e) {
+            showAlert("Erreur", "Échec de la mise à jour: " + e.getMessage());
+        }
+    }
+
+    private boolean validateInputs() {
         if (titreField.getText().isEmpty() || prixField.getText().isEmpty() ||
                 statutCombo.getValue() == null || typeTerrain.getValue() == null ||
                 tailleField.getText().isEmpty() || emplacementField.getText().isEmpty() ||
@@ -103,29 +120,23 @@ public class Modifierparcelles {
                 emailField.getText().isEmpty()) {
 
             showAlert("Erreur", "Tous les champs sont obligatoires.");
-            return;
+            return false;
         }
 
-        // 2. Vérification du contact (8 chiffres)
-        String contact = contactProprio.getText().trim();
-        if (!contact.matches("\\d{8}")) {
+        if (!contactProprio.getText().matches("\\d{8}")) {
             showAlert("Erreur", "Le contact doit contenir exactement 8 chiffres.");
-            return;
+            return false;
         }
 
-        // 3. Vérification de l'email
         if (!emailField.getText().matches("^[\\w.-]+@[\\w.-]+\\.\\w{2,}$")) {
             showAlert("Erreur", "Email invalide.");
-            return;
+            return false;
         }
 
-        // 4. Vérification de l’image
-        if (selectedFile == null && (parcelleToEdit.getImage() == null || parcelleToEdit.getImage().isEmpty())) {
-            showAlert("Erreur", "Veuillez sélectionner une image.");
-            return;
-        }
+        return true;
+    }
 
-        // 5. Mise à jour de l'objet
+    private void updateParcelleFromFields() {
         parcelleToEdit.setTitre(titreField.getText());
         parcelleToEdit.setPrix(Double.parseDouble(prixField.getText()));
         parcelleToEdit.setStatus(statutCombo.getValue());
@@ -133,17 +144,52 @@ public class Modifierparcelles {
         parcelleToEdit.setTaille(Double.parseDouble(tailleField.getText()));
         parcelleToEdit.setEmplacement(emplacementField.getText());
         parcelleToEdit.setNom_proprietaire(nomProprio.getText());
-        parcelleToEdit.setContact_proprietaire(contact);
+        parcelleToEdit.setContact_proprietaire(contactProprio.getText());
         parcelleToEdit.setEmail(emailField.getText());
         parcelleToEdit.setEst_disponible(disponibleCheckBox.isSelected());
         parcelleToEdit.setDate_misajour_annonce(Timestamp.valueOf(LocalDateTime.now()));
 
+        // GESTION DE L'IMAGE - CORRECTION ICI
         if (selectedFile != null) {
-            parcelleToEdit.setImage(selectedFile.getAbsolutePath());
-        }
+            try {
+                String fileName = selectedFile.getName();
+                File destDir = new File("src/main/resources/images");
+                if (!destDir.exists()) destDir.mkdirs();
 
-        service.update(parcelleToEdit);
-        showSuccess("Parcelle modifiée avec succès !");
+                File destFile = new File(destDir, fileName);
+
+                // Copier le fichier dans le dossier images
+                try (FileInputStream fis = new FileInputStream(selectedFile);
+                     FileOutputStream fos = new FileOutputStream(destFile)) {
+                    byte[] buffer = new byte[1024];
+                    int len;
+                    while ((len = fis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
+                }
+
+                // Sauvegarder le chemin relatif
+                parcelleToEdit.setImage("images/" + fileName);
+
+            } catch (IOException e) {
+                showAlert("Erreur", "Échec de la copie de l'image : " + e.getMessage());
+            }
+        }
+    }
+
+
+    private void closeWindowAndRefresh() {
+        Stage stage = (Stage) titreField.getScene().getWindow();
+        stage.close();
+
+        if (refreshCallback != null) {
+            refreshCallback.run();
+        }
+    }
+
+    @FXML
+    private void handleAnnuler(ActionEvent event) {
+        ((Stage) ((Button) event.getSource()).getScene().getWindow()).close();
     }
 
     private void showAlert(String titre, String message) {
@@ -160,10 +206,5 @@ public class Modifierparcelles {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    public void handleAnnuler(ActionEvent actionEvent) {
-        Button sourceButton = (Button) actionEvent.getSource();
-        sourceButton.getScene().getWindow().hide();
     }
 }

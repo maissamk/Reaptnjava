@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
-            fx:controller="controllers.Modifierparcelles"
+            fx:controller="controllers.FrontOffice.parcelles.Modifierparcelles"
             prefHeight="600.0" prefWidth="700.0">
 
     <VBox spacing="10" layoutX="20" layoutY="20" prefWidth="660">

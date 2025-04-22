@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="controllers.Ajoutercontrat"
+      fx:controller="controllers.FrontOffice.contrats.Ajoutercontrat"
       spacing="20"
       prefWidth="400"
       prefHeight="550"

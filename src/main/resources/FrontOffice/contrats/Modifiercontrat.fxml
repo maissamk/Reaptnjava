@@ -6,7 +6,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="controllers.Modifiercontrat"
+      fx:controller="controllers.FrontOffice.contrats.Modifiercontrat"
       spacing="20"
       style="-fx-padding: 20; -fx-background-color: #f5f6fa;"
       prefWidth="400"

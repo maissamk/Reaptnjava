@@ -1,4 +1,4 @@
-package controllers;
+package controllers.FrontOffice.contrats;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;

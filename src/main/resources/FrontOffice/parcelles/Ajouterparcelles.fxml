@@ -5,7 +5,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.Ajouterparcelles"
+            fx:controller="controllers.FrontOffice.parcelles.Ajouterparcelles"
             prefHeight="600.0" prefWidth="800.0">
 
     <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
@@ -71,20 +71,25 @@
             </VBox>
         </GridPane>
 
+
         <!-- Boutons -->
         <HBox spacing="20" alignment="CENTER">
             <Button text="Enregistrer"
                     onAction="#handleEnregistrer"
                     style="-fx-background-color: #4CAF50; -fx-text-fill: white;"
                     prefWidth="150"/>
-            <Button text="Afficher les parcelles"
+            <!-- Bouton "Afficher les parcelles" avec fx:id -->
+            <Button fx:id="afficherButton"
+                    text="Afficher les parcelles"
                     onAction="#handleAfficherListe"
                     style="-fx-background-color: #2196F3; -fx-text-fill: white;"
                     prefWidth="150"/>
             <Button text="Annuler"
                     style="-fx-background-color: #f44336; -fx-text-fill: white;"
                     prefWidth="150"/>
-            <Button text="Ajouter Contrat"
+            <!-- Bouton Ajouter Contrat avec fx:id -->
+            <Button fx:id="ajouterContratButton"
+                    text="Ajouter Contrat"
                     onAction="#handleAjouterContrat"
                     style="-fx-background-color: #FF5722; -fx-text-fill: white;"
                     prefWidth="150"/>

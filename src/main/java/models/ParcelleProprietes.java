@@ -27,6 +27,9 @@ public class ParcelleProprietes {
     public ParcelleProprietes() {
     }
 
+    public ParcelleProprietes(String text, String s, double v, String value, String value1, double v1, Timestamp timestamp, Timestamp timestamp1, String text1, String text2, String text3, String text4, boolean selected, String imagePath, String s1, String s2) {
+    }
+
     @Override
     public String toString() {
         return "ParcelleProprietes{" +

@@ -1,5 +1,6 @@
-package controllers;
+package controllers.FrontOffice.parcelles;
 
+import controllers.FrontOffice.BaseFrontController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -32,6 +33,8 @@ public class Ajouterparcelles {
     @FXML private TextField emailField;
     @FXML private CheckBox disponibleCheckBox;
     @FXML private Label fileNameLabel;
+    @FXML private Button afficherButton;
+    @FXML private Button ajouterContratButton;
 
     private File selectedFile;
 
@@ -67,20 +70,48 @@ public class Ajouterparcelles {
 
     @FXML
     public void handleAjouterContrat() {
+//        try {
+//            // Charger le fichier FXML du contrat
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/contrats/Ajoutercontrat.fxml"));
+//            Scene scene = new Scene(loader.load());
+//
+//            // Créer une nouvelle fenêtre (Stage) pour afficher "ajoutercontrat.fxml"
+//            Stage stage = new Stage();
+//            stage.setScene(scene);
+//            stage.setTitle("Ajouter Contrat");
+//            stage.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            // Gérer l'exception (par exemple, afficher un message d'erreur)
+//        }
+//
+        //new code :
         try {
-            // Charger le fichier FXML du contrat
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ajoutercontrat.fxml"));
-            Scene scene = new Scene(loader.load());
+            // 1. Charger le layout de base
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
+            Parent baseRoot = baseLoader.load();
+            BaseFrontController baseController = baseLoader.getController();
 
-            // Créer une nouvelle fenêtre (Stage) pour afficher "ajoutercontrat.fxml"
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.setTitle("Ajouter Contrat");
-            stage.show();
+            // 2. Charger le contenu Ajoutercontrat
+            Parent content = FXMLLoader.load(getClass().getResource("/FrontOffice/contrats/Ajoutercontrat.fxml"));
+
+            // 3. Injecter dans le contentPane
+            baseController.getContentPane().getChildren().setAll(content);
+
+            // 4. Récupérer la fenêtre actuelle
+            Stage stage = (Stage) ajouterContratButton.getScene().getWindow();
+            stage.setScene(new Scene(baseRoot));
+
         } catch (IOException e) {
-            e.printStackTrace();
-            // Gérer l'exception (par exemple, afficher un message d'erreur)
+            showAlert("Erreur Contrat",
+                    "Impossible d'ouvrir l'interface :\n"
+                            + "1. Vérifiez que Ajoutercontrat.fxml existe\n"
+                            + "2. Vérifiez le chemin: /FrontOffice/contrats/\n"
+                            + "Erreur technique: " + e.getMessage());
         }
+
+
+
     }
 
     @FXML
@@ -99,15 +130,46 @@ public class Ajouterparcelles {
 
     @FXML
     private void handleAfficherListe() {
+//        try {
+//            Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/parcelles/Afficherparcelles.fxml"));
+//            Stage stage = (Stage) titreField.getScene().getWindow();
+//            stage.setScene(new Scene(root));
+//            stage.show();
+//        } catch (IOException e) {
+//            showAlert("Erreur de navigation", "Impossible de charger la vue d'affichage : " + e.getMessage());
+//        }
+        // new code
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/Afficherparcelles.fxml"));
-            Stage stage = (Stage) titreField.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            // 1. Charger le layout de base
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
+            Parent baseRoot = baseLoader.load();
+            BaseFrontController baseController = baseLoader.getController();
+
+            // 2. Charger le contenu Afficherparcelles
+            Parent content = FXMLLoader.load(getClass().getResource("/FrontOffice/parcelles/Afficherparcelles.fxml"));
+
+            // 3. Injecter dans le contentPane
+            baseController.getContentPane().getChildren().setAll(content);
+
+            // 4. Récupérer la fenêtre actuelle via n'importe quel node existant
+            Stage stage = (Stage) afficherButton.getScene().getWindow();
+            stage.setScene(new Scene(baseRoot));
+
         } catch (IOException e) {
-            showAlert("Erreur de navigation", "Impossible de charger la vue d'affichage : " + e.getMessage());
+            showAlert("Erreur Structurelle",
+                    "Impossible de charger l'interface :\n"
+                            + "1. Vérifiez que baseFront.fxml existe\n"
+                            + "2. Vérifiez les chemins FXML\n"
+                            + "Erreur technique : " + e.getMessage());
         }
+
+
+
     }
+
+
+
+
 
     @FXML
     private void handleEnregistrer() {
@@ -139,6 +201,12 @@ public class Ajouterparcelles {
         // Vérifier si les dates sont remplies
         if (dateCreationVal == null || dateMajVal == null) {
             showAlert("Erreur", "Veuillez sélectionner les dates de création et de mise à jour.");
+            return;
+        }
+
+        // Vérifier que la date de mise à jour n’est pas antérieure à la date de création
+        if (dateMajVal.isBefore(dateCreationVal)) {
+            showAlert("Erreur de date", "La date de mise à jour ne peut pas être antérieure à la date de création.");
             return;
         }
 
