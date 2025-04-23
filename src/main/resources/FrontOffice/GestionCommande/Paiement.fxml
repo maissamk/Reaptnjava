@@ -122,6 +122,9 @@
 
             <!-- Confirmer -->
             <Button onAction="#validerPaiement" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20;" text="CONFIRMER LE PAIEMENT" />
+
+            <!-- Label de confirmation -->
+            <Label fx:id="labelConfirmation" text="" style="-fx-font-size: 16px; -fx-text-fill: green; -fx-font-weight: bold;" />
         </VBox>
     </HBox>
 </VBox>
