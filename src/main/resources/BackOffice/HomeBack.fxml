@@ -11,7 +11,7 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.BackOffice.HomeBack"
             prefWidth="1200" prefHeight="800"
-            stylesheets="/css/homeback.css">
+            stylesheets="/BackOffice/homeback.css">
 
     <!-- Top Navigation Bar - Modern Glassmorphism Effect -->
     <top>
@@ -19,7 +19,7 @@
             <!-- Logo -->
             <ImageView fitHeight="60" fitWidth="220" preserveRatio="true" styleClass="logo">
                 <image>
-                    <Image url="@/images/logoapp.jpg"/>
+                    <Image url="/images/logoapp.png"/>
                 </image>
             </ImageView>
 
