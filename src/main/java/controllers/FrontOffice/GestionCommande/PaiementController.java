@@ -1,10 +1,16 @@
 package controllers.FrontOffice.GestionCommande;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -12,6 +18,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import kong.unirest.json.JSONObject;
 import Models.gestionCommande.Commande;
 import Models.gestionCommande.Livraison;
@@ -129,6 +136,8 @@ public class PaiementController implements Initializable {
             }
         });
     }
+    private boolean paiementEffectue = false;
+
     private void lancerPaiementFlouci() throws IOException {
         JSONObject jsonBody = null;
         try {
@@ -138,7 +147,7 @@ public class PaiementController implements Initializable {
             jsonBody.put("app_token", APP_TOKEN);
             jsonBody.put("app_secret", APP_SECRET);
             jsonBody.put("accept_card", true);
-            jsonBody.put("amount", 100); // Montant à ajuster selon la commande
+            jsonBody.put("amount", montantFinal);
             jsonBody.put("success_link", "http://localhost:9999/success"); // Lien local
             jsonBody.put("fail_link", "https://example.website.com/fail");
             jsonBody.put("session_timeout_secs", 1200);
@@ -180,12 +189,11 @@ public class PaiementController implements Initializable {
                         httpExchange.close();
 
                         Platform.runLater(() -> {
-                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                            alert.setTitle("Paiement Confirmé");
-                            alert.setHeaderText(null);
-                            alert.setContentText("Le paiement a été effectué avec succès !");
-                            alert.showAndWait();
+                            labelConfirmation.setText("✅ Paiement effectué avec succès !");
+                            labelConfirmation.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                            paiementEffectue = true;
                         });
+
 
                         server.stop(1); // Arrête le serveur après le traitement
                     });
@@ -266,6 +274,11 @@ public class PaiementController implements Initializable {
             rectoLabel.setText(selectedFile.getName());
         }
     }
+    private float montantFinal;
+
+    public void setMontantFinal(float montantFinal) {
+        this.montantFinal = montantFinal;
+    }
 
     private void setupFieldValidators() {
         // Ville - seulement des lettres
@@ -330,10 +343,7 @@ public class PaiementController implements Initializable {
             paysError.setText("Minimum 2 caractères");
             isValid = false;
         }
-// Quand le paiement est réussi, afficher le message de confirmation
-        Platform.runLater(() -> {
-            labelConfirmation.setText("✅ Paiement effectué avec succès !");
-        });
+
         // Validation code postal
         if (codePostalField.getText().trim().isEmpty()) {
             codePostalError.setText("Ce champ est obligatoire");
@@ -354,7 +364,8 @@ public class PaiementController implements Initializable {
 
         return isValid;
     }
-
+    @FXML
+    private Label messageErreur;
     @FXML
     private void validerPaiement() {
         if (!validateFields()) return;
@@ -362,6 +373,11 @@ public class PaiementController implements Initializable {
         RadioButton selectedRadio = (RadioButton) toggleGroup.getSelectedToggle();
         if (selectedRadio == null) {
             new Alert(Alert.AlertType.ERROR, "Choisissez une méthode de paiement !").show();
+            return;
+        }
+
+        if (selectedRadio == virementRadio && !paiementEffectue) {
+            new Alert(Alert.AlertType.WARNING, "Veuillez effectuer le paiement via Flouci avant de continuer.").show();
             return;
         }
 
@@ -381,8 +397,31 @@ public class PaiementController implements Initializable {
         Livraison livraison = new Livraison();
         livraison.setCommande(commande);
         livraison.setAdresse(adresse);
+
+        // Récupérer la date actuelle
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, 2);
+        calendar.add(Calendar.DAY_OF_MONTH, 3);  // Ajouter deux jours normalement
+
+        // Afficher la date après ajout de 3 jours
+        System.out.println("Date après ajout de 3 jours : " + calendar.getTime());
+
+        // Vérification si la date tombe pendant le weekend
+        if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+            // Si c'est un samedi, ajouter 5 jours pour arriver à lundi
+            calendar.add(Calendar.DAY_OF_MONTH, 5);
+        } else if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+            // Si c'est un dimanche, ajouter 1 jour pour arriver à lundi
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        // Vérification si c'est un jour férié
+        while (isJourFerie(calendar.getTime())) {
+            calendar.add(Calendar.DAY_OF_MONTH, 2); // Si c'est férié, ajouter un jour
+        }
+
+        // Afficher la date finale
+        System.out.println("Date finale après ajustements : " + calendar.getTime());
+
         livraison.setDateLiv(calendar.getTime());
         livraison.setStatus("Validation en cours");
 
@@ -396,11 +435,57 @@ public class PaiementController implements Initializable {
             SuiviLivraisonController controller = loader.getController();
             controller.setCommandeId(commande.getId());
 
-            // Affiche la nouvelle scène
-            numeroRueField.getScene().setRoot(root);
 
+            // Créer une nouvelle scène avec le root chargé
+            Scene scene = new Scene(root);
+
+            // Appliquer le CSS à la scène
+            scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+
+            // Récupérer le stage actuel
+            Stage stage = (Stage) numeroRueField.getScene().getWindow();
+            stage.setScene(scene);  // Remplacer la scène de l'application
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    // Méthode qui vérifie si une date est un jour férié
+    private boolean isJourFerie(Date date) {
+        Set<Date> joursFeries = new HashSet<>();
+
+        // Exemple de jours fériés (à personnaliser selon les jours fériés de ton pays)
+        // Ajouter manuellement les jours fériés pour l'année 2025 (par exemple)
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2025, Calendar.JANUARY, 1);  // 1er janvier
+        joursFeries.add(calendar.getTime());
+
+        calendar.set(2025, Calendar.MAY, 1);  // 1er mai
+        joursFeries.add(calendar.getTime());
+
+        calendar.set(2025, Calendar.JULY, 14);  // 14 juillet
+        joursFeries.add(calendar.getTime());
+
+        // Ajouter d'autres jours fériés ici...
+
+        // Vérifier si la date est dans la liste des jours fériés
+        for (Date jourFerie : joursFeries) {
+            if (isSameDay(date, jourFerie)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Méthode qui vérifie si deux dates sont le même jour
+    private boolean isSameDay(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date1);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
+                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
     }
 }

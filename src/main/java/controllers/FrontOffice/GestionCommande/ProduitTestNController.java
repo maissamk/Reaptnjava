@@ -12,6 +12,7 @@ import Models.gestionCommande.ProduitTestN;
 import utils.gestionCommande.PanierSession;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 public class ProduitTestNController {
@@ -43,11 +44,27 @@ public class ProduitTestNController {
     }
 
     @FXML
-    private void openPanier() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/GestionCommande/PanierView.fxml"));
-        Stage stage = new Stage();
-        stage.setScene(new Scene(loader.load()));
-        stage.setTitle("Mon Panier");
-        stage.show();
+    private void openPanier() {
+        try {
+            URL fxmlLocation = getClass().getResource("/FrontOffice/GestionCommande/PanierView.fxml");
+            if (fxmlLocation == null) {
+                System.out.println("Le fichier FXML est introuvable !");
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(fxmlLocation);
+            Stage stage = new Stage();
+            Scene scene = new Scene(loader.load());
+
+            // Ajout explicite de la feuille de style
+            scene.getStylesheets().add(getClass().getResource("/css/panier.css").toExternalForm());
+
+            stage.setScene(scene);
+            stage.setTitle("Mon Panier");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 }
