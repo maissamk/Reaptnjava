@@ -113,7 +113,7 @@
 
                 <!-- Virement -->
                 <VBox spacing="5">
-                    <RadioButton fx:id="virementRadio" style="-fx-font-size: 14px;" text="Virement Bancaire" />
+                    <RadioButton fx:id="virementRadio" style="-fx-font-size: 14px;" text="Payer avec Flouci" />
                     <VBox fx:id="virementDetails" managed="false" visible="false" spacing="10"
                           style="-fx-padding: 15; -fx-border-color: #e0e0e0; -fx-border-radius: 5;">
                         <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="Détails pour le Virement Bancaire" />
@@ -129,6 +129,6 @@
             <Label fx:id="labelConfirmation" text="" style="-fx-font-size: 16px; -fx-text-fill: green; -fx-font-weight: bold;" />
         </VBox>
     </HBox>
-    </ScrollPane >
+    </ScrollPane>
 
 </VBox>

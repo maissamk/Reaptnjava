@@ -78,6 +78,7 @@ public class PaiementController implements Initializable {
     @FXML private Label versoLabel;
     @FXML private Button extraireDetailsButton;
 
+
     private ToggleGroup toggleGroup;
     private Commande commande;
     private static final String APP_TOKEN = "cb172228-ba54-4fce-83a5-c17ad365c9a6";
@@ -234,14 +235,15 @@ public class PaiementController implements Initializable {
     }
 
 
-    @FXML
-    private void choisirImageVerso() {
-        FileChooser fileChooser = new FileChooser();
-        File selectedFile = fileChooser.showOpenDialog(null);
-        if (selectedFile != null) {
-            versoLabel.setText(selectedFile.getName());
-        }
+
+@FXML
+private void choisirImageVerso() {
+    FileChooser fileChooser = new FileChooser();
+    imageVerso = fileChooser.showOpenDialog(null);
+    if (imageVerso != null) {
+        versoLabel.setText(imageVerso.getName());
     }
+}
 
     @FXML
     private void extraireDetailsCarte() {
@@ -269,11 +271,13 @@ public class PaiementController implements Initializable {
     @FXML
     private void choisirImageRecto() {
         FileChooser fileChooser = new FileChooser();
-        File selectedFile = fileChooser.showOpenDialog(null);
-        if (selectedFile != null) {
-            rectoLabel.setText(selectedFile.getName());
+        imageRecto = fileChooser.showOpenDialog(null);
+        if (imageRecto != null) {
+            rectoLabel.setText(imageRecto.getName());
         }
     }
+
+
     private float montantFinal;
 
     public void setMontantFinal(float montantFinal) {
@@ -308,6 +312,8 @@ public class PaiementController implements Initializable {
                 telephoneField.setText(oldVal);
             }
         });
+
+
     }
 
     private boolean validateFields() {
