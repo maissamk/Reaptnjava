@@ -72,8 +72,10 @@
                                 <ColumnConstraints minWidth="250" />
                             </columnConstraints>
 
+                            <!-- Dans la section des détails de carte bancaire, après chaque TextField -->
                             <Label text="Numéro de carte:" GridPane.rowIndex="0" />
                             <TextField fx:id="numeroCarteField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                            <Label fx:id="numeroCarteError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.valignment="BOTTOM"  />
 
                             <Label text="Date expiration (MM/AA):" GridPane.rowIndex="1" />
                             <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -81,10 +83,15 @@
                                 <Label text="CVV:" />
                                 <TextField fx:id="cvvField" prefWidth="50" />
                             </HBox>
+                            <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" >
+                                <Label fx:id="dateExpirationError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" prefWidth="80" />
+                                <Label text="" prefWidth="40" /> <!-- Spacer -->
+                                <Label fx:id="cvvError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" prefWidth="50" />
+                            </HBox>
 
                             <Label text="Nom du titulaire:" GridPane.rowIndex="2" />
                             <TextField fx:id="nomTitulaireField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-
+                            <Label fx:id="nomTitulaireError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM"  />
                             <Label text="Image du Recto:" GridPane.rowIndex="3" />
                             <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                 <Button text="Choisir un fichier" onAction="#choisirImageRecto" />

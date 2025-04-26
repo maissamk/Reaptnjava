@@ -78,6 +78,10 @@ public class PaiementController implements Initializable {
     @FXML private Label versoLabel;
     @FXML private Button extraireDetailsButton;
 
+    @FXML private Label numeroCarteError;
+    @FXML private Label dateExpirationError;
+    @FXML private Label cvvError;
+    @FXML private Label nomTitulaireError;
 
     private ToggleGroup toggleGroup;
     private Commande commande;
@@ -314,13 +318,95 @@ private void choisirImageVerso() {
         });
 
 
-    }
+        // Date d'expiration - format MM/YY
+        dateExpirationField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal.matches("\\d{0,2}/?(\\d{0,2})?")) {
+                dateExpirationField.setText(oldVal);
+            } else if (newVal.length() == 2 && oldVal.length() == 1 && !newVal.contains("/")) {
+                dateExpirationField.setText(newVal + "/");
+            }
+        });
 
+        // CVV - seulement 3 chiffres
+        cvvField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal.matches("\\d{0,3}")) {
+                cvvField.setText(oldVal);
+            }
+        });
+
+        // Nom du titulaire - lettres et espaces uniquement
+        nomTitulaireField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal.matches("[a-zA-ZÀ-ÿ\\s]*")) {
+                nomTitulaireField.setText(oldVal);
+            }
+        });
+
+    }
+    private boolean validateCardFields() {
+        boolean isValid = true;
+
+        // Réinitialiser les messages d'erreur
+        numeroCarteError.setText("");
+        dateExpirationError.setText("");
+        cvvError.setText("");
+        nomTitulaireError.setText("");
+
+        // Validation numéro de carte
+        if (numeroCarteField.getText().trim().isEmpty()) {
+            numeroCarteError.setText("Ce champ est obligatoire");
+            isValid = false;
+        } else if (numeroCarteField.getText().trim().length() < 16) {
+            numeroCarteError.setText("Doit contenir 16 chiffres");
+            isValid = false;
+        }
+        // Validation date d'expiration
+        if (dateExpirationField.getText().trim().isEmpty()) {
+            dateExpirationError.setText("Obligatoire");
+            isValid = false;
+        } else if (!dateExpirationField.getText().matches("\\d{2}/\\d{2}")) {
+            dateExpirationError.setText("Format MM/YY");
+            isValid = false;
+        } else {
+            try {
+                String[] parts = dateExpirationField.getText().split("/");
+                int month = Integer.parseInt(parts[0]);
+                int year = Integer.parseInt(parts[1]);
+                if (month < 1 || month > 12) {
+                    dateExpirationError.setText("Mois invalide");
+                    isValid = false;
+                }
+
+
+            } catch (Exception e) {
+                dateExpirationError.setText("Format invalide");
+                isValid = false;
+            }
+        }
+
+        // Validation CVV
+        if (cvvField.getText().trim().isEmpty()) {
+            cvvError.setText("Obligatoire");
+            isValid = false;
+        } else if (cvvField.getText().trim().length() != 3) {
+            cvvError.setText("3 chiffres");
+            isValid = false;
+        }
+
+        // Validation nom du titulaire
+        if (nomTitulaireField.getText().trim().isEmpty()) {
+            nomTitulaireError.setText("Ce champ est obligatoire");
+            isValid = false;
+        } else if (nomTitulaireField.getText().trim().length() < 3) {
+            nomTitulaireError.setText("Nom trop court");
+            isValid = false;
+        }
+
+        return isValid;
+    }
     private boolean validateFields() {
         boolean isValid = true;
 
         // Réinitialiser les messages d'erreur
-        numeroRueError.setText("");
         villeError.setText("");
         paysError.setText("");
         codePostalError.setText("");
@@ -382,10 +468,14 @@ private void choisirImageVerso() {
             return;
         }
 
-        if (selectedRadio == virementRadio && !paiementEffectue) {
+        // Valider les champs selon la méthode de paiement sélectionnée
+        if (selectedRadio == carteRadio) {
+            if (!validateCardFields()) return;
+        } else if (selectedRadio == virementRadio && !paiementEffectue) {
             new Alert(Alert.AlertType.WARNING, "Veuillez effectuer le paiement via Flouci avant de continuer.").show();
             return;
         }
+
 
         Paiement paiement = new Paiement();
         paiement.setCommande(commande);
