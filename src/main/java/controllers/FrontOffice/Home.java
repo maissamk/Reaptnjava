@@ -155,7 +155,7 @@ public class Home implements Initializable {
     }
     @FXML
     private void handleCommande(ActionEvent event) {
-        navigateTo("/FrontOffice/GestionCommande/ProduitTestNView.fxml", event);
+        navigateTo("/BackOffice/GestionCommandeBack/CommandesAvecDetails.fxml", event);
     }
 
     private void handleMaterial(ActionEvent event) {

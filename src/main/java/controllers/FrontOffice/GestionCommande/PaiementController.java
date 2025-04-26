@@ -494,30 +494,33 @@ private void choisirImageVerso() {
         livraison.setCommande(commande);
         livraison.setAdresse(adresse);
 
-        // Récupérer la date actuelle
+        // Calculer la date de livraison (3 jours ouvrables)
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, 3);  // Ajouter deux jours normalement
+        int joursOuvrables = 0;
+        int joursAAjouter = 0;
 
-        // Afficher la date après ajout de 3 jours
-        System.out.println("Date après ajout de 3 jours : " + calendar.getTime());
-
-        // Vérification si la date tombe pendant le weekend
-        if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
-            // Si c'est un samedi, ajouter 5 jours pour arriver à lundi
-            calendar.add(Calendar.DAY_OF_MONTH, 5);
-        } else if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-            // Si c'est un dimanche, ajouter 1 jour pour arriver à lundi
+        // Boucle jusqu'à atteindre 3 jours ouvrables
+        while (joursOuvrables < 3) {
+            joursAAjouter++;
             calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+            // Vérifier si c'est un jour ouvrable (pas weekend et pas férié)
+            int jourDeSemaine = calendar.get(Calendar.DAY_OF_WEEK);
+            boolean estWeekend = (jourDeSemaine == Calendar.SATURDAY || jourDeSemaine == Calendar.SUNDAY);
+            boolean estFerie = isJourFerie(calendar.getTime());
+
+            // Si ce n'est pas un weekend ni un jour férié, on incrémente le compteur
+            if (!estWeekend && !estFerie) {
+                joursOuvrables++;
+            }
+
+            // Pour debug
+            System.out.println("Jour " + joursAAjouter + ": " + calendar.getTime() +
+                    " (ouvrable: " + (!estWeekend && !estFerie) +
+                    ", compteur: " + joursOuvrables + ")");
         }
 
-        // Vérification si c'est un jour férié
-        while (isJourFerie(calendar.getTime())) {
-            calendar.add(Calendar.DAY_OF_MONTH, 2); // Si c'est férié, ajouter un jour
-        }
-
-        // Afficher la date finale
-        System.out.println("Date finale après ajustements : " + calendar.getTime());
-
+        System.out.println("Date finale de livraison: " + calendar.getTime());
         livraison.setDateLiv(calendar.getTime());
         livraison.setStatus("Validation en cours");
 
