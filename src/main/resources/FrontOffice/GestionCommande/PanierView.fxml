@@ -12,9 +12,11 @@
 <?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/20.0.2"
+
+<?import javafx.scene.control.ScrollPane?>
+<ScrollPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/20.0.2"
             fx:controller="controllers.FrontOffice.GestionCommande.PanierController"
-            prefWidth="800" prefHeight="600" style="-fx-background-color: #f8f8f8;">
+            fitToWidth="true" styleClass="main-scroll" style="-fx-background-color: #f8f8f8;">
 
 
     <VBox spacing="0" AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0"
@@ -114,4 +116,4 @@
             </HBox>
         </VBox>
     </VBox>
-</AnchorPane>
+</ScrollPane>

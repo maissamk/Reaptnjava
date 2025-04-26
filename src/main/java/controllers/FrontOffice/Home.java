@@ -1,6 +1,11 @@
 package controllers.FrontOffice;
 
 import Models.user;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.scene.image.ImageView;
+import javafx.fxml.Initializable;
  import controllers.FrontOffice.material.client.ShowMaterielLocationController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

@@ -25,6 +25,8 @@
     </StackPane>
 
     <!-- Contenu principal -->
+    <ScrollPane fitToWidth="true" styleClass="main-scroll">
+
     <HBox alignment="TOP_CENTER" prefHeight="987.0" prefWidth="902.0" spacing="7" style="-fx-padding: 20;">
         <!-- Adresse -->
         <VBox alignment="CENTER_LEFT" prefWidth="390.0" spacing="5">
@@ -127,4 +129,6 @@
             <Label fx:id="labelConfirmation" text="" style="-fx-font-size: 16px; -fx-text-fill: green; -fx-font-weight: bold;" />
         </VBox>
     </HBox>
+    </ScrollPane >
+
 </VBox>
