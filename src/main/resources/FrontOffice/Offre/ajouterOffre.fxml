@@ -1,47 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.Region?>
 
-<AnchorPane stylesheets="/css/home.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controllers.FrontOffice.Offer.ajouterOffreController">
+<AnchorPane stylesheets="/css/ajouterOffre.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controllers.FrontOffice.Offer.ajouterOffreController">
 
-    <VBox>
-      <children>
+    <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+        <children>
 
-          <VBox>
-              <VBox>
-                  <Text layoutX="150" layoutY="30" style="-fx-font-family: 'Arial'; -fx-font-size: 16; -fx-font-weight: bold;" text="Ajouter une Offre" />
-      
-      
-                  <!-- Form to Add an Offer -->
+            <Text style="-fx-font-family: 'Arial'; -fx-font-size: 24px; -fx-font-weight: bold;" text="Ajouter une Offre" />
 
-      
-                  <Label layoutX="50" layoutY="120" text="Titre:" />
-                  <TextField fx:id="titreField" layoutX="150" layoutY="115" />
-      
-                  <Label layoutX="50" layoutY="160" text="Description:" />
-                  <TextArea fx:id="descField" layoutX="150" layoutY="155" prefHeight="100" prefWidth="300" />
-      
-                  <Label layoutX="50" layoutY="270" text="Compétence:" />
-                  <TextField fx:id="competenceField" layoutX="150" layoutY="265" />
-      
-                  <Label layoutX="50" layoutY="310" text="Statut (Active/Inactive):" />
-                  <CheckBox fx:id="statutCheckBox" layoutX="150" layoutY="305" />
-      
-                  <!-- Button to Submit the Form -->
-                  <Button fx:id="submitButton" layoutX="200" layoutY="360" onAction="#handleAddOffre" text="Ajouter cette offre" />
-      
-                  <!-- Back Button -->
-                  <Button fx:id="RetourButton" layoutX="400" layoutY="360" onAction="#handleRetour" text="Annuler" />
-              </VBox>
-          </VBox>
-      </children>
-   </VBox>
+            <VBox spacing="15" maxWidth="400" style="-fx-background-color: #f9f9f9; -fx-padding: 25; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);">
+                <children>
+
+                    <VBox spacing="5">
+                        <Label text="Titre :" />
+                        <TextField fx:id="titreField" promptText="Entrez le titre de l'offre" />
+                    </VBox>
+
+                    <VBox spacing="5">
+                        <Label text="Description :" />
+                        <TextArea fx:id="descField" promptText="Entrez une description..." prefRowCount="4" wrapText="true"/>
+                    </VBox>
+
+                    <VBox spacing="5">
+                        <Label text="Compétence :" />
+                        <TextField fx:id="competenceField" promptText="Compétences requises" />
+                    </VBox>
+
+                    <VBox spacing="5">
+                        <Label text="Statut (Active/Inactive) :" />
+                        <CheckBox fx:id="statutCheckBox" text="Actif ?" />
+                    </VBox>
+
+                    <HBox spacing="15" alignment="CENTER">
+                        <Button fx:id="submitButton" onAction="#handleAddOffre" text="Ajouter l'offre" styleClass="primary-button" />
+                        <Button fx:id="RetourButton" onAction="#handleRetour" text="Annuler" styleClass="secondary-button" />
+                    </HBox>
+
+                </children>
+            </VBox>
+        </children>
+    </VBox>
 </AnchorPane>

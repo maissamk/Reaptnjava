@@ -5,10 +5,14 @@ import models.Employe;
 import models.Offre;
 import utils.MaConnexion;
 import interfaces.IService;
+import java.util.Arrays;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EmployeService implements IService<Employe> {
     Connection connection;
@@ -17,25 +21,35 @@ public class EmployeService implements IService<Employe> {
     }
     @Override
     public void add(Employe employe) throws SQLException {
-        String sql = "insert into employe (user_identifier,comp,offre_id,date_join) values( ?,?,?,?)";
+        String sql = "insert into employe (user_identifier, comp, offre_id, date_join, dispo) values( ?, ?, ?, ?, ?)";
 
         try {
-            PreparedStatement st =connection.prepareStatement(sql);
-            st.setInt(1,employe.getUser_identifier());
+            PreparedStatement st = connection.prepareStatement(sql);
 
-            st.setString(2,employe.getComp());
-            st.setInt(3,employe.getOffre_id());
+            // Setting user identifier
+            st.setInt(1, employe.getUser_identifier());
 
+            // Setting compétence
+            st.setString(2, employe.getComp());
+
+            // Setting offer ID
+            st.setInt(3, employe.getOffre_id());
+
+            // Setting current timestamp for date_join
             java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
-            st.setTimestamp(4,currentTimestamp);
+            st.setTimestamp(4, currentTimestamp);
 
+            // Serialize the dispo field (array of days) into a PHP serialized string
+            ArrayList<String> dispoList = employe.getDispo();
+            String serializedDispo = toPhpSerializedArray(dispoList); // Serialize the list
+            st.setString(5, serializedDispo); // Set the serialized dispo
+
+            // Execute the update
             st.executeUpdate();
-            System.out.println("Employé ajouté avec succés");
+            System.out.println("Employé ajouté avec succès");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
-
     }
 
     @Override
@@ -48,7 +62,12 @@ public class EmployeService implements IService<Employe> {
             st.setInt(3, employe.getOffre_id());
             st.setBoolean(4, employe.isConf());
             st.setBoolean(5, employe.isSuggested());
-            st.setString(6, employe.getDispo());
+
+            // Convert dispo ArrayList to serialized PHP array format
+            ArrayList<String> dispoList = employe.getDispo();
+            String serializedDispo = toPhpSerializedArray(dispoList); // Use your function to serialize the list
+            st.setString(6, serializedDispo);
+
             st.setInt(7, employe.getId());
             st.executeUpdate();
             System.out.println("Employe updated successfully");
@@ -85,30 +104,35 @@ public class EmployeService implements IService<Employe> {
         String sql = "SELECT * FROM employe"; // Select all columns
         List<Employe> employes = new ArrayList<>();
 
-        try {
-            Statement st = connection.createStatement();
-            ResultSet res = st.executeQuery(sql);
+        try (Statement st = connection.createStatement(); ResultSet res = st.executeQuery(sql)) {
 
             while (res.next()) {
                 Employe employe = new Employe();
-                employe.setId(res.getInt("id")); // Assuming 'id' is a column in your table
-                employe.setOffre_id(res.getInt("offre_id")); // Assuming 'offre_id' is a column
-                employe.setUser_identifier(res.getInt("user_identifier")); // Assuming 'user_identifier' is a column
-                employe.setComp(res.getString("comp")); // Assuming 'comp' is a column
-                employe.setDispo(res.getString("dispo")); // Assuming 'dispo' is a column
-                employe.setConf(res.getBoolean("conf")); // Assuming 'conf' is a column
-                employe.setSuggested(res.getBoolean("suggested")); // Assuming 'suggested' is a column
-                java.sql.Timestamp timestamp = res.getTimestamp("date_join"); // Assuming 'date_join' is a column
+                employe.setId(res.getInt("id"));
+                employe.setOffre_id(res.getInt("offre_id"));
+                employe.setUser_identifier(res.getInt("user_identifier"));
+                employe.setComp(res.getString("comp"));
+
+                // Deserialize dispo from PHP serialized format
+                String serializedDispo = res.getString("dispo");
+                ArrayList<String> dispoList = parseSerializedDays(serializedDispo); // Use your function to parse the serialized string
+                employe.setDispo(dispoList);
+
+                employe.setConf(res.getBoolean("conf"));
+                employe.setSuggested(res.getBoolean("suggested"));
+
+                java.sql.Timestamp timestamp = res.getTimestamp("date_join");
                 if (timestamp != null) {
-                    employe.setDate_join(timestamp.toLocalDateTime()); // Convert to LocalDateTime
+                    employe.setDate_join(timestamp.toLocalDateTime());
                 } else {
-                    employe.setDate_join(null); // Handle null case if necessary
+                    employe.setDate_join(null);
                 }
 
                 employes.add(employe);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            throw new RuntimeException("Error while fetching employees", e);
         }
 
         return employes;
@@ -128,6 +152,12 @@ public class EmployeService implements IService<Employe> {
                 e.setUser_identifier(rs.getInt("user_identifier"));
                 e.setComp(rs.getString("comp"));
                 e.setOffre_id(rs.getInt("offre_id"));
+
+                // 👇 Add this to parse dispo correctly
+                String serializedDispo = rs.getString("dispo");
+                ArrayList<String> dispoList = parseSerializedDays(serializedDispo);
+                e.setDispo(dispoList);
+
                 list.add(e);
             }
 
@@ -136,5 +166,40 @@ public class EmployeService implements IService<Employe> {
         }
         return list;
     }
+
+    public static ArrayList<String> parseSerializedDays(String serialized) {
+        ArrayList<String> days = new ArrayList<>();
+
+        // Check if serialized is null, return empty list if it is
+        if (serialized == null || serialized.isEmpty()) {
+            return days; // Return empty list if null or empty
+        }
+
+        // Regex to match values like s:6:"Monday"; or s:7:"Tuesday";
+        Pattern pattern = Pattern.compile("s:\\d+:\"(.*?)\";");
+        Matcher matcher = pattern.matcher(serialized);
+
+        while (matcher.find()) {
+            days.add(matcher.group(1)); // Add the extracted value
+        }
+
+        return days;
+    }
+
+    public static String toPhpSerializedArray(ArrayList<String> list) {
+        StringBuilder serialized = new StringBuilder();
+        serialized.append("a:").append(list.size()).append(":{");
+
+        for (int i = 0; i < list.size(); i++) {
+            String value = list.get(i);
+            serialized.append("i:").append(i)
+                    .append(";s:").append(value.length())
+                    .append(":\"").append(value).append("\";");
+        }
+
+        serialized.append("}");
+        return serialized.toString();
+    }
+
 
 }

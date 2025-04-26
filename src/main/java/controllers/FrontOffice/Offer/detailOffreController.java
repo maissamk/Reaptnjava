@@ -20,6 +20,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
+import java.util.ArrayList;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.scene.control.CheckBox;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -55,6 +58,7 @@ public class detailOffreController {
 
             //THE EMPLOYEES TABLE
             loadEmployesForOffre(offre.getId());
+
 
         }
     }
@@ -125,13 +129,31 @@ public class detailOffreController {
     @FXML private TableColumn<Employe, Integer> user_identifierColumn;
     @FXML private TableColumn<Employe, String> compColumn;
 
+    @FXML private TableColumn<Employe, String> dispoColumn;
+
     @FXML
     private TextField userIdField;
     @FXML
     private TextField compField;
 
+    @FXML
+    private CheckBox mondayCheckBox;
+    @FXML
+    private CheckBox tuesdayCheckBox;
+    @FXML
+    private CheckBox wednesdayCheckBox;
+    @FXML
+    private CheckBox thursdayCheckBox;
+    @FXML
+    private CheckBox fridayCheckBox;
+    @FXML
+    private CheckBox saturdayCheckBox;
+    @FXML
+    private CheckBox sundayCheckBox;
 
 
+
+    private String dispo;
     private EmployeService employeService = new EmployeService();
 
 
@@ -141,9 +163,27 @@ public class detailOffreController {
         user_identifierColumn.setCellValueFactory(new PropertyValueFactory<>("user_identifier"));
         compColumn.setCellValueFactory(new PropertyValueFactory<>("comp"));
 
+        // Set the CellValueFactory for the dispoColumn to directly use the ArrayList<String>
+        dispoColumn.setCellValueFactory(cellData -> {
+            Employe emp = cellData.getValue();
+
+            // Get the ArrayList of days (no deserialization needed)
+            ArrayList<String> days = emp.getDispo();
+
+            // If days is not null, convert to a comma-separated string, else display "No Availability"
+            String formattedDays = (days != null && !days.isEmpty())
+                    ? String.join(", ", days)
+                    : "No Availability";
+
+            return new ReadOnlyStringWrapper(formattedDays); // Display the formatted string
+        });
+
+        // Fetch the list of employees for the specific offer ID and bind it to the table
         ObservableList<Employe> employes = FXCollections.observableArrayList(
                 employeService.getEmployesByOffreId(offreId)
         );
+
+        // Set the items in the table
         employeTable.setItems(employes);
     }
 
@@ -151,7 +191,6 @@ public class detailOffreController {
     private void handleAddEmploye() {
         String userIdText = userIdField.getText().trim();
         String competence = compField.getText().trim();
-
 
         // 1. Vérifier les champs vides
         if (userIdText.isEmpty() || competence.isEmpty()) {
@@ -167,7 +206,21 @@ public class detailOffreController {
             return;
         }
 
+        // Get the selected days from the checkboxes
+        ArrayList<String> dispoList = new ArrayList<>();
+        if (mondayCheckBox.isSelected()) dispoList.add("Monday");
+        if (tuesdayCheckBox.isSelected()) dispoList.add("Tuesday");
+        if (wednesdayCheckBox.isSelected()) dispoList.add("Wednesday");
+        if (thursdayCheckBox.isSelected()) dispoList.add("Thursday");
+        if (fridayCheckBox.isSelected()) dispoList.add("Friday");
+        if (saturdayCheckBox.isSelected()) dispoList.add("Saturday");
+        if (sundayCheckBox.isSelected()) dispoList.add("Sunday");
 
+        // 2. Vérifier si l'utilisateur a sélectionné au moins un jour
+        if (dispoList.isEmpty()) {
+            showAlert("Champs manquants", "Veuillez sélectionner au moins un jour de disponibilité.");
+            return;
+        }
 
         try {
             if (currentOffre == null) {
@@ -178,9 +231,10 @@ public class detailOffreController {
             Employe newEmploye = new Employe();
             newEmploye.setUser_identifier(userIdentifier);
             newEmploye.setComp(competence);
-            newEmploye.setOffre_id(currentOffre.getId()); // safe because we checked it's not null
+            newEmploye.setOffre_id(currentOffre.getId()); // Safe because we checked it's not null
+            newEmploye.setDispo(dispoList); // Set the selected availability days
 
-            employeService.add(newEmploye); // this will set date_join inside
+            employeService.add(newEmploye); // This will set date_join inside
 
             showAlert("Succès", "Candidature envoyée avec succès !");
         } catch (SQLException e) {
@@ -188,6 +242,7 @@ public class detailOffreController {
             showAlert("Erreur", "Une erreur est survenue lors de l'envoi de la candidature.");
         }
     }
+
 
 
 

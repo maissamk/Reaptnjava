@@ -11,7 +11,8 @@ public class Employe {
     private int id;
     private int offre_id,user_identifier;
     private boolean conf,suggested;
-    private String comp,dispo;
+    private String comp;
+    private  ArrayList<String> dispo;
     private LocalDateTime date_join;
     private Offre offre;
 
@@ -20,7 +21,7 @@ public class Employe {
 
     public Employe() {}
 
-    public Employe(int id, Integer offre_id, Integer user_identifier, boolean conf, boolean suggested, String comp, String dispo, LocalDateTime date_join) {
+    public Employe(int id, Integer offre_id, Integer user_identifier, boolean conf, boolean suggested, String comp, ArrayList dispo, LocalDateTime date_join) {
         this.id = id;
         this.offre_id = offre_id;
         this.user_identifier = user_identifier;
@@ -30,7 +31,7 @@ public class Employe {
         this.dispo = dispo;
         this.date_join = date_join;
     }
-    public Employe(Integer offre_id, Integer user_identifier, boolean conf, boolean suggested, String comp, String dispo, LocalDateTime date_join) {
+    public Employe(Integer offre_id, Integer user_identifier, boolean conf, boolean suggested, String comp, ArrayList dispo, LocalDateTime date_join) {
 
         this.offre_id = offre_id;
         this.user_identifier = user_identifier;
@@ -40,7 +41,7 @@ public class Employe {
         this.dispo = dispo;
         this.date_join = date_join;
     }
-    public Employe(Integer user_identifier, boolean conf, boolean suggested, String comp, String dispo, LocalDateTime date_join) {
+    public Employe(Integer user_identifier, boolean conf, boolean suggested, String comp, ArrayList dispo, LocalDateTime date_join) {
 
         this.offre_id = offre_id;
         this.user_identifier = user_identifier;
@@ -105,13 +106,16 @@ public class Employe {
         this.comp = comp;
     }
 
-    public String getDispo() {
+    public void setDispo(ArrayList<String> dispo) {
+        this.dispo = dispo;
+    }
+    public ArrayList<String> getDispo() {
         return dispo;
     }
 
-    public void setDispo(String dispo) {
-        this.dispo = dispo;
-    }
+
+
+
 
     public LocalDateTime getDate_join() {
         return date_join;
