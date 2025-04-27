@@ -10,7 +10,7 @@ public class user {
     private String telephone;
     private String status;
     private String avatar;
-
+    private String face_token;
 
 
     public user() {}
@@ -27,10 +27,11 @@ public class user {
                 ", telephone='" + telephone + '\'' +
                 ", status='" + status + '\'' +
                 ", avatar='" + avatar + '\'' +
+                ", face_token='" + face_token + '\'' +
                 '}';
     }
 
-    public user(String email, String password, String roles, String nom, String prenom, String telephone, String status, String avatar) {
+    public user(String email, String password, String roles, String nom, String prenom, String telephone, String status, String avatar, String face_token) {
         this.email = email;
         this.password = password;
         this.roles = roles;
@@ -39,9 +40,10 @@ public class user {
         this.telephone = telephone;
         this.status = status;
         this.avatar = avatar;
+        this.face_token = face_token;
     }
 
-    public user(int id, String email, String password, String roles, String nom, String prenom, String telephone, String status, String avatar) {
+    public user(int id, String email, String password, String roles, String nom, String prenom, String telephone, String status, String avatar, String face_token) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -51,6 +53,7 @@ public class user {
         this.telephone = telephone;
         this.status = status;
         this.avatar = avatar;
+        this.face_token = face_token;
     }
 
     public int getId() {
@@ -125,4 +128,12 @@ public class user {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+    public String getFace_token() {
+        return face_token;
+    }
+
+    public void setFace_token(String face_token) {
+        this.face_token = face_token;
+    }
+
 }

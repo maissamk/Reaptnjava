@@ -3,6 +3,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.image.Image?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml" stylesheets="/css/home.css" fx:controller="controllers.FrontOffice.BaseFrontController">
     <VBox spacing="10" prefWidth="1200" prefHeight="600">
 
@@ -11,21 +14,34 @@
         <VBox>
         <HBox>
             <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header">
+                <!-- Logo -->
+                <ImageView fitHeight="71.0" fitWidth="280.0" preserveRatio="true" styleClass="logo">
+                    <Image url="@/images/logoapp.jpg" />
+                </ImageView>
 
+                <!-- User Info -->
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <ImageView fx:id="userAvatar" fitHeight="42.0" fitWidth="42.0" preserveRatio="true" styleClass="user-avatar">
+                        <clip>
+                            <Circle centerX="21.0" centerY="21.0" radius="21.0" />
+                        </clip>
+                    </ImageView>
+                    <VBox spacing="1">
+                        <Label fx:id="userNameLabel" styleClass="user-name" />
+                        <Label fx:id="userRoleLabel" styleClass="user-role" />
+                    </VBox>
+                </HBox>
 
+                <Region HBox.hgrow="ALWAYS" />
 
-
-
-
-                <!-- Navigation Buttons -->
                 <Button fx:id="accueilButton" styleClass="nav-button" text="Accueil" />
+                <Button fx:id="material" styleClass="nav-button" text="Matérielle" />
                 <Button fx:id="produitsButton" styleClass="nav-button" text="Produits" />
                 <Button fx:id="produitsDetailButton" styleClass="nav-button" text="Produits Detail" />
                 <Button fx:id="parcelleButton" styleClass="nav-button" text="Parcelle" />
-                <Button fx:id="offersButton" styleClass="nav-button" text="Offers" />
                 <Button fx:id="masterfulButton" styleClass="featured-button" text="Masterful Agricole" />
 
-
+                <Region HBox.hgrow="ALWAYS" />
 
                 <!-- Auth Buttons -->
                 <Button fx:id="loginButton" styleClass="auth-button" text="Login" />

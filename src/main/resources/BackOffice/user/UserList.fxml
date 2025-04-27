@@ -6,7 +6,7 @@
 <?import javafx.scene.text.*?>
 
 <?import javafx.scene.control.cell.PropertyValueFactory?>
-<BorderPane xmlns="http://javafx.com/javafx/20.0.2"
+<BorderPane stylesheets="/css/UserList.css" xmlns="http://javafx.com/javafx/20.0.2"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.BackOffice.user.UserListController"
             style="-fx-background-color: #f5f9f4;">
@@ -43,10 +43,10 @@
                     <TableColumn text="Role" prefWidth="100">
                         <cellValueFactory><PropertyValueFactory property="roles"/></cellValueFactory>
                     </TableColumn>
-                    <TableColumn text="Status" prefWidth="80">
+                    <TableColumn text="Status" prefWidth="100">
                         <cellValueFactory><PropertyValueFactory property="status"/></cellValueFactory>
                     </TableColumn>
-                    <TableColumn text="Actions" prefWidth="100">
+                    <TableColumn text="Actions" prefWidth="150">
                         <!-- Cell factory will be added in controller -->
                     </TableColumn>
                 </columns>

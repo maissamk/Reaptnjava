@@ -3,9 +3,11 @@ package controllers.BackOffice;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -40,6 +42,8 @@ public class HomeBack implements Initializable {
     @FXML private Button ordersBtn;
     @FXML private Button reportsBtn;
     @FXML private Button logoutBtn;
+    @FXML private Button categoriebtn;
+    @FXML private Button location;
 
     // Sidebar Buttons
     @FXML private Button statisticsBtn;
@@ -98,7 +102,7 @@ public class HomeBack implements Initializable {
     private void setupEventHandlers() {
         // Main Navigation
         dashboardBtn.setOnAction(e -> loadDashboardContent());
-        usersBtn.setOnAction(e -> loadContent("/views/BackOffice/Users.fxml"));
+        usersBtn.setOnAction(e -> loadContent("/BackOffice/user/UserList.fxml"));
         productsBtn.setOnAction(e -> loadContent("/views/BackOffice/Products.fxml"));
         ordersBtn.setOnAction(e -> loadContent("/views/BackOffice/Orders.fxml"));
         reportsBtn.setOnAction(e -> loadContent("/views/BackOffice/Reports.fxml"));
@@ -110,9 +114,34 @@ public class HomeBack implements Initializable {
         harvestBtn.setOnAction(e -> loadContent("/views/BackOffice/Harvest.fxml"));
         settingsBtn.setOnAction(e -> loadContent("/views/BackOffice/Settings.fxml"));
         logsBtn.setOnAction(e -> loadContent("/views/BackOffice/Logs.fxml"));
+        location.setOnAction(this::IndexMateriels);
+        categoriebtn.setOnAction(this::handleCategory);
 
         // Logout
         logoutBtn.setOnAction(e -> handleLogout());
+    }
+    private void navigateTo(String fxmlPath, ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+
+            // Get the stage from the event source
+        //    Node source = (Node) event.getSource();
+      //      Stage stage = (Stage) source.getScene().getWindow();
+                Stage stage = new Stage();
+         //   stage.setFullScreen(true);
+            // Set the new scene
+            stage.setScene(new Scene(root));
+            stage.sizeToScene(); // Optional: resize to fit new content
+            stage.show();
+        } catch (IOException e) {
+        }
+    }
+    private void IndexMateriels(ActionEvent event) {
+        navigateTo("/BackOffice/materials/IndexMateriel.fxml", event);
+    }
+    private void handleCategory(ActionEvent event) {
+        navigateTo("/BackOffice/category/IndexCategorie.fxml", event);
     }
 
     private void loadDashboardContent() {

@@ -4,7 +4,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.scene.control.Alert;
 import java.io.IOException;
 
 public class NavigationUtil {
@@ -19,21 +21,51 @@ public class NavigationUtil {
             Parent root = loader.load();
             Stage stage = (Stage) sourceNode.getScene().getWindow();
 
-            double currentWidth = stage.getWidth();
-            double currentHeight = stage.getHeight();
+            double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
+            double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
 
-            if (currentWidth <= MIN_WIDTH || currentHeight <= MIN_HEIGHT) {
-                currentWidth = DEFAULT_WIDTH;
-                currentHeight = DEFAULT_HEIGHT;
-            }
+            double targetWidth = Math.max(stage.getWidth(), DEFAULT_WIDTH);
+            double targetHeight = Math.max(stage.getHeight(), DEFAULT_HEIGHT);
 
-            Scene newScene = new Scene(root, currentWidth, currentHeight);
+            // If the current size is too small, use default
+            if (targetWidth < MIN_WIDTH) targetWidth = DEFAULT_WIDTH;
+            if (targetHeight < MIN_HEIGHT) targetHeight = DEFAULT_HEIGHT;
+
+            // But don't go beyond screen size
+            if (targetWidth > screenWidth) targetWidth = screenWidth;
+            if (targetHeight > screenHeight) targetHeight = screenHeight;
+
+            Scene newScene = new Scene(root, targetWidth, targetHeight);
+
             stage.setMinWidth(MIN_WIDTH);
             stage.setMinHeight(MIN_HEIGHT);
+
             stage.setScene(newScene);
             stage.centerOnScreen();
+
+            // Optional: Maximize if needed (if stage was already maximized)
+            if (stage.isFullScreen()) {
+                stage.setFullScreen(true);
+            }
         } catch (IOException e) {
             e.printStackTrace();
+            showErrorAlert("Navigation Error", "Cannot load page", e.getMessage());
         }
+    }
+
+    public static void showAlert(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    public static void showErrorAlert(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
