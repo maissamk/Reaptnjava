@@ -3,25 +3,130 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.chart.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.cell.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BackOffice.GestionCommandeBack.CommandesAvecDetailsController">
-    <children>
-        <VBox spacing="10.0" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
-            <Label text="Liste des Commandes avec Livraison et Paiement" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
-            <TableView fx:id="tableView" prefHeight="400.0" prefWidth="800.0">
-                <columns>
-                    <TableColumn fx:id="colIdCommande" text="ID Commande" />
-                    <TableColumn fx:id="colQuantite" text="Quantité" />
-                    <TableColumn fx:id="colTotal" text="Total" />
-                    <TableColumn fx:id="colDateCommande" text="Date Commande" />
-                    <TableColumn fx:id="colAdresse" text="Adresse Livraison" />
-                    <TableColumn fx:id="colStatut" text="Statut Livraison" editable="true" />
-                    <TableColumn fx:id="colDateLivraison" text="Date Livraison" />
-                    <TableColumn fx:id="colPaiement" text="Méthode Paiement" />
-                    <TableColumn fx:id="colDatePaiement" text="Date Paiement" />
-                </columns>
-            </TableView>
-            <Button text="Voir les commandes archivées" onAction="#ouvrirArchives" />
+<ScrollPane fitToWidth="true" fitToHeight="true" styleClass="root" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BackOffice.GestionCommandeBack.CommandesAvecDetailsController" stylesheets="@/css/commandes.css">
+    <content>
+        <VBox styleClass="main-container">
+            <!-- En-tête -->
+            <StackPane styleClass="header-banner" minHeight="100">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20" />
+                </padding>
+                <Label text="Gestion des Commandes" styleClass="header-title" />
+            </StackPane>
+
+            <!-- Dashboard de statistiques -->
+            <HBox spacing="20">
+                <!-- Carte 1: Commandes en cours -->
+                <VBox styleClass="card" HBox.hgrow="ALWAYS">
+                    <Label text="Commandes en cours" styleClass="card-title" />
+                    <HBox alignment="CENTER" spacing="15">
+                        <StackPane styleClass="step-circle, step-current" minWidth="60" minHeight="60">
+                            <Label fx:id="lblCommandesEnCours" text="0" styleClass="step-icon" style="-fx-text-fill: white; -fx-font-size: 22px;" />
+                        </StackPane>
+                        <VBox>
+                            <Label text="Commandes actives" styleClass="step-text-current" />
+                            <Label text="En attente de livraison" styleClass="card-subtitle" />
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- Carte 2: Commandes livrées -->
+                <VBox styleClass="card" HBox.hgrow="ALWAYS">
+                    <Label text="Commandes livrées" styleClass="card-title" />
+                    <HBox alignment="CENTER" spacing="15">
+                        <StackPane styleClass="step-circle, step-active" minWidth="60" minHeight="60">
+                            <Label fx:id="lblCommandesLivrees" text="0" styleClass="step-icon" style="-fx-text-fill: white; -fx-font-size: 22px;" />
+                        </StackPane>
+                        <VBox>
+                            <Label text="Commandes complétées" styleClass="step-text-active" />
+                            <Label text="Livrées avec succès" styleClass="card-subtitle" />
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- Carte 3: Total des ventes -->
+                <VBox styleClass="card" HBox.hgrow="ALWAYS">
+                    <Label text="Total des ventes" styleClass="card-title" />
+                    <HBox alignment="CENTER" spacing="15">
+                        <StackPane styleClass="detail-icon-container, detail-icon-address" minWidth="60" minHeight="60">
+                            <Label text="DT" styleClass="step-icon" style="-fx-text-fill: white; -fx-font-size: 22px;" />
+                        </StackPane>
+                        <VBox>
+                            <Label fx:id="lblTotalVentes" text="0 DT" styleClass="step-text-active" />
+                            <Label text="Chiffre d'affaires" styleClass="card-subtitle" />
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </HBox>
+
+            <!-- Graphiques -->
+            <HBox spacing="20">
+                <!-- Graphique de répartition des statuts -->
+                <VBox styleClass="card" HBox.hgrow="ALWAYS">
+                    <Label text="Répartition par statut" styleClass="card-title" />
+                    <Line endX="400" styleClass="card-divider">
+                        <VBox.margin>
+                            <Insets top="5" bottom="10" />
+                        </VBox.margin>
+                    </Line>
+                    <PieChart fx:id="pieChartStatuts" legendVisible="true" minHeight="250" maxHeight="250" />
+                </VBox>
+
+                <!-- Graphique d'évolution des commandes -->
+                <VBox styleClass="card" HBox.hgrow="ALWAYS">
+                    <Label text="Évolution des commandes" styleClass="card-title" />
+                    <Line endX="400" styleClass="card-divider">
+                        <VBox.margin>
+                            <Insets top="5" bottom="10" />
+                        </VBox.margin>
+                    </Line>
+                    <LineChart fx:id="lineChartCommandes" legendVisible="true" minHeight="250" maxHeight="250">
+                        <xAxis>
+                            <CategoryAxis label="Période" />
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis label="Nombre de commandes" />
+                        </yAxis>
+                    </LineChart>
+                </VBox>
+            </HBox>
+
+            <!-- Liste des commandes -->
+            <VBox styleClass="card">
+                <VBox spacing="10">
+                    <Label text="Liste des Commandes" styleClass="card-title" />
+                    <Label text="Visualisez et gérez toutes vos commandes avec leurs détails de livraison et paiement" styleClass="card-subtitle" />
+                    <Line endX="800" styleClass="card-divider" />
+                </VBox>
+
+                <TableView fx:id="tableView" VBox.vgrow="ALWAYS" minHeight="400">
+                    <columns>
+                        <TableColumn fx:id="colQuantite" text="Quantité" prefWidth="80" />
+                        <TableColumn fx:id="colTotal" text="Total" prefWidth="80" />
+                        <TableColumn fx:id="colDateCommande" text="Date Commande" prefWidth="120" />
+                        <TableColumn fx:id="colAdresse" text="Adresse Livraison" prefWidth="150" />
+                        <TableColumn fx:id="colStatut" text="Statut Livraison" prefWidth="120" editable="true" />
+                        <TableColumn fx:id="colDateLivraison" text="Date Livraison" prefWidth="120" />
+                        <TableColumn fx:id="colPaiement" text="Méthode Paiement" prefWidth="120" />
+                        <TableColumn fx:id="colDatePaiement" text="Date Paiement" prefWidth="120" />
+                    </columns>
+                    <VBox.margin>
+                        <Insets top="20" bottom="20" />
+                    </VBox.margin>
+                </TableView>
+
+                <!-- Boutons d'action -->
+                <HBox spacing="15" alignment="CENTER_RIGHT">
+                    <Button text="Voir les commandes archivées" onAction="#ouvrirArchives" styleClass="button-outline" />
+                    <Button text="Actualiser" onAction="#refreshTable" styleClass="button-primary" />
+                </HBox>
+            </VBox>
         </VBox>
-    </children>
-</AnchorPane>
+    </content>
+</ScrollPane>

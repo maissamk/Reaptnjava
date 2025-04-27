@@ -203,8 +203,12 @@ public class PanierController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/GestionCommande/Paiement.fxml"));
             Parent root = loader.load();
 
+            // Appliquer la feuille de style (optionnel si la scène en gère déjà une)
+            root.getStylesheets().add(getClass().getResource("/css/paiement.css").toExternalForm());
+
             PaiementController controller = loader.getController();
             controller.setCommande(commande);
+            controller.setMontantFinal(totalFinal);
 
             messageErreurLabel.getScene().setRoot(root);
 
@@ -215,4 +219,5 @@ public class PanierController {
             e.printStackTrace();
         }
     }
+
 }

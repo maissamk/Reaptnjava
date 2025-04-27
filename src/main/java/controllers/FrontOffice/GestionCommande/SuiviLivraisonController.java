@@ -3,6 +3,7 @@ package controllers.FrontOffice.GestionCommande;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -31,7 +32,7 @@ public class SuiviLivraisonController {
     private Timer refreshTimer = new Timer();
 
     public void initialize() {
-        // Appelé automatiquement par JavaFX si besoin
+        // Initialisation automatique par JavaFX
     }
 
     public void setCommandeId(int commandeId) {
@@ -77,22 +78,36 @@ public class SuiviLivraisonController {
         VBox[] steps = {step1Box, step2Box, step3Box, step4Box};
         for (VBox box : steps) {
             for (var node : box.getChildren()) {
-                if (node instanceof Label label) {
+                if (node instanceof StackPane stackPane) {
+                    stackPane.setStyle("-fx-background-color: white; -fx-border-color: #cccccc; -fx-border-width: 2px; -fx-border-radius: 50%; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;");
+                } else if (node instanceof Label label) {
+                    // Texte toujours visible, en gris clair
                     label.setTextFill(Color.GRAY);
-                    label.setFont(new Font(14));
+                    label.setFont(new Font(12));
                 }
             }
         }
     }
 
     private void highlightStep(VBox box) {
+        String color = switch (box.getId()) {
+            case "step1Box" -> "#4CAF50"; // Vert
+            case "step2Box" -> "#4CAF50"; // Orange
+            case "step3Box" -> "#4CAF50"; // Bleu
+            case "step4Box" -> "#4CAF50"; // Rose
+            default -> "#4CAF50";
+        };
+
         for (var node : box.getChildren()) {
-            if (node instanceof Label label) {
-                label.setTextFill(Color.GREEN);
-                label.setFont(new Font(16));
+            if (node instanceof StackPane stackPane) {
+                stackPane.setStyle("-fx-background-color: " + color + "; -fx-background-radius: 50%; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;");
+            } else if (node instanceof Label label) {
+                label.setTextFill(Color.BLACK); // Texte actif en noir
+                label.setFont(new Font(13));
             }
         }
     }
+
 
     public void startAutoRefresh(int commandeId) {
         refreshTimer.scheduleAtFixedRate(new TimerTask() {
