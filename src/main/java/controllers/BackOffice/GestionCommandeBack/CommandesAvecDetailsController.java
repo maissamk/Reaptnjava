@@ -73,7 +73,7 @@ public class CommandesAvecDetailsController {
                 data.getValue().getLivraison() != null ? data.getValue().getLivraison().getAdresse() : "N/A"));
 
         ObservableList<String> statusOptions = FXCollections.observableArrayList(
-                "Validation en cours", "En préparation", "Expédiée", "Livrée"
+                "Validation en cours", "En préparation", "Expédiée", "Livrée","Non Livrée"
         );
 
         colStatut.setCellValueFactory(data -> {
@@ -186,7 +186,7 @@ public class CommandesAvecDetailsController {
         // Regrouper les commandes par statut
         Map<String, Long> statutsCount = allCommandes.stream()
                 .collect(Collectors.groupingBy(
-                        cmd -> cmd.getLivraison() != null ? cmd.getLivraison().getStatus() : "Non assigné",
+                        cmd -> cmd.getLivraison() != null ? cmd.getLivraison().getStatus() : "Non Livrée",
                         Collectors.counting()
                 ));
 

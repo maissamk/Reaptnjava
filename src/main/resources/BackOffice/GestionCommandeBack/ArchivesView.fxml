@@ -28,10 +28,7 @@
                         <Label text="Valeur Totale" styleClass="card-title" />
                         <Label fx:id="lblValeurTotale" text="0 DT" styleClass="stat-number" />
                     </VBox>
-                    <VBox styleClass="card" HBox.hgrow="ALWAYS">
-                        <Label text="Délai Moyen de Livraison" styleClass="card-title" />
-                        <Label fx:id="lblDelaiMoyen" text="0 jours" styleClass="stat-number" />
-                    </VBox>
+
                 </HBox>
 
                 <!-- Graphiques des archives -->
@@ -58,7 +55,6 @@
                     <HBox alignment="CENTER_LEFT" spacing="15">
                         <Label text="Commandes Archivées" styleClass="card-title" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <TextField fx:id="txtRechercheArchive" promptText="Rechercher..." prefWidth="200" />
                         <DatePicker fx:id="datePicker" promptText="Filtrer par date" />
                         <Button text="Effacer filtres" onAction="#effacerFiltres" styleClass="button-secondary" />
                         <Button text="Rafraîchir" onAction="#rafraichirDonnees" styleClass="button-secondary" />
@@ -67,7 +63,6 @@
 
                     <TableView fx:id="tableArchives" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn fx:id="colIdArchive" text="ID" prefWidth="60" />
                             <TableColumn fx:id="colQuantiteArchive" text="Qté" prefWidth="60" />
                             <TableColumn fx:id="colTotalArchive" text="Total" prefWidth="80" />
                             <TableColumn fx:id="colDateCommandeArchive" text="Date Commande" prefWidth="120" />

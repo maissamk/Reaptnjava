@@ -3,6 +3,7 @@ package controllers.BackOffice.GestionCommandeBack;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
@@ -38,8 +39,6 @@ public class ArchivesController {
     @FXML
     private TableView<CommandeDetails> tableArchives;
     @FXML
-    private TableColumn<CommandeDetails, Integer> colIdArchive;
-    @FXML
     private TableColumn<CommandeDetails, Integer> colQuantiteArchive;
     @FXML
     private TableColumn<CommandeDetails, Float> colTotalArchive;
@@ -61,7 +60,7 @@ public class ArchivesController {
     @FXML
     private Label lblValeurTotale;
     @FXML
-    private Label lblDelaiMoyen;
+    private Label lblDelaiMoyen; // Ajout de cette déclaration manquante
 
     @FXML
     private PieChart chartPaiements;
@@ -73,12 +72,15 @@ public class ArchivesController {
     @FXML
     private DatePicker datePicker;
 
+    // Ajout du label manquant
+    @FXML
+    private Label lblLastUpdate;
+
     private ObservableList<CommandeDetails> commandesArchivees;
     private FilteredList<CommandeDetails> commandesArchiveesFiltered;
     private CommandeService service;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-    // Modifiez la méthode initialize() pour ajouter l'initialisation du label de dernière mise à jour
     @FXML
     public void initialize() {
         service = new CommandeService();
@@ -90,11 +92,14 @@ public class ArchivesController {
 
         // Initialiser le label de dernière mise à jour
         SimpleDateFormat timeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        // Vérifier si lblLastUpdate existe avant de l'utiliser
+        if (lblLastUpdate != null) {
+            lblLastUpdate.setText(timeFormat.format(new Date()));
+        }
     }
 
     private void setupTableColumns() {
         // Configuration des colonnes de base
-        colIdArchive.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getCommande().getId()).asObject());
         colQuantiteArchive.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getCommande().getQuantite()).asObject());
         colTotalArchive.setCellValueFactory(data -> new SimpleFloatProperty(data.getValue().getCommande().getTotale()).asObject());
         colTotalArchive.setCellFactory(column -> new TableCell<CommandeDetails, Float>() {
@@ -214,7 +219,7 @@ public class ArchivesController {
         double totalValue = commandesArchivees.stream()
                 .mapToDouble(cmd -> cmd.getCommande().getTotale())
                 .sum();
-        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.FRANCE);
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("ar", "TN"));
         lblValeurTotale.setText(currencyFormat.format(totalValue));
 
         // Délai moyen de livraison
@@ -256,9 +261,15 @@ public class ArchivesController {
 
         if (commandesAvecDates > 0) {
             delaiMoyen = delaiMoyen / commandesAvecDates;
-            lblDelaiMoyen.setText(String.format("%.1f jours", delaiMoyen));
+            // Vérifier si lblDelaiMoyen existe avant de l'utiliser
+            if (lblDelaiMoyen != null) {
+                lblDelaiMoyen.setText(String.format("%.1f jours", delaiMoyen));
+            }
         } else {
-            lblDelaiMoyen.setText("N/A");
+            // Vérifier si lblDelaiMoyen existe avant de l'utiliser
+            if (lblDelaiMoyen != null) {
+                lblDelaiMoyen.setText("N/A");
+            }
         }
 
         setupPaymentChart();
@@ -332,9 +343,11 @@ public class ArchivesController {
 
     private void setupFilters() {
         // Configuration du filtre de recherche textuelle
-        txtRechercheArchive.textProperty().addListener((observable, oldValue, newValue) -> {
-            applyFilters(newValue, datePicker.getValue());
-        });
+        if (txtRechercheArchive != null) {
+            txtRechercheArchive.textProperty().addListener((observable, oldValue, newValue) -> {
+                applyFilters(newValue, datePicker.getValue());
+            });
+        }
 
         // Configuration du filtre de date avec le DatePicker
         datePicker.setConverter(new StringConverter<LocalDate>() {
@@ -360,23 +373,33 @@ public class ArchivesController {
         });
 
         datePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
-            applyFilters(txtRechercheArchive.getText(), newValue);
+            String searchText = txtRechercheArchive != null ? txtRechercheArchive.getText() : "";
+            applyFilters(searchText, newValue);
         });
-
-        // Bouton pour effacer les filtres
-        Button btnClearFilters = new Button("Effacer filtres");
-        btnClearFilters.getStyleClass().add("button-secondary");
-        btnClearFilters.setOnAction(event -> {
-            txtRechercheArchive.clear();
-            datePicker.setValue(null);
-            applyFilters("", null);
-        });
-
-        // Ajouter le bouton à côté du DatePicker (à implémenter si nécessaire)
     }
 
     private void applyFilters(String searchText, LocalDate filterDate) {
         commandesArchiveesFiltered.setPredicate(commande -> {
+            // Vérifier si la commande correspond à la recherche textuelle
+            boolean matchesSearch = true;
+            if (searchText != null && !searchText.isEmpty()) {
+                String lowerCaseFilter = searchText.toLowerCase();
+
+                // Vérifier si la recherche correspond à l'adresse
+                String adresse = commande.getLivraison() != null ? commande.getLivraison().getAdresse() : "";
+                if (adresse != null && adresse.toLowerCase().contains(lowerCaseFilter)) {
+                    matchesSearch = true;
+                } else {
+                    // Vérifier si la recherche correspond à la méthode de paiement
+                    String methodePaiement = commande.getPaiement() != null ? commande.getPaiement().getMethodePaiement() : "";
+                    if (methodePaiement != null && methodePaiement.toLowerCase().contains(lowerCaseFilter)) {
+                        matchesSearch = true;
+                    } else {
+                        matchesSearch = false;
+                    }
+                }
+            }
+
             // Vérifier si la commande correspond à la date sélectionnée
             boolean matchesDate = true;
             if (filterDate != null) {
@@ -396,7 +419,7 @@ public class ArchivesController {
                 }
             }
 
-            return matchesDate;
+            return matchesSearch && matchesDate;
         });
 
         // Mettre à jour les statistiques en fonction des filtres appliqués
@@ -415,7 +438,7 @@ public class ArchivesController {
         lblValeurTotale.setText(currencyFormat.format(totalValue));
 
         // Mettre à jour le délai moyen si nécessaire
-        if (filteredCount > 0) {
+        if (filteredCount > 0 && lblDelaiMoyen != null) {
             double delaiMoyen = 0;
             int commandesAvecDates = 0;
 
@@ -453,22 +476,8 @@ public class ArchivesController {
             } else {
                 lblDelaiMoyen.setText("N/A");
             }
-        } else {
+        } else if (lblDelaiMoyen != null) {
             lblDelaiMoyen.setText("N/A");
-        }
-    }
-
-    private LocalDate convertToLocalDate(Date date) {
-        if (date == null) {
-            return null;
-        }
-
-        if (date instanceof java.sql.Date) {
-            return ((java.sql.Date) date).toLocalDate();
-        } else {
-            return date.toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate();
         }
     }
 
@@ -511,19 +520,11 @@ public class ArchivesController {
             e.printStackTrace();
         }
     }
-
     @FXML
     public void retourAuxCommandes() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/GestionCommandeBack/CommandeBackOffice.fxml"));
-            Parent root = loader.load();
-
-            Scene scene = tableArchives.getScene();
-            Stage stage = (Stage) scene.getWindow();
-            scene.setRoot(root);
-
-            stage.setTitle("Gestion des Commandes");
-        } catch (IOException e) {
+            navigateTo("/BackOffice/GestionCommandeBack/CommandesAvecDetails.fxml", null);
+        } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
             alert.setHeaderText("Impossible de revenir à la gestion des commandes");
@@ -533,35 +534,64 @@ public class ArchivesController {
         }
     }
 
-    // Ajoutez ces déclarations à la liste des variables FXML
-    @FXML
-    private Label lblLastUpdate;
+    // Méthode utilitaire pour naviguer vers une autre vue
+    private void navigateTo(String fxmlPath, javafx.event.ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
 
-    // Ajoutez cette méthode dans la classe ArchivesController
+            Scene scene;
+            Stage stage;
+
+            if (event != null) {
+                // Si un événement est fourni, utilisez-le pour obtenir la fenêtre
+                scene = ((Node) event.getSource()).getScene();
+                stage = (Stage) scene.getWindow();
+            } else {
+                // Sinon, utilisez tableArchives pour obtenir la fenêtre
+                scene = tableArchives.getScene();
+                stage = (Stage) scene.getWindow();
+            }
+
+            scene.setRoot(root);
+            stage.setTitle("Gestion des Commandes");
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Impossible de naviguer vers " + fxmlPath);
+            alert.setContentText("Une erreur est survenue: " + e.getMessage());
+            alert.showAndWait();
+            e.printStackTrace();
+        }
+    }
     @FXML
     public void effacerFiltres() {
-        txtRechercheArchive.clear();
+        if (txtRechercheArchive != null) {
+            txtRechercheArchive.clear();
+        }
         datePicker.setValue(null);
         applyFilters("", null);
 
         // Mettre à jour le label de dernière mise à jour
-        SimpleDateFormat timeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        lblLastUpdate.setText(timeFormat.format(new Date()));
+        if (lblLastUpdate != null) {
+            SimpleDateFormat timeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            lblLastUpdate.setText("Dernière mise à jour: " + timeFormat.format(new Date()));
+        }
     }
 
-
-    // Modifiez la méthode rafraichirDonnees() pour mettre à jour la date de dernière mise à jour
+    @FXML
     public void rafraichirDonnees() {
         loadArchivedData();
         setupStatistics();
-        txtRechercheArchive.clear();
+        if (txtRechercheArchive != null) {
+            txtRechercheArchive.clear();
+        }
         datePicker.setValue(null);
 
         // Mettre à jour le label de dernière mise à jour
-        SimpleDateFormat timeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        lblLastUpdate.setText(timeFormat.format(new Date()));
+        if (lblLastUpdate != null) {
+            SimpleDateFormat timeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            lblLastUpdate.setText("Dernière mise à jour: " + timeFormat.format(new Date()));
+        }
     }
-
-
-
 }

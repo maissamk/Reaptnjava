@@ -238,7 +238,170 @@ Label[style*="text-fill: #808080"] {
 .animated-pulse {
     -fx-animation: pulse 2s infinite;
 }
+/* paiement.css */
 
+/* Base styles */
+.root {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-background-color: white;
+}
+
+/* Scroll pane styling */
+.main-scroll {
+    -fx-background-color: white;
+    -fx-background: white;
+    -fx-border-color: transparent;
+}
+
+.main-scroll > .viewport {
+    -fx-background-color: white;
+}
+
+/* Text Fields */
+.text-field, .text-area, .combo-box {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 4;
+    -fx-padding: 8;
+    -fx-font-size: 13px;
+}
+
+.text-field:focused, .text-area:focused, .combo-box:focused {
+    -fx-border-color: #4CAF50;
+    -fx-background-color: white;
+}
+
+/* Labels */
+Label {
+    -fx-font-size: 13px;
+}
+
+/* Buttons */
+.button {
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s ease;
+}
+
+.confirm-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 12 20;
+    -fx-background-radius: 4;
+}
+
+.confirm-button:hover {
+    -fx-background-color: #45a049;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 1);
+}
+
+.back-button {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #505050;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 12 20;
+    -fx-background-radius: 4;
+}
+
+.back-button:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+.secondary-button {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-padding: 8 15;
+    -fx-font-weight: normal;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #1976D2;
+}
+
+.file-button {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #505050;
+    -fx-padding: 6 12;
+}
+
+.file-button:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+/* Radio buttons */
+.radio-button {
+    -fx-font-size: 14px;
+    -fx-padding: 5;
+}
+
+.radio-button .radio {
+    -fx-background-color: white;
+    -fx-border-color: #c0c0c0;
+    -fx-border-radius: 10;
+    -fx-padding: 3;
+}
+
+.radio-button:selected .radio .dot {
+    -fx-background-color: #4CAF50;
+}
+
+/* Payment method icons with hover effect */
+.payment-icon {
+    -fx-cursor: hand;
+    -fx-opacity: 0.8;
+    -fx-transition: all 0.2s ease;
+}
+
+.payment-icon:hover {
+    -fx-opacity: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* Payment options */
+.payment-option {
+    -fx-padding: 5;
+    -fx-background-radius: 5;
+    -fx-transition: all 0.2s ease;
+}
+
+.payment-option:hover {
+    -fx-background-color: rgba(0,0,0,0.02);
+}
+
+/* Header styling */
+.header-container {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);
+}
+
+/* Footer links */
+.footer-link {
+    -fx-text-fill: #2196F3;
+    -fx-cursor: hand;
+}
+
+.footer-link:hover {
+    -fx-underline: true;
+}
+
+/* Separator styling */
+.separator .line {
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0.5;
+}
+
+/* Tooltip */
+.tooltip {
+    -fx-background-color: #424242;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 5 10;
+    -fx-background-radius: 3;
+}
 /* Styles responsifs */
 @media screen and (max-width: 800px) {
     HBox {
