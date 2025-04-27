@@ -27,11 +27,13 @@ public class WeatherWidget extends VBox {
     private final Label temperatureLabel = new Label("--°C");
     private final Label cityLabel = new Label("City, Country");
     private final Label descriptionLabel = new Label("Weather description");
+    private final Label detailedWeatherLabel = new Label("Detailed weather information will appear here");
     private final Label feelsLikeLabel = new Label("Feels like: --°C");
     private final Label humidityLabel = new Label("Humidity: --%");
     private final Label windSpeedLabel = new Label("Wind: -- m/s");
     private final Label sunriseLabel = new Label("Sunrise: --:--");
     private final Label sunsetLabel = new Label("Sunset: --:--");
+    private final Label todayWeatherLabel = new Label("How's the weather today?");
     private final ImageView weatherIconView = new ImageView();
     private final TextField cityInputField = new TextField();
     private final Button searchButton = new Button("Search");
@@ -109,6 +111,17 @@ public class WeatherWidget extends VBox {
         cityLabel.getStyleClass().add("city-label");
         descriptionLabel.getStyleClass().add("description-label");
         
+        // Detailed weather description
+        detailedWeatherLabel.getStyleClass().add("detailed-weather-label");
+        detailedWeatherLabel.setAlignment(Pos.CENTER);
+        detailedWeatherLabel.setWrapText(true);
+        detailedWeatherLabel.setStyle("-fx-font-size: 14px; -fx-padding: 5 0; -fx-font-weight: normal;");
+        
+        // Today's weather message
+        todayWeatherLabel.getStyleClass().add("today-weather-label");
+        todayWeatherLabel.setAlignment(Pos.CENTER);
+        todayWeatherLabel.setStyle("-fx-font-style: italic; -fx-font-size: 14px; -fx-padding: 5 0;");
+        
         // Weather Details
         HBox weatherDetails = new HBox(30);
         weatherDetails.setAlignment(Pos.CENTER);
@@ -134,6 +147,8 @@ public class WeatherWidget extends VBox {
             weatherHeader,
             cityLabel,
             descriptionLabel,
+            detailedWeatherLabel,
+            todayWeatherLabel,
             new Region() {{ setMinHeight(5); }},
             weatherDetails,
             errorLabel
@@ -176,6 +191,7 @@ public class WeatherWidget extends VBox {
         statusLabel.setText("Loading weather data...");
         temperatureLabel.setText("Loading...");
         descriptionLabel.setText("Fetching weather data");
+        detailedWeatherLabel.setText("Loading weather information...");
         cityLabel.setText(city);
         
         // Disable inputs while loading
@@ -226,11 +242,18 @@ public class WeatherWidget extends VBox {
             temperatureLabel.setText(data.getFormattedTemperature());
             cityLabel.setText(data.getCityName() + ", " + data.getCountry());
             descriptionLabel.setText(data.getCapitalizedDescription());
+            
+            // Update the detailed weather description
+            updateDetailedWeatherDescription(data);
+            
             feelsLikeLabel.setText("Feels like: " + data.getFormattedFeelsLike());
             humidityLabel.setText("Humidity: " + data.getHumidity() + "%");
             windSpeedLabel.setText("Wind: " + String.format("%.1f", data.getWindSpeed()) + " m/s");
             sunriseLabel.setText("Sunrise: " + data.getFormattedSunrise());
             sunsetLabel.setText("Sunset: " + data.getFormattedSunset());
+            
+            // Set today's weather message based on current conditions
+            updateTodayWeatherMessage(data);
             
             // Check if this is mock data
             if (data.getCountry().equals("Demo")) {
@@ -247,10 +270,100 @@ public class WeatherWidget extends VBox {
         }
     }
     
+    private void updateDetailedWeatherDescription(WeatherData data) {
+        String description = data.getWeatherDescription().toLowerCase();
+        int temp = (int) Math.round(data.getTemperature());
+        int humidity = data.getHumidity();
+        double windSpeed = data.getWindSpeed();
+        
+        StringBuilder details = new StringBuilder("Current weather: ");
+        
+        // Add temperature description
+        if (temp < 0) {
+            details.append("Freezing ");
+        } else if (temp < 10) {
+            details.append("Cold ");
+        } else if (temp < 20) {
+            details.append("Cool ");
+        } else if (temp < 25) {
+            details.append("Mild ");
+        } else if (temp < 30) {
+            details.append("Warm ");
+        } else {
+            details.append("Hot ");
+        }
+        
+        // Add main weather type
+        if (description.contains("rain") || description.contains("drizzle")) {
+            details.append("and rainy. ");
+        } else if (description.contains("snow")) {
+            details.append("with snowfall. ");
+        } else if (description.contains("cloud")) {
+            details.append("and cloudy. ");
+        } else if (description.contains("clear") || description.contains("sun")) {
+            details.append("with clear skies. ");
+        } else if (description.contains("fog") || description.contains("mist")) {
+            details.append("with reduced visibility. ");
+        } else if (description.contains("thunder") || description.contains("storm")) {
+            details.append("with thunderstorms. ");
+        } else {
+            details.append("with " + data.getWeatherDescription() + ". ");
+        }
+        
+        // Add humidity information
+        if (humidity > 80) {
+            details.append("Very humid ");
+        } else if (humidity > 60) {
+            details.append("Humid ");
+        } else if (humidity < 30) {
+            details.append("Dry ");
+        } else {
+            details.append("Moderate humidity ");
+        }
+        
+        // Add wind information
+        if (windSpeed > 10) {
+            details.append("and windy conditions.");
+        } else if (windSpeed > 5) {
+            details.append("with moderate breeze.");
+        } else {
+            details.append("with light winds.");
+        }
+        
+        detailedWeatherLabel.setText(details.toString());
+    }
+    
+    private void updateTodayWeatherMessage(WeatherData data) {
+        int temp = (int) Math.round(data.getTemperature());
+        String description = data.getWeatherDescription().toLowerCase();
+        
+        if (description.contains("rain") || description.contains("drizzle")) {
+            todayWeatherLabel.setText("Today's weather: Don't forget your umbrella!");
+        } else if (description.contains("snow")) {
+            todayWeatherLabel.setText("Today's weather: Bundle up, it's snowing!");
+        } else if (description.contains("clear") && temp > 25) {
+            todayWeatherLabel.setText("Today's weather: Perfect day for the beach!");
+        } else if (description.contains("clear") || description.contains("sun")) {
+            todayWeatherLabel.setText("Today's weather: Enjoy the sunshine today!");
+        } else if (description.contains("cloud")) {
+            todayWeatherLabel.setText("Today's weather: A bit cloudy, but still nice!");
+        } else if (description.contains("fog") || description.contains("mist")) {
+            todayWeatherLabel.setText("Today's weather: Be careful driving in low visibility!");
+        } else if (temp < 5) {
+            todayWeatherLabel.setText("Today's weather: It's freezing cold outside!");
+        } else if (temp > 30) {
+            todayWeatherLabel.setText("Today's weather: Stay hydrated, it's hot today!");
+        } else {
+            todayWeatherLabel.setText("Today's weather: " + data.getCapitalizedDescription() + "!");
+        }
+    }
+    
     private void showError(String message) {
         LOGGER.warning("Weather widget error: " + message);
         temperatureLabel.setText("--°C");
         descriptionLabel.setText("Weather unavailable");
+        detailedWeatherLabel.setText("Weather details unavailable");
+        todayWeatherLabel.setText("How's the weather today?");
         errorLabel.setText(message);
         errorLabel.setVisible(true);
         errorLabel.setManaged(true);

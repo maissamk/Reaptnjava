@@ -17,11 +17,18 @@ import java.io.IOException;
  */
 public class PDFExporter {
     
-    private static final Font TITLE_FONT = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD, BaseColor.DARK_GRAY);
-    private static final Font SUBTITLE_FONT = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.DARK_GRAY);
+    // Improved fonts with better typography
+    private static final Font TITLE_FONT = new Font(Font.FontFamily.HELVETICA, 22, Font.BOLD, new BaseColor(44, 62, 80));
+    private static final Font SUBTITLE_FONT = new Font(Font.FontFamily.HELVETICA, 14, Font.ITALIC, new BaseColor(52, 73, 94));
     private static final Font HEADER_FONT = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
-    private static final Font NORMAL_FONT = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.BLACK);
-    private static final Font TOTAL_FONT = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLACK);
+    private static final Font NORMAL_FONT = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, new BaseColor(44, 62, 80));
+    private static final Font TOTAL_FONT = new Font(Font.FontFamily.HELVETICA, 13, Font.BOLD, new BaseColor(44, 62, 80));
+    
+    // Primary colors for the application
+    private static final BaseColor PRIMARY_COLOR = new BaseColor(39, 174, 96);
+    private static final BaseColor SECONDARY_COLOR = new BaseColor(26, 115, 64);
+    private static final BaseColor ACCENT_COLOR = new BaseColor(230, 126, 34);
+    private static final BaseColor LIGHT_GRAY = new BaseColor(241, 241, 241);
     
     /**
      * Export product inventory report to PDF
@@ -32,7 +39,7 @@ public class PDFExporter {
      */
     public static boolean exportProductInventory(List<Product> products, String filePath) {
         try {
-            Document document = new Document(PageSize.A4, 36, 36, 54, 36);
+            Document document = new Document(PageSize.A4, 36, 36, 60, 36);
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
             
             // Add header and footer
@@ -40,56 +47,50 @@ public class PDFExporter {
             
             document.open();
             
-            // Add title
-            addTitle(document, "Fruitables Inventory Report");
-            addSubtitle(document, "Generated on: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            // Add logo and title section
+            addLogoAndTitle(document, "Fruitables Inventory Report");
             
-            // Add summary information
+            // Add report timestamp with icon
+            addReportTimestamp(document);
+            
+            // Add summary information with improved styling
             addSummaryInfo(document, products);
             
             // Add table with inventory data
             PdfPTable table = new PdfPTable(5);
             table.setWidthPercentage(100);
-            table.setSpacingBefore(10f);
-            table.setSpacingAfter(10f);
+            table.setSpacingBefore(15f);
+            table.setSpacingAfter(15f);
             
             // Set column widths
-            float[] columnWidths = {1.5f, 3f, 1.5f, 1.5f, 1.5f};
+            float[] columnWidths = {1.2f, 3f, 1.5f, 1.5f, 1.5f};
             table.setWidths(columnWidths);
             
             // Add table headers
             addTableHeader(table, new String[]{"ID", "Product", "Price ($)", "Weight (kg)", "Quantity"});
             
-            // Add table data
+            // Add table data with alternating row colors
             double totalValue = 0.0;
+            boolean alternateRow = false;
             for (Product product : products) {
-                PdfPCell idCell = new PdfPCell(new Phrase(String.valueOf(product.getId()), NORMAL_FONT));
-                PdfPCell nameCell = new PdfPCell(new Phrase(product.getCategory(), NORMAL_FONT));
-                PdfPCell priceCell = new PdfPCell(new Phrase(String.format("%.2f", product.getPrice()), NORMAL_FONT));
-                PdfPCell weightCell = new PdfPCell(new Phrase(String.format("%.2f", product.getWeight()), NORMAL_FONT));
-                PdfPCell quantityCell = new PdfPCell(new Phrase(String.valueOf(product.getQuantity()), NORMAL_FONT));
-                
-                idCell.setPadding(5);
-                nameCell.setPadding(5);
-                priceCell.setPadding(5);
-                weightCell.setPadding(5);
-                quantityCell.setPadding(5);
-                
-                table.addCell(idCell);
-                table.addCell(nameCell);
-                table.addCell(priceCell);
-                table.addCell(weightCell);
-                table.addCell(quantityCell);
+                addTableRow(table, alternateRow,
+                    String.valueOf(product.getId()),
+                    product.getCategory(),
+                    String.format("%.2f", product.getPrice()),
+                    String.format("%.2f", product.getWeight()),
+                    String.valueOf(product.getQuantity()));
                 
                 totalValue += product.getPrice() * product.getQuantity();
+                alternateRow = !alternateRow;
             }
             
             document.add(table);
             
-            // Add total value
-            Paragraph totalParagraph = new Paragraph("Total Inventory Value: $" + String.format("%.2f", totalValue), TOTAL_FONT);
-            totalParagraph.setAlignment(Element.ALIGN_RIGHT);
-            document.add(totalParagraph);
+            // Add total value with enhanced styling
+            addTotalSection(document, "Total Inventory Value:", totalValue);
+            
+            // Add notes section
+            addNotesSection(document);
             
             document.close();
             return true;
@@ -110,7 +111,7 @@ public class PDFExporter {
      */
     public static boolean exportSalesReport(List<Product> products, Date startDate, Date endDate, String filePath) {
         try {
-            Document document = new Document(PageSize.A4, 36, 36, 54, 36);
+            Document document = new Document(PageSize.A4, 36, 36, 60, 36);
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
             
             // Add header and footer
@@ -118,60 +119,62 @@ public class PDFExporter {
             
             document.open();
             
-            // Add title
-            addTitle(document, "Fruitables Sales Report");
+            // Add logo and title
+            addLogoAndTitle(document, "Fruitables Sales Report");
             
-            // Add date range
+            // Add date range with enhanced styling
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            addSubtitle(document, "Period: " + dateFormat.format(startDate) + " to " + dateFormat.format(endDate));
-            addSubtitle(document, "Generated on: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            Paragraph dateParagraph = new Paragraph();
+            dateParagraph.setAlignment(Element.ALIGN_CENTER);
+            dateParagraph.setSpacingAfter(5f);
+            
+            Chunk dateRangeLabel = new Chunk("Period: ", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, SECONDARY_COLOR));
+            Chunk dateRange = new Chunk(dateFormat.format(startDate) + " to " + dateFormat.format(endDate), SUBTITLE_FONT);
+            dateParagraph.add(dateRangeLabel);
+            dateParagraph.add(dateRange);
+            document.add(dateParagraph);
+            
+            // Add report timestamp
+            addReportTimestamp(document);
             
             // Add table with sales data
             PdfPTable table = new PdfPTable(5);
             table.setWidthPercentage(100);
-            table.setSpacingBefore(10f);
+            table.setSpacingBefore(15f);
             
             // Set column widths
-            float[] columnWidths = {1.5f, 3f, 1.5f, 1.5f, 2f};
+            float[] columnWidths = {1.2f, 3f, 1.5f, 1.5f, 2f};
             table.setWidths(columnWidths);
             
             // Add table headers
             addTableHeader(table, new String[]{"ID", "Product", "Units Sold", "Unit Price ($)", "Total Revenue ($)"});
             
-            // Add dummy sales data (in real app, this would come from sales records)
+            // Add dummy sales data with alternating row colors
             double totalRevenue = 0.0;
+            boolean alternateRow = false;
             for (Product product : products) {
                 // Dummy sales numbers (would come from real sales data)
                 int unitsSold = (int) (Math.random() * 100);
                 double revenue = unitsSold * product.getPrice();
                 
-                PdfPCell idCell = new PdfPCell(new Phrase(String.valueOf(product.getId()), NORMAL_FONT));
-                PdfPCell nameCell = new PdfPCell(new Phrase(product.getCategory(), NORMAL_FONT));
-                PdfPCell unitsSoldCell = new PdfPCell(new Phrase(String.valueOf(unitsSold), NORMAL_FONT));
-                PdfPCell priceCell = new PdfPCell(new Phrase(String.format("%.2f", product.getPrice()), NORMAL_FONT));
-                PdfPCell revenueCell = new PdfPCell(new Phrase(String.format("%.2f", revenue), NORMAL_FONT));
-                
-                idCell.setPadding(5);
-                nameCell.setPadding(5);
-                unitsSoldCell.setPadding(5);
-                priceCell.setPadding(5);
-                revenueCell.setPadding(5);
-                
-                table.addCell(idCell);
-                table.addCell(nameCell);
-                table.addCell(unitsSoldCell);
-                table.addCell(priceCell);
-                table.addCell(revenueCell);
+                addTableRow(table, alternateRow,
+                    String.valueOf(product.getId()),
+                    product.getCategory(),
+                    String.valueOf(unitsSold),
+                    String.format("%.2f", product.getPrice()),
+                    String.format("%.2f", revenue));
                 
                 totalRevenue += revenue;
+                alternateRow = !alternateRow;
             }
             
             document.add(table);
             
-            // Add total revenue
-            Paragraph totalParagraph = new Paragraph("Total Revenue: $" + String.format("%.2f", totalRevenue), TOTAL_FONT);
-            totalParagraph.setAlignment(Element.ALIGN_RIGHT);
-            document.add(totalParagraph);
+            // Add total revenue with enhanced styling
+            addTotalSection(document, "Total Revenue:", totalRevenue);
+            
+            // Add notes section
+            addNotesSection(document);
             
             document.close();
             return true;
@@ -182,83 +185,250 @@ public class PDFExporter {
     }
     
     /**
-     * Add a title to the document
+     * Add a logo and title section to the document
      */
-    private static void addTitle(Document document, String title) throws DocumentException {
-        Paragraph titleParagraph = new Paragraph(title, TITLE_FONT);
-        titleParagraph.setAlignment(Element.ALIGN_CENTER);
-        titleParagraph.setSpacingAfter(10f);
-        document.add(titleParagraph);
+    private static void addLogoAndTitle(Document document, String title) throws DocumentException, IOException {
+        // Create a table for logo and title to align them side by side
+        PdfPTable headerTable = new PdfPTable(2);
+        headerTable.setWidthPercentage(100);
+        headerTable.setWidths(new float[]{1f, 4f});
+        headerTable.setSpacingAfter(15f);
         
-        // Add a line after title
+        // Logo cell (left side)
+        Image logoImage = Image.getInstance(createLogoPlaceholder());
+        logoImage.scaleToFit(70, 70);
+        PdfPCell logoCell = new PdfPCell(logoImage);
+        logoCell.setBorder(Rectangle.NO_BORDER);
+        logoCell.setPaddingRight(10f);
+        logoCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        
+        // Title cell (right side)
+        PdfPCell titleCell = new PdfPCell();
+        titleCell.setBorder(Rectangle.NO_BORDER);
+        titleCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        
+        Paragraph titleParagraph = new Paragraph(title, TITLE_FONT);
+        titleParagraph.setAlignment(Element.ALIGN_LEFT);
+        titleCell.addElement(titleParagraph);
+        
+        headerTable.addCell(logoCell);
+        headerTable.addCell(titleCell);
+        document.add(headerTable);
+        
+        // Add a decorative line after title
         LineSeparator line = new LineSeparator();
-        line.setPercentage(95f);
+        line.setLineColor(PRIMARY_COLOR);
+        line.setLineWidth(2);
+        line.setPercentage(100f);
         line.setAlignment(Element.ALIGN_CENTER);
         document.add(new Chunk(line));
     }
     
     /**
-     * Add a subtitle to the document
+     * Create a placeholder for the logo (would be replaced with actual logo in production)
      */
-    private static void addSubtitle(Document document, String subtitle) throws DocumentException {
-        Paragraph subtitleParagraph = new Paragraph(subtitle, SUBTITLE_FONT);
-        subtitleParagraph.setAlignment(Element.ALIGN_CENTER);
-        subtitleParagraph.setSpacingAfter(10f);
-        document.add(subtitleParagraph);
+    private static Image createLogoPlaceholder() throws DocumentException, IOException {
+        // In a production app, you would load an actual logo file
+        // This is creating a very basic image as a placeholder
+        
+        // Create a BufferedImage for the logo
+        java.awt.image.BufferedImage awtImage = new java.awt.image.BufferedImage(
+            60, 60, java.awt.image.BufferedImage.TYPE_INT_RGB);
+        java.awt.Graphics2D g2d = awtImage.createGraphics();
+        
+        // Draw green background
+        g2d.setColor(new java.awt.Color(PRIMARY_COLOR.getRed(), PRIMARY_COLOR.getGreen(), PRIMARY_COLOR.getBlue()));
+        g2d.fillRect(0, 0, 60, 60);
+        
+        // Draw "F" letter
+        g2d.setColor(java.awt.Color.WHITE);
+        g2d.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 36));
+        java.awt.FontMetrics fm = g2d.getFontMetrics();
+        g2d.drawString("F", (60 - fm.stringWidth("F")) / 2, 
+                      ((60 - fm.getHeight()) / 2) + fm.getAscent());
+        g2d.dispose();
+        
+        // Convert to iText Image
+        return Image.getInstance(awtImage, null);
     }
     
     /**
-     * Add summary information to the document
+     * Add report timestamp to the document
+     */
+    private static void addReportTimestamp(Document document) throws DocumentException {
+        Paragraph dateParagraph = new Paragraph();
+        dateParagraph.setAlignment(Element.ALIGN_CENTER);
+        dateParagraph.setSpacingAfter(15f);
+        
+        Chunk generatedLabel = new Chunk("Generated on: ", new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, SECONDARY_COLOR));
+        Chunk dateTimeValue = new Chunk(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), 
+                              new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, new BaseColor(52, 73, 94)));
+        dateParagraph.add(generatedLabel);
+        dateParagraph.add(dateTimeValue);
+        document.add(dateParagraph);
+    }
+    
+    /**
+     * Add summary information to the document with enhanced styling
      */
     private static void addSummaryInfo(Document document, List<Product> products) throws DocumentException {
         int totalProducts = products.size();
         int totalStock = products.stream().mapToInt(Product::getQuantity).sum();
+        double totalWeight = products.stream().mapToDouble(p -> p.getWeight() * p.getQuantity()).sum();
+        double avgPrice = products.stream().mapToDouble(Product::getPrice).average().orElse(0);
         
         PdfPTable summaryTable = new PdfPTable(2);
-        summaryTable.setWidthPercentage(60);
+        summaryTable.setWidthPercentage(80);
         summaryTable.setHorizontalAlignment(Element.ALIGN_CENTER);
         summaryTable.setSpacingBefore(15f);
         summaryTable.setSpacingAfter(15f);
         
-        // Style for summary table
-        PdfPCell headerCell = new PdfPCell(new Phrase("Summary", HEADER_FONT));
-        headerCell.setBackgroundColor(new BaseColor(39, 174, 96));
+        // Summary table title
+        Paragraph summaryTitle = new Paragraph("Summary Dashboard", 
+                                 new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, PRIMARY_COLOR));
+        summaryTitle.setAlignment(Element.ALIGN_CENTER);
+        summaryTitle.setSpacingAfter(10f);
+        document.add(summaryTitle);
+        
+        // Style for summary table header
+        PdfPCell headerCell = new PdfPCell(new Phrase("Key Metrics", HEADER_FONT));
+        headerCell.setBackgroundColor(PRIMARY_COLOR);
         headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         headerCell.setPadding(8f);
         headerCell.setColspan(2);
         summaryTable.addCell(headerCell);
         
-        // Add summary rows
-        PdfPCell labelCell = new PdfPCell(new Phrase("Total Products", NORMAL_FONT));
-        labelCell.setPadding(5f);
-        summaryTable.addCell(labelCell);
-        
-        PdfPCell valueCell = new PdfPCell(new Phrase(String.valueOf(totalProducts), NORMAL_FONT));
-        valueCell.setPadding(5f);
-        summaryTable.addCell(valueCell);
-        
-        labelCell = new PdfPCell(new Phrase("Total Items in Stock", NORMAL_FONT));
-        labelCell.setPadding(5f);
-        summaryTable.addCell(labelCell);
-        
-        valueCell = new PdfPCell(new Phrase(String.valueOf(totalStock), NORMAL_FONT));
-        valueCell.setPadding(5f);
-        summaryTable.addCell(valueCell);
+        // Add summary rows with improved styling
+        addSummaryRow(summaryTable, "Total Products", String.valueOf(totalProducts));
+        addSummaryRow(summaryTable, "Total Items in Stock", String.valueOf(totalStock));
+        addSummaryRow(summaryTable, "Total Weight (kg)", String.format("%.2f", totalWeight));
+        addSummaryRow(summaryTable, "Average Price ($)", String.format("%.2f", avgPrice));
         
         document.add(summaryTable);
+    }
+    
+    /**
+     * Add a row to the summary table with consistent styling
+     */
+    private static void addSummaryRow(PdfPTable table, String label, String value) {
+        Font labelFont = new Font(Font.FontFamily.HELVETICA, 11, Font.BOLD, new BaseColor(52, 73, 94));
+        Font valueFont = new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, new BaseColor(44, 62, 80));
+        
+        PdfPCell labelCell = new PdfPCell(new Phrase(label, labelFont));
+        labelCell.setBackgroundColor(LIGHT_GRAY);
+        labelCell.setPadding(8f);
+        labelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table.addCell(labelCell);
+        
+        PdfPCell valueCell = new PdfPCell(new Phrase(value, valueFont));
+        valueCell.setPadding(8f);
+        valueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table.addCell(valueCell);
     }
     
     /**
      * Add header row to the table
      */
     private static void addTableHeader(PdfPTable table, String[] headers) {
+        // Table title cell
+        PdfPCell titleCell = new PdfPCell(new Phrase("Detailed Information", HEADER_FONT));
+        titleCell.setBackgroundColor(SECONDARY_COLOR);
+        titleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        titleCell.setPadding(10);
+        titleCell.setColspan(headers.length);
+        table.addCell(titleCell);
+        
+        // Column headers
         for (String header : headers) {
             PdfPCell cell = new PdfPCell(new Phrase(header, HEADER_FONT));
-            cell.setBackgroundColor(new BaseColor(39, 174, 96));
+            cell.setBackgroundColor(PRIMARY_COLOR);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            cell.setPadding(5);
+            cell.setPadding(8);
             table.addCell(cell);
         }
+    }
+    
+    /**
+     * Add a row to the data table with alternating row colors
+     */
+    private static void addTableRow(PdfPTable table, boolean alternateRow, String... values) {
+        BaseColor rowColor = alternateRow ? LIGHT_GRAY : BaseColor.WHITE;
+        
+        for (int i = 0; i < values.length; i++) {
+            PdfPCell cell = new PdfPCell(new Phrase(values[i], NORMAL_FONT));
+            cell.setBackgroundColor(rowColor);
+            
+            // Center alignment for numeric columns
+            if (i > 1) {
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            } else {
+                cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            }
+            
+            cell.setPadding(7);
+            cell.setBorderWidth(0.5f);
+            cell.setBorderColor(new BaseColor(220, 220, 220));
+            table.addCell(cell);
+        }
+    }
+    
+    /**
+     * Add total section with enhanced styling
+     */
+    private static void addTotalSection(Document document, String label, double value) throws DocumentException {
+        // Create a table for better alignment
+        PdfPTable totalTable = new PdfPTable(2);
+        totalTable.setWidthPercentage(40);
+        totalTable.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        totalTable.setSpacingBefore(10f);
+        totalTable.setSpacingAfter(15f);
+        
+        // Total label
+        PdfPCell labelCell = new PdfPCell(new Phrase(label, TOTAL_FONT));
+        labelCell.setBorder(Rectangle.TOP);
+        labelCell.setBorderColorTop(PRIMARY_COLOR);
+        labelCell.setBorderWidthTop(2f);
+        labelCell.setPadding(8f);
+        labelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        
+        // Total value
+        PdfPCell valueCell = new PdfPCell(new Phrase("$" + String.format("%.2f", value), TOTAL_FONT));
+        valueCell.setBorder(Rectangle.TOP);
+        valueCell.setBorderColorTop(PRIMARY_COLOR);
+        valueCell.setBorderWidthTop(2f);
+        valueCell.setPadding(8f);
+        valueCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        
+        totalTable.addCell(labelCell);
+        totalTable.addCell(valueCell);
+        document.add(totalTable);
+    }
+    
+    /**
+     * Add a notes section to the document
+     */
+    private static void addNotesSection(Document document) throws DocumentException {
+        // Add a separator
+        LineSeparator line = new LineSeparator();
+        line.setLineColor(new BaseColor(200, 200, 200));
+        line.setPercentage(100f);
+        line.setAlignment(Element.ALIGN_CENTER);
+        document.add(new Chunk(line));
+        
+        // Notes title
+        Paragraph notesTitle = new Paragraph("Notes", 
+                               new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, SECONDARY_COLOR));
+        notesTitle.setSpacingBefore(15f);
+        notesTitle.setSpacingAfter(5f);
+        document.add(notesTitle);
+        
+        // Notes content
+        Paragraph notesContent = new Paragraph(
+            "This report was automatically generated by the Fruitables Management System. " +
+            "For any questions or issues, please contact system administrator.",
+            new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC, new BaseColor(100, 100, 100))
+        );
+        document.add(notesContent);
     }
     
     /**
@@ -275,29 +445,35 @@ public class PDFExporter {
         public void onEndPage(PdfWriter writer, Document document) {
             PdfContentByte cb = writer.getDirectContent();
             
-            // Add footer with page number
+            // Add stylish footer with page number
             Rectangle rect = document.getPageSize();
-            cb.setRGBColorFill(100, 100, 100);
+            float footerY = rect.getBottom() + 30;
+            
+            // Add footer line
+            cb.setColorStroke(new BaseColor(220, 220, 220));
+            cb.moveTo(rect.getLeft() + 30, footerY + 15);
+            cb.lineTo(rect.getRight() - 30, footerY + 15);
+            cb.stroke();
             
             try {
-                BaseFont bf = BaseFont.createFont();
-                cb.setFontAndSize(bf, 10);
+                BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+                cb.setFontAndSize(bf, 9);
+                cb.setColorFill(new BaseColor(100, 100, 100));
                 
-                // Add Page number
+                // Add Page number with stylish format
                 String pageText = "Page " + writer.getPageNumber();
-                float textWidth = bf.getWidthPoint(pageText, 10);
                 cb.beginText();
-                cb.showTextAligned(PdfContentByte.ALIGN_CENTER, pageText, (rect.getRight() + rect.getLeft()) / 2, rect.getBottom() + 30, 0);
+                cb.showTextAligned(PdfContentByte.ALIGN_CENTER, pageText, (rect.getRight() + rect.getLeft()) / 2, footerY, 0);
                 cb.endText();
                 
                 // Add footer text
                 cb.beginText();
-                cb.showTextAligned(PdfContentByte.ALIGN_LEFT, title, rect.getLeft() + 36, rect.getBottom() + 30, 0);
+                cb.showTextAligned(PdfContentByte.ALIGN_LEFT, title, rect.getLeft() + 36, footerY, 0);
                 cb.endText();
                 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 cb.beginText();
-                cb.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Generated: " + sdf.format(new Date()), rect.getRight() - 36, rect.getBottom() + 30, 0);
+                cb.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Generated: " + sdf.format(new Date()), rect.getRight() - 36, footerY, 0);
                 cb.endText();
             } catch (DocumentException | IOException e) {
                 e.printStackTrace();

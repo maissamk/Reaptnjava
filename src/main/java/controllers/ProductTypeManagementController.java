@@ -78,11 +78,12 @@ public class ProductTypeManagementController {
     }
     
     private void setupTableColumns() {
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         seasonColumn.setCellValueFactory(new PropertyValueFactory<>("season"));
         productionMethodColumn.setCellValueFactory(new PropertyValueFactory<>("productionMethod"));
         harvestDateColumn.setCellValueFactory(new PropertyValueFactory<>("harvestDate"));
         preservationDurationColumn.setCellValueFactory(new PropertyValueFactory<>("preservationDuration"));
+        
+        productTypeTable.getColumns().remove(idColumn);
     }
     
     private void loadAllProductTypes() {

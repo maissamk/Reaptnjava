@@ -12,6 +12,7 @@ import models.Product;
 import models.Stock;
 import service.ProductService;
 import service.StockService;
+import utils.EmailService;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -88,15 +89,17 @@ public class StockManagementController {
     private ProductService productService;
     private ObservableList<Stock> stockList;
     private Stock selectedStock;
+    private EmailService emailService;
     
     @FXML
     public void initialize() {
         stockService = new StockService();
         productService = new ProductService();
         stockList = FXCollections.observableArrayList();
+        emailService = new EmailService();
         
         // Set up table columns
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        // idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         productColumn.setCellValueFactory(cellData -> {
             return new SimpleObjectProperty<>(cellData.getValue().getProduct());
         });
@@ -138,6 +141,9 @@ public class StockManagementController {
                 }
             }
         });
+
+        // Remove ID column from the table view
+        stockTable.getColumns().remove(idColumn);
 
         // Load products for combobox
         loadProducts();
@@ -428,10 +434,64 @@ public class StockManagementController {
             
             if (lowStockItems.isEmpty()) {
                 showAlert(Alert.AlertType.INFORMATION, "Low Stock Items", "No low stock items found.");
+            } else {
+                // Show low stock alert
+                Alert lowStockAlert = new Alert(Alert.AlertType.WARNING);
+                lowStockAlert.setTitle("Low Stock Alert");
+                lowStockAlert.setHeaderText("Low Stock Items Detected");
+                
+                StringBuilder content = new StringBuilder();
+                content.append("The following items are below minimum stock levels:\n\n");
+                
+                for (Stock stock : lowStockItems) {
+                    content.append("• ").append(stock.getProduct().getCategory())
+                           .append(" - Current: ").append(stock.getAvailableQuantity())
+                           .append(", Minimum: ").append((int)stock.getStockMinimum())
+                           .append("\n");
+                }
+                
+                // Add information about automatic email
+                content.append("\nAn email notification is being sent automatically.");
+                lowStockAlert.setContentText(content.toString());
+                
+                // Show the alert
+                lowStockAlert.showAndWait();
+                
+                // Send email automatically
+                sendLowStockEmailAutomatically(lowStockItems);
             }
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Database Error", "Error loading low stock items: " + e.getMessage());
         }
+    }
+    
+    private void sendLowStockEmailAutomatically(List<Stock> lowStockItems) {
+        // Default recipient email - could be stored in application settings
+        String recipientEmail = "manager@fruitables.com";
+        
+        // Show sending indicator
+        Alert sendingAlert = new Alert(Alert.AlertType.INFORMATION);
+        sendingAlert.setTitle("Sending Email");
+        sendingAlert.setHeaderText(null);
+        sendingAlert.setContentText("Automatically sending low stock alert email...");
+        sendingAlert.show();
+        
+        // Use separate thread for email sending to avoid freezing UI
+        new Thread(() -> {
+            boolean success = emailService.sendLowStockAlert(recipientEmail, lowStockItems);
+            
+            // Update UI on JavaFX thread
+            javafx.application.Platform.runLater(() -> {
+                sendingAlert.close();
+                if (success) {
+                    showAlert(Alert.AlertType.INFORMATION, "Email Sent", 
+                        "Low stock alert email has been automatically sent to " + recipientEmail);
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Email Error", 
+                        "Failed to send automatic email. Please check Mailtrap credentials in EmailService.java");
+                }
+            });
+        }).start();
     }
     
     private void showAlert(Alert.AlertType alertType, String title, String content) {

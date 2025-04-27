@@ -103,7 +103,8 @@ public class ProductManagementController {
     }
     
     private void setupTableColumns() {
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        // Remove ID column setup
+        // idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         
         // Custom cell factory for product type to display in a cleaner format
@@ -123,6 +124,9 @@ public class ProductManagementController {
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         weightColumn.setCellValueFactory(new PropertyValueFactory<>("weight"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+        
+        // Remove ID column from the table view
+        productTable.getColumns().remove(idColumn);
     }
     
     private void loadAllProducts() {
