@@ -148,6 +148,16 @@
             <artifactId>ffmpeg-platform</artifactId>
             <version>4.4-1.5.6</version>
         </dependency>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-people</artifactId>
+            <version>v1-rev20220301-1.32.1</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

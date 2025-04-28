@@ -210,7 +210,19 @@ public class SessionManager {
     public boolean canUserLogin(user user) {
         return user != null && !UserStatusService.UserStatus.BLOQUE.toString().equals(user.getStatus());
     }
+    private static user pendingUser;
 
+    public static void setPendingUser(user user) {
+        pendingUser = user;
+    }
+
+    public static user getPendingUser() {
+        return pendingUser;
+    }
+
+    public static void clearPendingUser() {
+        pendingUser = null;
+    }
 
 
 }

@@ -66,7 +66,7 @@
         <VBox prefWidth="220" spacing="10" styleClass="sidebar">
             <Label styleClass="menu-title" text="MAIN MENU" />
 
-            <Button fx:id="statisticsBtn" styleClass="side-btn" text="Statistics">
+            <Button fx:id="statisticsBtn" styleClass="side-btn" text="Statistics" >
                 <graphic>
                     <ImageView fitHeight="22" fitWidth="22">
                         <Image url="@/images/icons/stats.png" />

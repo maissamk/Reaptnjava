@@ -7,6 +7,7 @@ import utils.PasswordUtils;
 import utils.UserStatusService;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +75,19 @@ public class UserServices implements UserCrud<user> {
         }
         return null;
     }
+    public user getUserByGoogleId(String googleId) {
+        String sql = "SELECT * FROM user WHERE google_id = ?";
+        try (PreparedStatement st = cnx.prepareStatement(sql)) {
+            st.setString(1, googleId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return extractUserFromResultSet(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching user by Google ID: " + e.getMessage());
+        }
+        return null;
+    }
 
     private user extractUserFromResultSet(ResultSet rs) throws SQLException {
         user user = new user();
@@ -84,8 +98,18 @@ public class UserServices implements UserCrud<user> {
         user.setNom(rs.getString("nom"));
         user.setPrenom(rs.getString("prenom"));
         user.setTelephone(rs.getString("telephone"));
-        user.setAvatar(rs.getString("avatar"));
         user.setStatus(rs.getString("status"));
+        user.setAvatar(rs.getString("avatar"));
+        user.setFace_token(rs.getString("face_token"));
+        user.setGoogleId(rs.getString("google_id"));
+        // Add these for reset token fields if they exist in the result set
+        try {
+            user.setResetToken(rs.getString("reset_token"));
+            user.setTokenExpiry(rs.getTimestamp("token_expiry") != null ?
+                    rs.getTimestamp("token_expiry").toLocalDateTime() : null);
+        } catch (SQLException e) {
+            // Fields might not exist in all queries
+        }
         return user;
     }
 
@@ -245,5 +269,47 @@ public class UserServices implements UserCrud<user> {
             e.printStackTrace();
         }
         return users;
+    }
+    public user getUserByResetToken(String token) {
+        String sql = "SELECT * FROM user WHERE reset_token = ? AND token_expiry > NOW()";
+        try (PreparedStatement st = cnx.prepareStatement(sql)) {
+            st.setString(1, token);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                user user = extractUserFromResultSet(rs);
+                user.setResetToken(rs.getString("reset_token"));
+                user.setTokenExpiry(rs.getTimestamp("token_expiry").toLocalDateTime());
+                return user;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching user by token: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public boolean updatePasswordWithToken(String token, String newPassword) {
+        String sql = "UPDATE user SET password = ?, reset_token = NULL, token_expiry = NULL " +
+                "WHERE reset_token = ? AND token_expiry > NOW()";
+        try (PreparedStatement st = cnx.prepareStatement(sql)) {
+            st.setString(1, PasswordUtils.hashForSymfony(newPassword));
+            st.setString(2, token);
+            return st.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error updating password with token: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean setPasswordResetToken(String email, String token, LocalDateTime expiry) {
+        String sql = "UPDATE user SET reset_token = ?, token_expiry = ? WHERE email = ?";
+        try (PreparedStatement st = cnx.prepareStatement(sql)) {
+            st.setString(1, token);
+            st.setTimestamp(2, java.sql.Timestamp.valueOf(expiry));
+            st.setString(3, email);
+            return st.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error setting reset token: " + e.getMessage());
+            return false;
+        }
     }
 }

@@ -63,12 +63,16 @@ public class FacePlusPlusService {
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new IOException("Unexpected code " + response + ", body: " + response.body().string());
+                // Log the error (optional) but don't crash
+                System.err.println("Face++ compare failed: " + response.body().string());
+                return false; // <-- Return false instead of throwing
             }
 
-            JSONObject jsonResponse = new JSONObject(response.body().string());
+            String responseBody = response.body().string();
+            JSONObject jsonResponse = new JSONObject(responseBody);
             return jsonResponse.has("confidence") &&
                     jsonResponse.getDouble("confidence") > 70.0;
         }
     }
+
 }
