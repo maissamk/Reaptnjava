@@ -15,12 +15,29 @@ import javafx.scene.Scene;
 import java.io.IOException;
 
 
+
+import models.user;
+import javafx.event.ActionEvent;
+
+
+import javafx.fxml.Initializable;
+
+import javafx.scene.control.Alert;
+
+
+import javafx.scene.image.Image;
+
+
+
+import utils.SessionManager;
+
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Home implements Initializable {
 
-    // Navigation elements
+    @FXML public Button material;
     @FXML private HBox topNavigationBar;
     @FXML private ImageView logoImageView;
     @FXML private Button accueilButton;
@@ -30,61 +47,112 @@ public class Home implements Initializable {
     @FXML private Button offersButton;
     @FXML private Button masterfulButton;
     @FXML private Button loginButton;
-
-
-    // Main content
-    @FXML private StackPane mainContentPane;
+    @FXML private Button profileButton;
+    @FXML private ImageView userAvatar;
+    @FXML private Label userNameLabel;
+    @FXML private Label userRoleLabel;
+    @FXML private StackPane mainContentPane; // Make sure this matches your FXML
     @FXML private Label welcomeLabel;
-
-    // Footer elements
-    @FXML private HBox footerBar;
-    @FXML private Label privacyPolicyLabel;
-    @FXML private Label termsOfUseLabel;
-    @FXML private Label salesRefundsLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Verify all FXML injections
-        if (welcomeLabel == null) {
-            throw new IllegalStateException("welcomeLabel was not injected properly from FXML");
-        }
-
+        checkPersistentSession();
         updateUI();
         setupEventHandlers();
     }
 
-    private void updateUI() {
-        if (true) {
-            welcomeLabel.setText("Welcome back, ");
-            loginButton.setText("Logout");
-        } else {
-            welcomeLabel.setText("Welcome to Agricultural Management System");
-            loginButton.setText("Login");
+    private void checkPersistentSession() {
+        if (SessionManager.getInstance().isLoggedIn() &&
+                SessionManager.getInstance().getCurrentUser() == null) {
+            SessionManager.getInstance().loadSession();
         }
     }
 
+    private void updateUI() {
+        if (SessionManager.getInstance().isLoggedIn()) {
+            user currentUser = SessionManager.getInstance().getCurrentUser();
+            if (currentUser != null) {
+                userNameLabel.setText(currentUser.getNom());
+                userRoleLabel.setText(String.join(", ", currentUser.getRoles()));
+
+                try {
+                    Image avatar = new Image(getClass().getResourceAsStream(
+                            "/images" + currentUser.getAvatar()));
+                    userAvatar.setImage(avatar);
+                } catch (Exception e) {
+                    userAvatar.setImage(new Image(getClass().getResourceAsStream("/images/defaultavatar.png")));
+                }
+
+                welcomeLabel.setText("Welcome back, " + currentUser.getNom());
+                loginButton.setText("Logout");
+                loginButton.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold;");
+                profileButton.setVisible(true);
+                return;
+            }
+        }
+
+        // Default state when not logged in
+        userNameLabel.setText("Guest");
+        userRoleLabel.setText("Not logged in");
+        userAvatar.setImage(new Image(getClass().getResourceAsStream("/images/defaultavatar.png")));
+        welcomeLabel.setText("Welcome to Agricultural Management System");
+        loginButton.setText("Login");
+        loginButton.setStyle("-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold;");
+        profileButton.setVisible(false);
+    }
+
     private void setupEventHandlers() {
-        // Navigation buttons
         accueilButton.setOnAction(e -> handleAccueil());
-        produitsButton.setOnAction(e -> handleProduits());
+        material.setOnAction(this::handleMaterial);
+        produitsButton.setOnAction(e -> handleProduitsDetail());
         produitsDetailButton.setOnAction(e -> handleProduitsDetail());
         parcelleButton.setOnAction(e -> handleParcelle());
         offersButton.setOnAction(e -> handleOffers());
         masterfulButton.setOnAction(e -> handleMasterful());
-
+        loginButton.setOnAction(e -> handleLogin());
+        profileButton.setOnAction(e -> handleProfile());
     }
 
-    // Navigation handlers
+    @FXML
+    private void handleProfile() {
+        try {
+            // Load the profile FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/profile.fxml"));
+            Parent profileContent = loader.load();
+
+            // Clear existing content and add the profile content
+            mainContentPane.getChildren().clear();
+            mainContentPane.getChildren().add(profileContent);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load profile page", Alert.AlertType.ERROR);
+        }
+    }
+
+    // Other handler methods remain the same...
     private void handleAccueil() {
         System.out.println("Accueil clicked");
     }
 
-    private void handleProduits() {
-        System.out.println("Produits clicked");
+    private void handleMaterial(ActionEvent event) {
+        navigateTo("/FrontOffice/materials/client/IndexMateriel.fxml", event);
+    }
+
+    private void navigateTo(String fxmlPath, ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Error", "Failed to load page: " + fxmlPath, Alert.AlertType.ERROR);
+        }
     }
 
     private void handleProduitsDetail() {
-        System.out.println("Produits Detail clicked");
+        // Implementation
     }
 
     private void handleParcelle() {
@@ -120,6 +188,40 @@ public class Home implements Initializable {
         System.out.println("Masterful Agricole clicked");
     }
 
+    @FXML
+    private void handleLogin() {
+        try {
+            if (SessionManager.getInstance().isLoggedIn()) {
+                SessionManager.getInstance().logout();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+                Stage stage = (Stage) loginButton.getScene().getWindow();
+                stage.setScene(new Scene(loader.load()));
+                stage.show();
+            } else {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/Login.fxml"));
+                Stage stage = (Stage) loginButton.getScene().getWindow();
+                stage.setScene(new Scene(loader.load()));
+                stage.show();
+            }
+        } catch (IOException e) {
+            showAlert("Error", "Failed to load login page", Alert.AlertType.ERROR);
+        }
+    }
 
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
+    public void HomeBack(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
+        Parent root = loader.load();
+
+        Stage stage = (Stage) loginButton.getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
 }

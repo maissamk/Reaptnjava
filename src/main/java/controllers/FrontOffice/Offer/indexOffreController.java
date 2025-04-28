@@ -32,22 +32,41 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import utils.LanguageManager;
+
 import java.io.IOException;
+import java.net.URL;
+
+import java.util.ResourceBundle;
+import java.util.Locale;
 
 public class indexOffreController {
 
+    @FXML
+    private Label availableOffersLabel;
     @FXML private ListView<Offre> offersListView;
     @FXML private Button loadMoreButton;
     @FXML private Button addOffreButton;
     private Offre selectedOffre;
+    private ResourceBundle bundle;
+
+    @FXML
+    private Button langButton;
+    @FXML
+    private Button englishButton;
 
     private ObservableList<Offre> offersList = FXCollections.observableArrayList();
     private OffreService offreService = new OffreService(); // Instance of OffreService
 
     // Initialize method to populate the ListView
+
     public void initialize() {
         try {
             loadOffers(); // Load the offers from the database
+
+
+
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -88,6 +107,15 @@ public class indexOffreController {
                 openDetailOffrePage(newValue);
             }
         });
+
+        // ⚡️ Add LanguageManager loading
+        LanguageManager.selectedLanguage = "default";  // Default to English
+
+        LanguageManager.loadLanguage();
+        updateUIText(); // <- You already have this function to refresh your labels/buttons etc.
+
+
+
     }
 
     // Method to load offers into the ListView
@@ -156,6 +184,25 @@ public class indexOffreController {
         }
     }
 
+    // Method to switch to Deutsch
+    @FXML
+    private void switchLang() {
+        LanguageManager.selectedLanguage = "de";  // Set the language to Deutsch
+        LanguageManager.loadLanguage();
+        updateUIText();  // Update UI after changing language
+    }
 
+    @FXML
+    private void switchToEnglish() {
+        LanguageManager.selectedLanguage = "default";  // Set the language to English
+        LanguageManager.loadLanguage();
+        updateUIText();  // Update UI after changing language
+    }
+
+    private void updateUIText() {
+        availableOffersLabel.setText(LanguageManager.getString("availableOffers"));
+        loadMoreButton.setText(LanguageManager.getString("loadMore"));
+        addOffreButton.setText(LanguageManager.getString("addOffre"));
+    }
 
 }

@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 
 <AnchorPane stylesheets="/css/indexOffre.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controllers.FrontOffice.Offer.indexOffreController">
 
@@ -16,7 +17,7 @@
         <VBox spacing="10">
 
 
-            <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Available Offers" />
+            <Label fx:id="availableOffersLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Available Offers" />
 
             <!-- ListView for displaying offers -->
             <ListView fx:id="offersListView" prefHeight="400" prefWidth="900">
@@ -27,6 +28,11 @@
             <Button fx:id="loadMoreButton" alignment="CENTER" contentDisplay="CENTER" onAction="#loadMoreOffers" text="Load More" />
             <!-- Button to Add an Offer -->
             <Button fx:id="addOffreButton" layoutX="200" layoutY="20" onAction="#handleAjouterOffre" text="Ajouter Offre" />
+
+            <HBox spacing="10" alignment="CENTER">
+                <Button fx:id="langButton" text="Deutsch" onAction="#switchLang" />
+                <Button fx:id="englishButton" text="English" onAction="#switchToEnglish" />
+            </HBox>
 
         </VBox>
 

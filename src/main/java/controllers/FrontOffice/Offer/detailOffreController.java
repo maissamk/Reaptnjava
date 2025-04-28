@@ -1,48 +1,84 @@
 package controllers.FrontOffice.Offer;
 import controllers.FrontOffice.BaseFrontController;
 
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.Offre;
+import models.user;
 import javafx.event.ActionEvent;
 import services.OffreService;
 import models.Employe;
 import services.EmployeService;
+import utils.LanguageManager;
+import utils.SessionManager;
+import java.io.IOException;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TextField;
+import javafx.scene.control.CheckBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+
+import utils.GeminiService;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
+
 import java.util.ArrayList;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.scene.control.CheckBox;
 
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 import java.sql.SQLException;
+import utils.LanguageManager;
+import java.util.ResourceBundle;
+import java.net.URL;
+import java.util.Locale;
 
 
 public class detailOffreController {
 
+    @FXML private Label titre;
     @FXML private Label titreLabel;
+
+    @FXML private Label desc;
     @FXML private Label descLabel;
+
+    @FXML private Label competence;
     @FXML private Label competenceLabel;
+
+    @FXML private Label statut;
     @FXML private Label statutLabel;
 
     @FXML private Button editButton;
     @FXML private Button deleteButton;
 
     private Offre currentOffre;
+
+    @FXML
+    private Button langButton;
+    @FXML
+    private Button englishButton;
+
+    public void initialize() {
+
+        // ⚡️ Add LanguageManager loading
+        LanguageManager.selectedLanguage = "default";  // Default to English
+
+        LanguageManager.loadLanguage();
+        updateUIText(); // <- You already have this function to refresh your labels/buttons etc.
+
+
+
+    }
 
 
     public void setOffre(Offre offre) {
@@ -150,6 +186,60 @@ public class detailOffreController {
     private CheckBox saturdayCheckBox;
     @FXML
     private CheckBox sundayCheckBox;
+    @FXML
+    private TableColumn<Employe, String> suggestedColumn;
+
+    @FXML
+    private Button saveButton;
+    @FXML
+    private Button cancelButton;
+
+
+
+
+
+    // Labels for offer details
+    @FXML private Label detailsLabel;
+
+    @FXML private Label titreValueLabel;
+
+    @FXML private Label descValueLabel;
+
+    @FXML private Label competenceValueLabel;
+
+    @FXML private Label statutValueLabel;
+
+    // Buttons for edit and delete actions
+
+
+    // Table for displaying employees
+
+
+    // Label and TextFields for the employe inscription form
+    @FXML private Label postulerLabel;
+    @FXML private Label userIdLabel;
+
+    @FXML private Label compLabel;
+
+    @FXML private Label dispoLabel;
+
+    // Checkboxes for days of availability
+
+
+    // Buttons for applying and canceling application
+
+
+    // Language switch buttons
+
+
+    // VBox and HBox layouts
+    @FXML private VBox mainVBox;
+    @FXML private HBox buttonHBox;
+
+
+
+
+
 
 
 
@@ -160,53 +250,95 @@ public class detailOffreController {
 
 
     private void loadEmployesForOffre(int offreId) {
+        // Setting up columns for "ID Employé" and "Compétence"
         user_identifierColumn.setCellValueFactory(new PropertyValueFactory<>("user_identifier"));
         compColumn.setCellValueFactory(new PropertyValueFactory<>("comp"));
 
-        // Set the CellValueFactory for the dispoColumn to directly use the ArrayList<String>
+        // Set up the dispoColumn for the availability
         dispoColumn.setCellValueFactory(cellData -> {
             Employe emp = cellData.getValue();
-
-            // Get the ArrayList of days (no deserialization needed)
             ArrayList<String> days = emp.getDispo();
-
-            // If days is not null, convert to a comma-separated string, else display "No Availability"
-            String formattedDays = (days != null && !days.isEmpty())
-                    ? String.join(", ", days)
-                    : "No Availability";
-
-            return new ReadOnlyStringWrapper(formattedDays); // Display the formatted string
+            String formattedDays = (days != null && !days.isEmpty()) ? String.join(", ", days) : "No Availability";
+            return new ReadOnlyStringWrapper(formattedDays);
         });
 
-        // Fetch the list of employees for the specific offer ID and bind it to the table
+        // Set the CellValueFactory for the "Suggested" column
+        suggestedColumn.setCellValueFactory(cellData -> {
+            Employe emp = cellData.getValue();
+            try {
+                // Call the GeminiService to check if the employee is suitable
+                boolean isSuggested = GeminiService.isSuitable(currentOffre.getComp(), emp.getComp());
+
+                // Update the suggested field in the database
+                try {
+                    employeService.updateSuggestedField(emp.getId(), isSuggested);
+                } catch (SQLException e) {
+                    // Handle the exception (e.g., log it, show an error message, etc.)
+                    e.printStackTrace();
+                    // Optionally, you can provide a user-friendly message
+                    System.out.println("Error updating the suggested field: " + e.getMessage());
+                }
+
+                // Return the value for the column (Yes/No)
+                return new ReadOnlyStringWrapper(isSuggested ? "Yes" : "No");
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new ReadOnlyStringWrapper("No");
+            }
+        });
+
+        // Set up the color-coding of the "Suggested" column based on the value
+        suggestedColumn.setCellFactory(column -> {
+            return new TableCell<Employe, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        setText(item);
+                        if (item.equals("Yes")) {
+                            setStyle("-fx-background-color: lightgreen;");
+                        } else {
+                            setStyle("-fx-background-color: lightcoral;");
+                        }
+                    }
+                }
+            };
+        });
+
+        // Set the items in the table
         ObservableList<Employe> employes = FXCollections.observableArrayList(
                 employeService.getEmployesByOffreId(offreId)
         );
 
-        // Set the items in the table
+        // Populate the TableView with the employees
         employeTable.setItems(employes);
     }
 
     @FXML
     private void handleAddEmploye() {
-        String userIdText = userIdField.getText().trim();
         String competence = compField.getText().trim();
 
         // 1. Vérifier les champs vides
-        if (userIdText.isEmpty() || competence.isEmpty()) {
+        if (competence.isEmpty()) {
             showAlert("Champs manquants", "Veuillez remplir tous les champs obligatoires.");
             return;
         }
 
-        int userIdentifier;
-        try {
-            userIdentifier = Integer.parseInt(userIdText);
-        } catch (NumberFormatException e) {
-            showAlert("Erreur de format", "L'identifiant utilisateur doit être un nombre entier.");
+        // 2. Get the current logged-in user's ID from SessionManager
+        SessionManager sessionManager = SessionManager.getInstance(); // Get the singleton instance of SessionManager
+        user currentUser = sessionManager.getCurrentUser(); // Get the logged-in user
+
+        if (currentUser == null) {
+            showAlert("Erreur", "Aucun utilisateur connecté.");
             return;
         }
 
-        // Get the selected days from the checkboxes
+        int userIdentifier = currentUser.getId(); // Get the logged-in user's ID
+
+        // 3. Get the selected days from the checkboxes
         ArrayList<String> dispoList = new ArrayList<>();
         if (mondayCheckBox.isSelected()) dispoList.add("Monday");
         if (tuesdayCheckBox.isSelected()) dispoList.add("Tuesday");
@@ -216,7 +348,7 @@ public class detailOffreController {
         if (saturdayCheckBox.isSelected()) dispoList.add("Saturday");
         if (sundayCheckBox.isSelected()) dispoList.add("Sunday");
 
-        // 2. Vérifier si l'utilisateur a sélectionné au moins un jour
+        // 4. Vérifier si l'utilisateur a sélectionné au moins un jour
         if (dispoList.isEmpty()) {
             showAlert("Champs manquants", "Veuillez sélectionner au moins un jour de disponibilité.");
             return;
@@ -229,7 +361,7 @@ public class detailOffreController {
             }
 
             Employe newEmploye = new Employe();
-            newEmploye.setUser_identifier(userIdentifier);
+            newEmploye.setUser_identifier(userIdentifier); // Set the current logged-in user's ID
             newEmploye.setComp(competence);
             newEmploye.setOffre_id(currentOffre.getId()); // Safe because we checked it's not null
             newEmploye.setDispo(dispoList); // Set the selected availability days
@@ -242,6 +374,7 @@ public class detailOffreController {
             showAlert("Erreur", "Une erreur est survenue lors de l'envoi de la candidature.");
         }
     }
+
 
 
 
@@ -290,6 +423,54 @@ public class detailOffreController {
             e.printStackTrace();
             showAlert("Erreur", "Une erreur est survenue lors de la suppression.");
         }
+    }
+
+    // Method to switch to Deutsch
+    @FXML
+    private void switchLang() {
+        LanguageManager.selectedLanguage = "de";  // Set the language to Deutsch
+        LanguageManager.loadLanguage();
+        updateUIText();  // Update UI after changing language
+    }
+
+    @FXML
+    private void switchToEnglish() {
+        LanguageManager.selectedLanguage = "default";  // Set the language to English
+        LanguageManager.loadLanguage();
+        updateUIText();  // Update UI after changing language
+    }
+
+    private void updateUIText() {
+        // Labels
+        titre.setText(LanguageManager.getString("title"));
+        desc.setText(LanguageManager.getString("description"));
+        competence.setText(LanguageManager.getString("competence"));
+        statut.setText(LanguageManager.getString("status"));
+
+        // Buttons
+        editButton.setText(LanguageManager.getString("edit"));
+        deleteButton.setText(LanguageManager.getString("delete"));
+        saveButton.setText(LanguageManager.getString("save"));
+        cancelButton.setText(LanguageManager.getString("cancel"));
+
+        // Table column names
+        user_identifierColumn.setText(LanguageManager.getString("employeeId"));
+        compColumn.setText(LanguageManager.getString("competence"));
+        dispoColumn.setText(LanguageManager.getString("availability"));
+        suggestedColumn.setText(LanguageManager.getString("suggested"));
+
+        // Checkboxes (Availability days)
+        mondayCheckBox.setText(LanguageManager.getString("monday"));
+        tuesdayCheckBox.setText(LanguageManager.getString("tuesday"));
+        wednesdayCheckBox.setText(LanguageManager.getString("wednesday"));
+        thursdayCheckBox.setText(LanguageManager.getString("thursday"));
+        fridayCheckBox.setText(LanguageManager.getString("friday"));
+        saturdayCheckBox.setText(LanguageManager.getString("saturday"));
+        sundayCheckBox.setText(LanguageManager.getString("sunday"));
+
+        // Buttons for switching language
+        langButton.setText(LanguageManager.getString("german"));
+        englishButton.setText(LanguageManager.getString("english"));
     }
 
 }

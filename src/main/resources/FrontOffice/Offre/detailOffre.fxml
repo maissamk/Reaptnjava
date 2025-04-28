@@ -25,24 +25,24 @@
                     <Insets bottom="10" left="10" right="10" top="10" />
                 </padding>
 
-                <Label text="Titre:" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label fx:id="titre" text="Titre:" GridPane.columnIndex="0" GridPane.rowIndex="0">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
                 </Label>
                 <Label fx:id="titreLabel" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                <Label prefHeight="18.0" prefWidth="152.0" text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label fx:id="desc" prefHeight="18.0" prefWidth="152.0" text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="1">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
                 </Label>
                 <Label fx:id="descLabel" maxWidth="300" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <Label text="Compétence:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                <Label fx:id="competence" text="Compétence:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                 <Label fx:id="competenceLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                <Label text="Statut:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                <Label fx:id="statut" text="Statut:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
                 <Label fx:id="statutLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                 <columnConstraints>
@@ -70,6 +70,8 @@
             <TableColumn fx:id="user_identifierColumn" text="ID Employé" prefWidth="150.0" />
             <TableColumn fx:id="compColumn" text="Compétence" prefWidth="550.0" />
             <TableColumn fx:id="dispoColumn" text="Disponibilité" prefWidth="400.0" />
+            <!-- New column for "Suggested" -->
+            <TableColumn fx:id="suggestedColumn" text="Suggested" prefWidth="150.0" />
         </columns>
     </TableView>
 
@@ -101,9 +103,14 @@
         <CheckBox fx:id="sundayCheckBox" text="Dimanche" />
     </HBox>
 
-    <Button text="Postuler" onAction="#handleAddEmploye"
+    <Button fx:id="saveButton" text="Postuler" onAction="#handleAddEmploye"
             style="-fx-background-color: #4CAF50; -fx-text-fill: white;" />
-    <Button text="Annuler votre inscription" onAction="#handleDeleteEmploye"
+    <Button fx:id="cancelButton" text="Annuler votre inscription" onAction="#handleDeleteEmploye"
             style="-fx-background-color: #ff003b; -fx-text-fill: white;"/>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="langButton" text="Deutsch" onAction="#switchLang" />
+        <Button fx:id="englishButton" text="English" onAction="#switchToEnglish" />
+    </HBox>
 
 </VBox>

@@ -1,7 +1,7 @@
 package services;
 
 import models.Employe;
-
+import utils.GeminiService;
 import models.Offre;
 import utils.MaConnexion;
 import interfaces.IService;
@@ -13,6 +13,8 @@ import java.util.List;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.io.IOException;
+
 
 public class EmployeService implements IService<Employe> {
     Connection connection;
@@ -99,7 +101,6 @@ public class EmployeService implements IService<Employe> {
         }
     }
 
-    @Override
     public List<Employe> select() throws SQLException {
         String sql = "SELECT * FROM employe"; // Select all columns
         List<Employe> employes = new ArrayList<>();
@@ -121,6 +122,18 @@ public class EmployeService implements IService<Employe> {
                 employe.setConf(res.getBoolean("conf"));
                 employe.setSuggested(res.getBoolean("suggested"));
 
+                // Get the Offre object based on the offer ID (if needed)
+                OffreService offreService = new OffreService();
+                Offre offre = offreService.getOffreById(employe.getOffre_id()); // Make sure to implement this method
+
+                // Call GeminiService to determine if the employee is suitable for the offer
+                try {
+                    boolean isSuggestedByAI = GeminiService.isSuitable(offre.getComp(), employe.getComp());
+                    employe.setSuggested(isSuggestedByAI); // Update suggested field based on AI logic
+                } catch (IOException e) {
+                    e.printStackTrace(); // Handle exception in case the API call fails
+                }
+
                 java.sql.Timestamp timestamp = res.getTimestamp("date_join");
                 if (timestamp != null) {
                     employe.setDate_join(timestamp.toLocalDateTime());
@@ -137,6 +150,7 @@ public class EmployeService implements IService<Employe> {
 
         return employes;
     }
+
 
     public List<Employe> getEmployesByOffreId(int offreId) {
         List<Employe> list = new ArrayList<>();
@@ -199,6 +213,32 @@ public class EmployeService implements IService<Employe> {
 
         serialized.append("}");
         return serialized.toString();
+    }
+
+    public void updateSuggestedField(int id, boolean suggested) throws SQLException {
+        // Make sure the connection is available
+        if (connection == null) {
+            throw new SQLException("Database connection not established.");
+        }
+
+        // SQL query to update the 'suggested' field
+        String sql = "UPDATE employe SET suggested = ? WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setBoolean(1, suggested); // Set the 'suggested' value (true or false)
+            stmt.setInt(2, id); // Set the employee identifier
+
+            int rowsUpdated = stmt.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("Employee's suggested field updated successfully.");
+            } else {
+                System.out.println("No employee found with the given identifier.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Error while updating the 'suggested' field.", e);
+        }
     }
 
 

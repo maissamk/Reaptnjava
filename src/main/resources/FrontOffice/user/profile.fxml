@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.User.ProfileController"
+            style="-fx-background-color: #f5f9f4;">
+
+
+    <center>
+        <VBox alignment="CENTER" spacing="20">
+            <!-- Profile Information Grid -->
+            <GridPane hgap="20" vgap="20" alignment="CENTER" style="-fx-padding: 30;">
+                <columnConstraints>
+                    <ColumnConstraints prefWidth="200" halignment="RIGHT"/>
+                    <ColumnConstraints prefWidth="300" halignment="LEFT"/>
+                </columnConstraints>
+
+                <!-- Avatar Section -->
+                <ImageView fx:id="avatarImage" fitHeight="120" fitWidth="120"
+                           style="-fx-background-radius: 60; -fx-border-radius: 60;"
+                           GridPane.columnSpan="2" GridPane.halignment="CENTER">
+                    <image>
+                        <Image url="@/images/defaultavatar.png" />
+                    </image>
+                </ImageView>
+
+                <!-- Profile Information -->
+                <Label fx:id="welcomeLabel" GridPane.columnSpan="2" GridPane.halignment="CENTER"/>
+                <Label text="Full Name:" style="-fx-font-weight: BOLD;" GridPane.rowIndex="1"/>
+                <Label fx:id="fullNameLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Email:" style="-fx-font-weight: BOLD;" GridPane.rowIndex="2"/>
+                <Label fx:id="emailLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <Label text="Phone:" style="-fx-font-weight: BOLD;" GridPane.rowIndex="3"/>
+                <Label fx:id="phoneLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                <Label text="Role:" style="-fx-font-weight: BOLD;" GridPane.rowIndex="4"/>
+                <Label fx:id="roleLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                <Label text="Status:" style="-fx-font-weight: BOLD;" GridPane.rowIndex="5"/>
+                <Label fx:id="statusLabel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <!-- Action Buttons -->
+            <HBox alignment="CENTER" spacing="20" style="-fx-padding: 20;">
+                <Button text="User List" style="-fx-background-color: #4285F4; -fx-text-fill: white; -fx-font-weight: BOLD;"
+                        onAction="#handleUserList"/>
+                <Button text="Edit Profile" style="-fx-background-color: #4285F4; -fx-text-fill: white; -fx-font-weight: BOLD;"
+                        onAction="#handleEditProfile"/>
+                <Button text="Back to Home" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: BOLD;"
+                        onAction="#handleBack"/>
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>
