@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.FrontOffice.parcelles.EstimationParcelleController"
+            prefWidth="1200" prefHeight="800">
+
+    <!-- ScrollPane englobant tout le contenu -->
+    <ScrollPane fitToWidth="true" fitToHeight="true"
+                AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
+                AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0"
+                style="-fx-background-color: transparent;">
+
+        <HBox>
+            <!-- Section image (gauche) -->
+            <StackPane style="-fx-background-color: transparent;" prefWidth="600">
+                <ImageView fitWidth="600" fitHeight="800" preserveRatio="false">
+                    <Image url="@/images/terrain_nature.jpg"/>
+                </ImageView>
+
+                <VBox alignment="CENTER_LEFT" style="-fx-padding: 40 0 0 40;">
+                    <Label text="Faites grandir" style="-fx-font-size: 40px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                    <Label text="votre capital" style="-fx-font-size: 40px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                    <Label text="nature" style="-fx-font-size: 80px; -fx-font-weight: normal; -fx-font-style: italic; -fx-text-fill: white;"/>
+
+                    <VBox spacing="5" style="-fx-padding: 60 0 0 0;">
+                        <Label text="Un investissement responsable" style="-fx-font-size: 18px; -fx-text-fill: white;"/>
+                        <Label text="qui grandit tout naturellement" style="-fx-font-size: 18px; -fx-text-fill: white;"/>
+                    </VBox>
+                </VBox>
+            </StackPane>
+
+            <!-- Section formulaire (droite) -->
+            <VBox spacing="20" style="-fx-background-color: white; -fx-padding: 40 40 40 40;" prefWidth="600">
+                <!-- Bouton retour en haut -->
+                <HBox alignment="CENTER_RIGHT">
+                    <Button fx:id="btnRetour" text="Retour aux parcelles" onAction="#handleRetour"
+                            style="-fx-background-color: transparent; -fx-text-fill: #95a5a6; -fx-underline: true;"/>
+                </HBox>
+
+                <!-- Titre principal -->
+                <Label text="ESTIMEZ VOTRE CAPITAL" style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Label text="NATURE" style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-padding: -20 0 0 0;"/>
+
+                <!-- Badge IA -->
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="ESTIMATION PAR INTELLIGENCE ARTIFICIELLE"
+                           style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 5 10 5 10; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                </HBox>
+
+                <Separator style="-fx-opacity: 0.3;"/>
+
+                <!-- Formulaire simplifié -->
+                <VBox spacing="25">
+                    <!-- Type de bien -->
+                    <VBox spacing="8">
+                        <Label text="TYPE DE BIEN" style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                        <ComboBox fx:id="cbTypeBien" promptText="Sélectionnez" prefWidth="520" prefHeight="40"
+                                  style="-fx-border-color: #e0e0e0; -fx-border-radius: 3; -fx-background-color: white;"/>
+                    </VBox>
+
+                    <!-- Lieu avec autocomplétion - SECTION ENTIÈREMENT RECONSTRUITE -->
+                    <VBox spacing="8">
+                        <Label text="LIEU" style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+                        <!-- Conteneur utilisé uniquement pour le positionnement relatif -->
+                        <AnchorPane prefWidth="520" minHeight="200">
+                            <!-- Champ de saisie -->
+                            <TextField fx:id="tfLieu" promptText="Communes, départements ou régions"
+                                       prefHeight="40" prefWidth="520"
+                                       style="-fx-border-color: #e0e0e0; -fx-border-radius: 3;"
+                                       AnchorPane.topAnchor="0"
+                                       AnchorPane.leftAnchor="0"
+                                       AnchorPane.rightAnchor="0"/>
+
+                            <!-- Conteneur de suggestions -->
+                            <VBox fx:id="suggestionsContainer"
+                                  AnchorPane.topAnchor="40"
+                                  AnchorPane.leftAnchor="0"
+                                  AnchorPane.rightAnchor="0"
+                                  style="-fx-border-color: #e0e0e0;
+                                         -fx-border-radius: 3;
+                                         -fx-background-color: white;
+                                         -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 5);">
+                                <ListView fx:id="lvSuggestions"
+                                          prefHeight="150"
+                                          style="-fx-border-color: transparent;
+                                                 -fx-background-radius: 0;"/>
+                            </VBox>
+                        </AnchorPane>
+                    </VBox>
+
+                    <!-- Surface du terrain -->
+                    <VBox spacing="8">
+                        <Label text="SURFACE DU TERRAIN" style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                        <HBox spacing="10">
+                            <TextField fx:id="tfSurface" promptText="Ex : 20 ha" prefWidth="425" prefHeight="40"
+                                       style="-fx-border-color: #e0e0e0; -fx-border-radius: 3;"/>
+                            <ComboBox fx:id="cbUnite" prefWidth="85" prefHeight="40"
+                                      style="-fx-border-color: #e0e0e0; -fx-border-radius: 3; -fx-background-color: white;">
+                                <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                        <String fx:value="ha"/>
+                                        <String fx:value="m²"/>
+                                    </FXCollections>
+                                </items>
+                                <value>
+                                    <String fx:value="ha"/>
+                                </value>
+                            </ComboBox>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Caractéristiques supplémentaires avec une option pour les afficher -->
+                    <VBox spacing="10">
+                        <TitledPane text="Caractéristiques supplémentaires" expanded="false">
+                            <VBox spacing="10">
+                                <CheckBox fx:id="chkAccesEau" text="Accès à l'eau" />
+                                <CheckBox fx:id="chkCheminAcces" text="Chemin d'accès" />
+                                <CheckBox fx:id="chkCloture" text="Clôturé" />
+                                <CheckBox fx:id="chkConstruisible" text="Terrain constructible" />
+                            </VBox>
+                        </TitledPane>
+                    </VBox>
+                </VBox>
+
+                <!-- Bouton d'estimation -->
+                <Button fx:id="btnEstimer" text="Estimer avec IA" onAction="#handleEstimation"
+                        style="-fx-background-color: #8BC34A; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12 0 12 0; -fx-background-radius: 0;"
+                        prefWidth="520" prefHeight="45"/>
+
+                <Separator style="-fx-opacity: 0.3;"/>
+
+                <!-- Section résultat, initialement cachée -->
+                <VBox fx:id="resultatSection" visible="false" spacing="15">
+                    <Label text="ESTIMATION DE VOTRE BIEN" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+                    <HBox spacing="20">
+                        <VBox spacing="5" style="-fx-background-color: #f5f5f5; -fx-padding: 15; -fx-background-radius: 5;" HBox.hgrow="ALWAYS">
+                            <Label text="Valeur estimée" style="-fx-font-weight: bold;"/>
+                            <Label fx:id="lblValeurEstimee" text="0 TND" style="-fx-font-size: 24px; -fx-text-fill: #27ae60;"/>
+                        </VBox>
+
+                        <VBox spacing="5" style="-fx-background-color: #f5f5f5; -fx-padding: 15; -fx-background-radius: 5;" HBox.hgrow="ALWAYS">
+                            <Label text="Prix moyen/m²" style="-fx-font-weight: bold;"/>
+                            <Label fx:id="lblPrixMoyen" text="0 TND/m²" style="-fx-font-size: 24px; -fx-text-fill: #3498db;"/>
+                        </VBox>
+                    </HBox>
+
+                    <VBox spacing="10" style="-fx-background-color: #f5f5f5; -fx-padding: 15; -fx-background-radius: 5;">
+                        <Label text="Détails de l'estimation IA" style="-fx-font-weight: bold;"/>
+                        <TextArea fx:id="taDetails" editable="false" prefHeight="150" wrapText="true"
+                                  style="-fx-background-color: transparent; -fx-border-color: transparent;"/>
+                    </VBox>
+
+                    <!-- Bouton pour afficher le rapport détaillé -->
+                    <Button text="Générer un rapport détaillé" onAction="#handleGenererRapport"
+                            style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 0;"
+                            prefWidth="520" prefHeight="40"/>
+                </VBox>
+
+                <!-- Liens utiles -->
+                <HBox spacing="20">
+                    <Button text="Guide de prix" onAction="#handleGuidePrice"
+                            style="-fx-background-color: #8e7c7c; -fx-text-fill: white; -fx-background-radius: 0;"
+                            prefWidth="250" prefHeight="40"/>
+                    <Button text="Conseils pratiques" onAction="#handleConseilsPratiques"
+                            style="-fx-background-color: #8BC34A; -fx-text-fill: white; -fx-background-radius: 0;"
+                            prefWidth="250" prefHeight="40"/>
+                </HBox>
+            </VBox>
+        </HBox>
+    </ScrollPane>
+</AnchorPane>

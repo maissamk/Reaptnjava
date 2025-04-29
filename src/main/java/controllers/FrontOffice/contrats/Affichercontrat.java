@@ -1,9 +1,8 @@
 package controllers.FrontOffice.contrats;
 
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.draw.LineSeparator;
 import controllers.FrontOffice.BaseFrontController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -110,8 +109,18 @@ public class Affichercontrat {
                 // Gestionnaires d'événements
                 btnModifier.setOnAction(event -> openModificationWindow(getItem()));
                 btnSupprimer.setOnAction(event -> {
-                    service.delete(getItem());
-                    loadData();
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                            "Êtes-vous sûr de vouloir supprimer ce contrat ?",
+                            ButtonType.YES, ButtonType.NO);
+                    confirm.setTitle("Confirmation de suppression");
+                    confirm.setHeaderText("Supprimer le contrat n°" + getItem().getId());
+
+                    confirm.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.YES) {
+                            service.delete(getItem());
+                            loadData();
+                        }
+                    });
                 });
                 btnPDF.setOnAction(event -> generatePDF(getItem()));
             }
@@ -154,58 +163,271 @@ public class Affichercontrat {
 
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'ouvrir l'éditeur : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     private void generatePDF(Contrat contrat) {
         try {
-            Document document = new Document();
+            // Configuration du document
+            Document document = new Document(PageSize.A4, 50, 50, 70, 50);
             String fileName = "Contrat_" + contrat.getId() + ".pdf";
-            PdfWriter.getInstance(document, new FileOutputStream(fileName));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(fileName));
+
+            // Ajout d'événements pour entête et pied de page
+            PDFHeaderFooter headerFooter = new PDFHeaderFooter(contrat.getId());
+            writer.setPageEvent(headerFooter);
 
             document.open();
 
-            // En-tête
-            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, BaseColor.BLACK);
-            Paragraph title = new Paragraph("CONTRAT AGRICOLE N°" + contrat.getId(), titleFont);
+            // Titre du contrat
+            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 22, new BaseColor(44, 62, 80));
+            Paragraph title = new Paragraph("CONTRAT AGRICOLE", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
+            title.setSpacingAfter(10);
             document.add(title);
 
-            // Contenu
-            document.add(new Paragraph("\n"));
-            PdfPTable table = new PdfPTable(2);
-            table.setWidthPercentage(100);
+            // Numéro du contrat
+            Font subtitleFont = FontFactory.getFont(FontFactory.HELVETICA, 16, new BaseColor(52, 73, 94));
+            Paragraph contractNumber = new Paragraph("N° " + contrat.getId(), subtitleFont);
+            contractNumber.setAlignment(Element.ALIGN_CENTER);
+            contractNumber.setSpacingAfter(30);
+            document.add(contractNumber);
 
-            addTableRow(table, "Date Début :", new SimpleDateFormat("dd/MM/yyyy HH:mm").format(contrat.getDate_debut_contrat()));
-            addTableRow(table, "Date Fin :", new SimpleDateFormat("dd/MM/yyyy HH:mm").format(contrat.getDatefin_contrat()));
-            addTableRow(table, "Acheteur :", contrat.getNom_acheteur());
-            addTableRow(table, "Vendeur :", contrat.getNom_vendeur());
-            addTableRow(table, "Informations :", contrat.getInformation_contrat());
+            // Section des Parties
+            addSectionHeader(document, "ENTRE LES PARTIES");
 
-            document.add(table);
+            // Information des parties
+            PdfPTable partiesTable = new PdfPTable(2);
+            partiesTable.setWidthPercentage(100);
+            partiesTable.setSpacingBefore(10);
+            partiesTable.setSpacingAfter(20);
+
+            // Colonne Acheteur
+            PdfPCell buyerCell = new PdfPCell();
+            buyerCell.setBorder(Rectangle.BOX);
+            buyerCell.setBorderColor(new BaseColor(189, 195, 199));
+            buyerCell.setPadding(10);
+            buyerCell.setBackgroundColor(new BaseColor(236, 240, 241));
+
+            Paragraph buyerTitle = new Paragraph("ACHETEUR", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12));
+            buyerTitle.setSpacingAfter(5);
+            buyerCell.addElement(buyerTitle);
+
+            Paragraph buyerName = new Paragraph(contrat.getNom_acheteur(),
+                    FontFactory.getFont(FontFactory.HELVETICA, 11));
+            buyerCell.addElement(buyerName);
+
+            // Colonne Vendeur
+            PdfPCell sellerCell = new PdfPCell();
+            sellerCell.setBorder(Rectangle.BOX);
+            sellerCell.setBorderColor(new BaseColor(189, 195, 199));
+            sellerCell.setPadding(10);
+            sellerCell.setBackgroundColor(new BaseColor(236, 240, 241));
+
+            Paragraph sellerTitle = new Paragraph("VENDEUR", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12));
+            sellerTitle.setSpacingAfter(5);
+            sellerCell.addElement(sellerTitle);
+
+            Paragraph sellerName = new Paragraph(contrat.getNom_vendeur(),
+                    FontFactory.getFont(FontFactory.HELVETICA, 11));
+            sellerCell.addElement(sellerName);
+
+            partiesTable.addCell(buyerCell);
+            partiesTable.addCell(sellerCell);
+            document.add(partiesTable);
+
+            // Section des modalités
+            addSectionHeader(document, "MODALITÉS");
+
+            // Dates du contrat
+            PdfPTable infoTable = new PdfPTable(2);
+            infoTable.setWidthPercentage(100);
+            infoTable.setSpacingBefore(10);
+            infoTable.setSpacingAfter(20);
+            float[] columnWidths = {0.3f, 0.7f};
+            infoTable.setWidths(columnWidths);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+            addTableRow(infoTable, "Date de début:", sdf.format(contrat.getDate_debut_contrat()));
+            addTableRow(infoTable, "Date de fin:", sdf.format(contrat.getDatefin_contrat()));
+            addTableRow(infoTable, "Date de création:", sdf.format(contrat.getDatecreation_contrat()));
+
+            document.add(infoTable);
+
+            // Informations du contrat
+            addSectionHeader(document, "INFORMATIONS COMPLÉMENTAIRES");
+
+            Paragraph infoParagraph = new Paragraph(contrat.getInformation_contrat(),
+                    FontFactory.getFont(FontFactory.HELVETICA, 11));
+            infoParagraph.setAlignment(Element.ALIGN_JUSTIFIED);
+            infoParagraph.setSpacingAfter(20);
+            document.add(infoParagraph);
+
+            // Section signatures
+            addSectionHeader(document, "SIGNATURES");
+
+            PdfPTable signatureTable = new PdfPTable(2);
+            signatureTable.setWidthPercentage(100);
+            signatureTable.setSpacingBefore(15);
+
+            // Signature acheteur
+            PdfPCell buyerSignature = new PdfPCell();
+            buyerSignature.setBorder(Rectangle.NO_BORDER);
+            buyerSignature.setPadding(10);
+
+            Paragraph buyerSignTitle = new Paragraph("L'Acheteur",
+                    FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12));
+            buyerSignTitle.setAlignment(Element.ALIGN_CENTER);
+            buyerSignTitle.setSpacingAfter(50);
+            buyerSignature.addElement(buyerSignTitle);
+
+            Paragraph buyerSignName = new Paragraph(contrat.getNom_acheteur(),
+                    FontFactory.getFont(FontFactory.HELVETICA, 10));
+            buyerSignName.setAlignment(Element.ALIGN_CENTER);
+            buyerSignature.addElement(buyerSignName);
+
+            // Signature vendeur
+            PdfPCell sellerSignature = new PdfPCell();
+            sellerSignature.setBorder(Rectangle.NO_BORDER);
+            sellerSignature.setPadding(10);
+
+            Paragraph sellerSignTitle = new Paragraph("Le Vendeur",
+                    FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12));
+            sellerSignTitle.setAlignment(Element.ALIGN_CENTER);
+            sellerSignTitle.setSpacingAfter(50);
+            sellerSignature.addElement(sellerSignTitle);
+
+            Paragraph sellerSignName = new Paragraph(contrat.getNom_vendeur(),
+                    FontFactory.getFont(FontFactory.HELVETICA, 10));
+            sellerSignName.setAlignment(Element.ALIGN_CENTER);
+            sellerSignature.addElement(sellerSignName);
+
+            signatureTable.addCell(buyerSignature);
+            signatureTable.addCell(sellerSignature);
+
+            document.add(signatureTable);
+
             document.close();
 
             // Ouvrir le PDF
             Desktop.getDesktop().open(new File(fileName));
 
+            showAlert("Succès", "Le PDF a été généré avec succès et enregistré sous: " + fileName);
+
         } catch (Exception e) {
             showAlert("Erreur PDF", "Échec de la génération : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    private void addTableRow(PdfPTable table, String label, String value) throws DocumentException {
-        PdfPCell cell1 = new PdfPCell(new Phrase(label, FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
-        PdfPCell cell2 = new PdfPCell(new Phrase(value));
-        cell1.setBorder(PdfPCell.NO_BORDER);
-        cell2.setBorder(PdfPCell.NO_BORDER);
+    private void addSectionHeader(Document document, String title) throws DocumentException {
+        Font sectionFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14, new BaseColor(41, 128, 185));
+        Paragraph sectionTitle = new Paragraph(title, sectionFont);
+        sectionTitle.setSpacingBefore(15);
+        sectionTitle.setSpacingAfter(10);
+
+        // Ligne horizontale
+        LineSeparator line = new LineSeparator(1, 100, new BaseColor(189, 195, 199), Element.ALIGN_CENTER, -5);
+
+        document.add(sectionTitle);
+        document.add(line);
+    }
+
+    private void addTableRow(PdfPTable table, String label, String value) {
+        Font labelFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 11);
+        Font valueFont = FontFactory.getFont(FontFactory.HELVETICA, 11);
+
+        PdfPCell cell1 = new PdfPCell(new Phrase(label, labelFont));
+        cell1.setBorderColor(new BaseColor(189, 195, 199));
+        cell1.setPadding(8);
+        cell1.setBackgroundColor(new BaseColor(236, 240, 241));
+
+        PdfPCell cell2 = new PdfPCell(new Phrase(value, valueFont));
+        cell2.setBorderColor(new BaseColor(189, 195, 199));
+        cell2.setPadding(8);
+
         table.addCell(cell1);
         table.addCell(cell2);
     }
 
+    // Classe interne pour gérer les en-têtes et pieds de page
+    private static class PDFHeaderFooter extends PdfPageEventHelper {
+        private final int contractId;
+
+        public PDFHeaderFooter(int contractId) {
+            this.contractId = contractId;
+        }
+
+        @Override
+        public void onEndPage(PdfWriter writer, Document document) {
+            PdfContentByte cb = writer.getDirectContent();
+
+            // En-tête
+            PdfPTable header = new PdfPTable(2);
+            try {
+                header.setWidths(new float[] {0.7f, 0.3f});
+                header.setTotalWidth(document.getPageSize().getWidth() - document.leftMargin() - document.rightMargin());
+                header.setLockedWidth(true);
+
+                // Logo ou titre
+                PdfPCell logoCell = new PdfPCell(new Phrase("AGRISERVE", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14, new BaseColor(46, 204, 113))));
+                logoCell.setBorder(Rectangle.BOTTOM);
+                logoCell.setBorderColor(new BaseColor(189, 195, 199));
+                logoCell.setPadding(10);
+
+                // Numéro de contrat
+                PdfPCell contractCell = new PdfPCell(new Phrase("Contrat N° " + contractId, FontFactory.getFont(FontFactory.HELVETICA, 9)));
+                contractCell.setBorder(Rectangle.BOTTOM);
+                contractCell.setBorderColor(new BaseColor(189, 195, 199));
+                contractCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                contractCell.setPadding(10);
+
+                header.addCell(logoCell);
+                header.addCell(contractCell);
+
+                header.writeSelectedRows(0, -1, document.leftMargin(), document.getPageSize().getHeight() - 20, cb);
+
+                // Pied de page
+                PdfPTable footer = new PdfPTable(2);
+                footer.setWidths(new float[] {0.8f, 0.2f});
+                footer.setTotalWidth(document.getPageSize().getWidth() - document.leftMargin() - document.rightMargin());
+                footer.setLockedWidth(true);
+
+                // Copyright
+                PdfPCell copyrightCell = new PdfPCell(new Phrase("© 2025 AgriServe - Tous droits réservés", FontFactory.getFont(FontFactory.HELVETICA, 8, new BaseColor(127, 140, 141))));
+                copyrightCell.setBorder(Rectangle.TOP);
+                copyrightCell.setBorderColor(new BaseColor(189, 195, 199));
+                copyrightCell.setPadding(5);
+
+                // Numéro de page
+                PdfPCell pageNumCell = new PdfPCell(new Phrase(String.format("Page %d", writer.getPageNumber()), FontFactory.getFont(FontFactory.HELVETICA, 8)));
+                pageNumCell.setBorder(Rectangle.TOP);
+                pageNumCell.setBorderColor(new BaseColor(189, 195, 199));
+                pageNumCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                pageNumCell.setPadding(5);
+
+                footer.addCell(copyrightCell);
+                footer.addCell(pageNumCell);
+
+                footer.writeSelectedRows(0, -1, document.leftMargin(), document.bottomMargin() + 15, cb);
+
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void loadData() {
-        List<Contrat> contrats = service.getAll();
-        ObservableList<Contrat> data = FXCollections.observableArrayList(contrats);
-        listView.setItems(data);
+        try {
+            List<Contrat> contrats = service.getAll();
+            ObservableList<Contrat> data = FXCollections.observableArrayList(contrats);
+            listView.setItems(data);
+        } catch (Exception e) {
+            showAlert("Erreur de chargement", "Impossible de charger les contrats: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -215,18 +437,6 @@ public class Affichercontrat {
 
     @FXML
     private void handleRetour() {
-//        try {
-//            Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/contrats/Ajoutercontrat.fxml"));
-//            Stage stage = (Stage) listView.getScene().getWindow();
-//            stage.setScene(new Scene(root));
-//            stage.show();
-//        } catch (IOException e) {
-//            showAlert("Erreur", "Impossible de charger la vue d'ajout");
-//        }
-
-
-
-        //new code :
         try {
             // 1. Charger le layout de base
             FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
@@ -249,6 +459,7 @@ public class Affichercontrat {
                             + "1. Vérifiez que Ajoutercontrat.fxml existe\n"
                             + "2. Vérifiez le chemin: /FrontOffice/contrats/\n"
                             + "Erreur technique: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

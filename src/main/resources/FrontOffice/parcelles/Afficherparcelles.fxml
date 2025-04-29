@@ -10,16 +10,69 @@
             style="-fx-background-color: #ffffff;">
 
     <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+
+        <!-- Section de recherche - Redesigned to match image -->
+        <GridPane hgap="10" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints prefWidth="230"/>
+                <ColumnConstraints prefWidth="230"/>
+                <ColumnConstraints prefWidth="230"/>
+                <ColumnConstraints prefWidth="230"/>
+            </columnConstraints>
+
+            <!-- Labels -->
+            <Label text="Type terrain" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                   style="-fx-text-fill: #2c3e50;"/>
+            <Label text="Titre" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                   style="-fx-text-fill: #2c3e50;"/>
+            <Label text="Emplacement" GridPane.rowIndex="0" GridPane.columnIndex="2"
+                   style="-fx-text-fill: #2c3e50;"/>
+            <Label text="Prix (TND)" GridPane.rowIndex="0" GridPane.columnIndex="3"
+                   style="-fx-text-fill: #2c3e50;"/>
+
+            <!-- Fields - first row -->
+            <ComboBox fx:id="cbType" promptText="Sélectionnez un type" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                      prefWidth="210" style="-fx-background-color: #f5f5f5; -fx-border-color: #e0e0e0; -fx-border-radius: 3;"/>
+
+            <TextField fx:id="tfTitre" promptText="Recherche par titre" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                       prefWidth="210" style="-fx-background-color: #f5f5f5; -fx-border-color: #e0e0e0; -fx-border-radius: 3;"/>
+
+            <TextField fx:id="tfEmplacement" promptText="Entrez un emplacement" GridPane.rowIndex="1" GridPane.columnIndex="2"
+                       prefWidth="210" style="-fx-background-color: #f5f5f5; -fx-border-color: #e0e0e0; -fx-border-radius: 3;"/>
+
+            <HBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="3" alignment="CENTER_LEFT">
+                <TextField fx:id="tfPrixMin" promptText="Min" prefWidth="100"
+                           style="-fx-background-color: #f5f5f5; -fx-border-color: #e0e0e0; -fx-border-radius: 3;"/>
+                <Label text="-" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="tfPrixMax" promptText="Max" prefWidth="100"
+                           style="-fx-background-color: #f5f5f5; -fx-border-color: #e0e0e0; -fx-border-radius: 3;"/>
+            </HBox>
+
+            <!-- Hidden elements (keep for functionality) -->
+            <ListView fx:id="suggestionsList" visible="false" prefHeight="100" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+        </GridPane>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="Appliquer" onAction="#handleFiltrer"
+                    style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+            <Button text="Réinitialiser" onAction="#handleReinitialiser"
+                    style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
+            <Button text="Actualiser" fx:id="btnActualiser" onAction="#handleActualiser"
+                    style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+
+            <!-- Nouveau bouton Estimer votre bien -->
+            <Button text="Estimer votre bien" fx:id="btnEstimer" onAction="#handleEstimer"
+                    style="-fx-background-color: #8BC34A; -fx-text-fill: white; -fx-font-weight: bold;"/>
+
+        </HBox>
+
         <HBox spacing="20" alignment="CENTER_LEFT">
             <Label text="Liste des Parcelles"
-                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
 
-            <HBox spacing="10" HBox.hgrow="NEVER">
-                <!-- Ajout de onAction pour les boutons -->
-                <Button text="Actualiser" fx:id="btnActualiser" onAction="#handleActualiser"
-                        style="-fx-background-color: #3498db; -fx-text-fill: white;" />
+            <HBox spacing="10" HBox.hgrow="ALWAYS" alignment="CENTER_RIGHT">
                 <Button text="Retour" fx:id="btnRetour" onAction="#handleRetour"
-                        style="-fx-background-color: #95a5a6; -fx-text-fill: white;" />
+                        style="-fx-background-color: #95a5a6; -fx-text-fill: white;"/>
             </HBox>
         </HBox>
 

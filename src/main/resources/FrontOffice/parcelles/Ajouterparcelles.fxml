@@ -2,97 +2,119 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<ScrollPane fitToWidth="true" fitToHeight="false" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.FrontOffice.parcelles.Ajouterparcelles"
-            prefHeight="600.0" prefWidth="800.0">
+            prefHeight="700.0" prefWidth="800.0" vbarPolicy="ALWAYS">
+    <content>
+        <VBox spacing="20" style="-fx-padding: 20;">
+            <Label text="Ajouter une parcelle"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
 
-    <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+            <GridPane hgap="20" vgap="15">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="50"/>
+                    <ColumnConstraints percentWidth="50"/>
+                </columnConstraints>
 
-        <Label text="Ajouter une parcelle"
-               style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+                <!-- Colonne gauche -->
+                <VBox spacing="10" GridPane.columnIndex="0">
+                    <Label text="Titre" style="-fx-font-weight: bold;"/>
+                    <TextField fx:id="titreField" promptText="Titre de la parcelle" prefWidth="300"/>
+                    <Label fx:id="titreErrorLabel" textFill="red" style="-fx-font-size: 12px;"/>
 
-        <GridPane hgap="20" vgap="15">
-            <columnConstraints>
-                <ColumnConstraints percentWidth="50"/>
-                <ColumnConstraints percentWidth="50"/>
-            </columnConstraints>
+                    <Label text="Prix" style="-fx-font-weight: bold;"/>
+                    <TextField fx:id="prixField" promptText="Prix en TND" prefWidth="300"/>
+                    <Label fx:id="prixErrorLabel" textFill="red" style="-fx-font-size: 12px;"/>
 
-            <!-- Colonne gauche -->
-            <VBox spacing="10" GridPane.columnIndex="0">
-                <Label text="Titre"/>
-                <TextField fx:id="titreField" promptText="Titre de la parcelle" prefWidth="300"/>
-                <Label fx:id="titreErrorLabel" textFill="red" style="-fx-font-size: 12px;"/>
+                    <Label text="Statut" style="-fx-font-weight: bold;"/>
+                    <ComboBox fx:id="statutCombo" promptText="Louer / Vendre" prefWidth="300"/>
 
-                <Label text="Prix"/>
-                <TextField fx:id="prixField" promptText="Prix en TND" prefWidth="300"/>
-                <Label fx:id="prixErrorLabel" textFill="red" style="-fx-font-size: 12px;"/>
+                    <Label text="Taille (m²)" style="-fx-font-weight: bold;"/>
+                    <TextField fx:id="tailleField" prefWidth="300"/>
 
-                <Label text="Statut"/>
-                <ComboBox fx:id="statutCombo" promptText="Louer / Vendre" prefWidth="300"/>
+                    <Label text="Date de création" style="-fx-font-weight: bold;"/>
+                    <DatePicker fx:id="dateCreation" prefWidth="300"/>
 
-                <Label text="Taille (m²)"/>
-                <TextField fx:id="tailleField" prefWidth="300"/>
+                    <Label text="Date de mise à jour" style="-fx-font-weight: bold;"/>
+                    <DatePicker fx:id="dateMaj" prefWidth="300"/>
 
-                <Label text="Date de création"/>
-                <DatePicker fx:id="dateCreation" prefWidth="300"/>
+                    <Label text="Type de terrain" style="-fx-font-weight: bold;"/>
+                    <ComboBox fx:id="typeTerrain" promptText="Agricole, Résidentiel..." prefWidth="300"/>
+                </VBox>
 
-                <Label text="Date de mise à jour"/>
-                <DatePicker fx:id="dateMaj" prefWidth="300"/>
+                <!-- Colonne droite -->
+                <VBox spacing="10" GridPane.columnIndex="1">
+                    <Label text="Emplacement" style="-fx-font-weight: bold;"/>
+                    <TextField fx:id="emplacementField" prefWidth="300"/>
 
-                <Label text="Type de terrain"/>
-                <ComboBox fx:id="typeTerrain" promptText="Agricole, Résidentiel..." prefWidth="300"/>
-            </VBox>
+                    <Label text="Nom du propriétaire" style="-fx-font-weight: bold;"/>
+                    <TextField fx:id="nomProprio" prefWidth="300"/>
 
-            <!-- Colonne droite -->
-            <VBox spacing="10" GridPane.columnIndex="1">
-                <Label text="Emplacement"/>
-                <TextField fx:id="emplacementField" prefWidth="300"/>
+                    <Label text="Contact du propriétaire" style="-fx-font-weight: bold;"/>
+                    <TextField fx:id="contactProprio" prefWidth="300"/>
 
-                <Label text="Nom du propriétaire"/>
-                <TextField fx:id="nomProprio" prefWidth="300"/>
+                    <Label text="Email" style="-fx-font-weight: bold;"/>
+                    <TextField fx:id="emailField" promptText="exemple@mail.com" prefWidth="300"/>
+                    <Label fx:id="emailErrorLabel" textFill="red" style="-fx-font-size: 12px;"/>
 
-                <Label text="Contact du propriétaire"/>
-                <TextField fx:id="contactProprio" prefWidth="300"/>
+                    <Label text="Est disponible" style="-fx-font-weight: bold;"/>
+                    <CheckBox fx:id="disponibleCheckBox" text="Disponible"/>
 
-                <Label text="Email"/>
-                <TextField fx:id="emailField" promptText="exemple@mail.com" prefWidth="300"/>
-                <Label fx:id="emailErrorLabel" textFill="red" style="-fx-font-size: 12px;"/>
+                    <Label text="Image" style="-fx-font-weight: bold;"/>
+                    <HBox spacing="10">
+                        <Button text="Choisir un fichier" onAction="#handleFileSelect"/>
+                        <Label fx:id="fileNameLabel" text="Aucun fichier choisi"/>
+                    </HBox>
+                </VBox>
+            </GridPane>
 
-                <Label text="Est disponible"/>
-                <CheckBox fx:id="disponibleCheckBox" text="Disponible"/>
+            <!-- Ajout de la carte avec titre et information -->
+            <TitledPane text="Sélectionnez un emplacement sur la carte" expanded="true">
+                <VBox >
+                    <Label fx:id="locationInfoLabel" text="Cliquez sur un point de la carte pour sélectionner une localisation"
+                           style="-fx-font-style: italic;"/>
+                    <WebView fx:id="mapWebView" prefHeight="400.0" prefWidth="750.0" VBox.vgrow="ALWAYS"/>
+                    <HBox spacing="10">
+                        <Label text="Latitude:" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="latitudeLabel" text="---"/>
+                        <Label text="Longitude:" style="-fx-padding: 0 0 0 20;"/>
+                        <Label fx:id="longitudeLabel" text="---"/>
+                    </HBox>
+                </VBox>
+            </TitledPane>
 
-                <Label text="Image"/>
-                <HBox spacing="10">
-                    <Button text="Choisir un fichier" onAction="#handleFileSelect"/>
-                    <Label fx:id="fileNameLabel" text="Aucun fichier choisi"/>
-                </HBox>
-            </VBox>
-        </GridPane>
+            <!-- Champs pour latitude et longitude (cachés mais utilisés) -->
+            <HBox spacing="10" visible="false" managed="false">
+                <TextField fx:id="latitudeField" promptText="Latitude"/>
+                <TextField fx:id="longitudeField" promptText="Longitude"/>
+            </HBox>
 
-
-        <!-- Boutons -->
-        <HBox spacing="20" alignment="CENTER">
-            <Button text="Enregistrer"
-                    onAction="#handleEnregistrer"
-                    style="-fx-background-color: #4CAF50; -fx-text-fill: white;"
-                    prefWidth="150"/>
-            <!-- Bouton "Afficher les parcelles" avec fx:id -->
-            <Button fx:id="afficherButton"
-                    text="Afficher les parcelles"
-                    onAction="#handleAfficherListe"
-                    style="-fx-background-color: #2196F3; -fx-text-fill: white;"
-                    prefWidth="150"/>
-            <Button text="Annuler"
-                    style="-fx-background-color: #f44336; -fx-text-fill: white;"
-                    prefWidth="150"/>
-            <!-- Bouton Ajouter Contrat avec fx:id -->
-            <Button fx:id="ajouterContratButton"
-                    text="Ajouter Contrat"
-                    onAction="#handleAjouterContrat"
-                    style="-fx-background-color: #FF5722; -fx-text-fill: white;"
-                    prefWidth="150"/>
-        </HBox>
-    </VBox>
-</AnchorPane>
+            <!-- Boutons -->
+            <HBox spacing="20" alignment="CENTER">
+                <Button text="Enregistrer"
+                        onAction="#handleEnregistrer"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white;"
+                        prefWidth="150"/>
+                <!-- Bouton "Afficher les parcelles" avec fx:id -->
+                <Button fx:id="afficherButton"
+                        text="Afficher les parcelles"
+                        onAction="#handleAfficherListe"
+                        style="-fx-background-color: #2196F3; -fx-text-fill: white;"
+                        prefWidth="150"/>
+                <Button text="Annuler"
+                        style="-fx-background-color: #f44336; -fx-text-fill: white;"
+                        prefWidth="150"/>
+                <!-- Bouton Ajouter Contrat avec fx:id -->
+                <Button fx:id="ajouterContratButton"
+                        text="Ajouter Contrat"
+                        onAction="#handleAjouterContrat"
+                        style="-fx-background-color: #FF5722; -fx-text-fill: white;"
+                        prefWidth="150"/>
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>

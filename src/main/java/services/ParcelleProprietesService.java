@@ -7,6 +7,7 @@ import org.example.utils.MaConnexion;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ParcelleProprietesService implements IService<ParcelleProprietes> {
 
@@ -169,4 +170,12 @@ public class ParcelleProprietesService implements IService<ParcelleProprietes> {
 
         return parcelles;
     }
+
+    // Ajouter cette méthode de filtrage
+    public List<ParcelleProprietes> filterByLocation(String location) {
+        return getAll().stream()
+                .filter(p -> p.getEmplacement().toLowerCase().contains(location.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
 }

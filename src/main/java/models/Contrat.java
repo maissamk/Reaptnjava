@@ -168,4 +168,17 @@ public class Contrat {
     public void setSigner_id(String signer_id) {
         this.signer_id = signer_id;
     }
+
+    //new
+
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 }
