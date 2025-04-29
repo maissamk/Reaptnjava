@@ -14,7 +14,7 @@ public class FruitablesApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         // Load directly to the Dashboard FXML instead of Login
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Dashboard.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/FrontOffice.fxml"));
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
         
