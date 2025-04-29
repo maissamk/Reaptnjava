@@ -20,7 +20,7 @@ public class SmsService {
         Message message = Message.creator(
                 new com.twilio.type.PhoneNumber(numero),
                 new com.twilio.type.PhoneNumber(FROM_PHONE),
-                "Votre code promo est : " + code + ". Utilisez-le pour une réduction de 30% !"
+                "Bonjour Mrs/Mm, Votre code promo est : " + code + ". Utilisez-le pour une réduction de 30% !"
         ).create();
 
         System.out.println("SMS envoyé : " + message.getSid());
