@@ -6,6 +6,8 @@ import models.Offre;
 import utils.MaConnexion;
 import interfaces.IService;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -17,6 +19,12 @@ import java.io.IOException;
 
 
 public class EmployeService implements IService<Employe> {
+
+    private Map<Integer, String> tempNomMap = new HashMap<>();
+    private Map<Integer, String> tempPrenomMap = new HashMap<>();
+    private Map<Integer, String> tempEmailMap = new HashMap<>();
+
+
     Connection connection;
     public  EmployeService(){
         connection= MaConnexion.getInstance().getConnection();
@@ -152,10 +160,16 @@ public class EmployeService implements IService<Employe> {
     }
 
 
-    public List<Employe> getEmployesByOffreId(int offreId) {
+    public List<Employe> getEmployesByOffreId(int offreId,
+                                              Map<Integer, String> tempNomMap,
+                                              Map<Integer, String> tempPrenomMap,
+                                              Map<Integer, String> tempEmailMap) {
         List<Employe> list = new ArrayList<>();
         try {
-            String query = "SELECT * FROM employe WHERE offre_id = ?";
+            String query = "SELECT e.*, u.nom, u.prenom, u.email " +
+                    "FROM employe e " +
+                    "JOIN user u ON e.user_identifier = u.id " +
+                    "WHERE e.offre_id = ?";
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setInt(1, offreId);
             ResultSet rs = ps.executeQuery();
@@ -167,10 +181,14 @@ public class EmployeService implements IService<Employe> {
                 e.setComp(rs.getString("comp"));
                 e.setOffre_id(rs.getInt("offre_id"));
 
-                // 👇 Add this to parse dispo correctly
                 String serializedDispo = rs.getString("dispo");
                 ArrayList<String> dispoList = parseSerializedDays(serializedDispo);
                 e.setDispo(dispoList);
+
+                // Fill the maps passed from controller
+                tempNomMap.put(e.getId(), rs.getString("nom"));
+                tempPrenomMap.put(e.getId(), rs.getString("prenom"));
+                tempEmailMap.put(e.getId(), rs.getString("email"));
 
                 list.add(e);
             }

@@ -65,13 +65,14 @@
     </VBox>
 
     <!-- EMPLOYE TABLE -->
-    <TableView fx:id="employeTable" prefHeight="200.0" prefWidth="1100.0">
+    <TableView fx:id="employeTable" prefHeight="200.0" prefWidth="1300.0">
         <columns>
-            <TableColumn fx:id="user_identifierColumn" text="ID Employé" prefWidth="150.0" />
-            <TableColumn fx:id="compColumn" text="Compétence" prefWidth="550.0" />
-            <TableColumn fx:id="dispoColumn" text="Disponibilité" prefWidth="400.0" />
-            <!-- New column for "Suggested" -->
-            <TableColumn fx:id="suggestedColumn" text="Suggested" prefWidth="150.0" />
+            <TableColumn fx:id="prenomColumn" text="Prénom" prefWidth="150.0" />
+            <TableColumn fx:id="nomColumn" text="Nom" prefWidth="150.0" />
+            <TableColumn fx:id="emailColumn" text="Email" prefWidth="250.0" />
+            <TableColumn fx:id="compColumn" text="Compétence" prefWidth="450.0" />
+            <TableColumn fx:id="dispoColumn" text="Disponibilité" prefWidth="200.0" />
+            <TableColumn fx:id="suggestedColumn" text="Suggested" prefWidth="100.0" />
         </columns>
     </TableView>
 
@@ -79,7 +80,7 @@
 
 
 
-    <Label text="Postuler à cette offre" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+    <Label fx:id="PostulerLabel" text="Postuler à cette offre" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
 
     <HBox spacing="10">
         <Label text="ID Utilisateur:" />
@@ -91,7 +92,7 @@
         <TextField fx:id="compField" promptText="Entrez votre compétence..." />
     </HBox>
 
-    <Label text="Disponibilité:" style="-fx-font-size: 14px;" />
+    <Label fx:id="DisponibiliteLabel" text="Disponibilité:" style="-fx-font-size: 14px;" />
 
     <HBox spacing="10">
         <CheckBox fx:id="mondayCheckBox" text="Lundi" />

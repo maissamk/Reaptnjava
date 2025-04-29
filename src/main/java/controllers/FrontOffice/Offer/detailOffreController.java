@@ -13,9 +13,15 @@ import javafx.event.ActionEvent;
 import services.OffreService;
 import models.Employe;
 import services.EmployeService;
+import services.UserServices;
 import utils.LanguageManager;
 import utils.SessionManager;
 import java.io.IOException;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -67,6 +73,10 @@ public class detailOffreController {
     private Button langButton;
     @FXML
     private Button englishButton;
+
+    private Map<Integer, String> tempNomMap = new HashMap<>();
+    private Map<Integer, String> tempPrenomMap = new HashMap<>();
+    private Map<Integer, String> tempEmailMap = new HashMap<>();
 
     public void initialize() {
 
@@ -163,6 +173,11 @@ public class detailOffreController {
 
     @FXML private TableView<Employe> employeTable;
     @FXML private TableColumn<Employe, Integer> user_identifierColumn;
+
+
+
+
+
     @FXML private TableColumn<Employe, String> compColumn;
 
     @FXML private TableColumn<Employe, String> dispoColumn;
@@ -193,7 +208,10 @@ public class detailOffreController {
     private Button saveButton;
     @FXML
     private Button cancelButton;
-
+    @FXML
+    private Label PostulerLabel;
+    @FXML
+    private Label DisponibiliteLabel;
 
 
 
@@ -223,6 +241,15 @@ public class detailOffreController {
 
     @FXML private Label dispoLabel;
 
+    @FXML
+    private TableColumn<Employe, String> prenomColumn;
+
+    @FXML
+    private TableColumn<Employe, String> nomColumn;
+
+    @FXML
+    private TableColumn<Employe, String> emailColumn;
+
     // Checkboxes for days of availability
 
 
@@ -243,15 +270,40 @@ public class detailOffreController {
 
 
 
+
+
     private String dispo;
     private EmployeService employeService = new EmployeService();
 
 
 
 
+
     private void loadEmployesForOffre(int offreId) {
-        // Setting up columns for "ID Employé" and "Compétence"
-        user_identifierColumn.setCellValueFactory(new PropertyValueFactory<>("user_identifier"));
+        // Setting up columns
+
+        // For displaying Prenom
+        prenomColumn.setCellValueFactory(cellData -> {
+            Employe emp = cellData.getValue();
+            String prenom = tempPrenomMap.get(emp.getId());  // Fetch prenom from the map
+            return new ReadOnlyStringWrapper(prenom != null ? prenom : "Unknown");
+        });
+
+        // For displaying Nom
+        nomColumn.setCellValueFactory(cellData -> {
+            Employe emp = cellData.getValue();
+            String nom = tempNomMap.get(emp.getId());  // Fetch nom from the map
+            return new ReadOnlyStringWrapper(nom != null ? nom : "Unknown");
+        });
+
+        // For displaying Email
+        emailColumn.setCellValueFactory(cellData -> {
+            Employe emp = cellData.getValue();
+            String email = tempEmailMap.get(emp.getId());  // Fetch email from the map
+            return new ReadOnlyStringWrapper(email != null ? email : "Unknown");
+        });
+
+        // Set up the compColumn (competence)
         compColumn.setCellValueFactory(new PropertyValueFactory<>("comp"));
 
         // Set up the dispoColumn for the availability
@@ -266,20 +318,16 @@ public class detailOffreController {
         suggestedColumn.setCellValueFactory(cellData -> {
             Employe emp = cellData.getValue();
             try {
-                // Call the GeminiService to check if the employee is suitable
                 boolean isSuggested = GeminiService.isSuitable(currentOffre.getComp(), emp.getComp());
 
                 // Update the suggested field in the database
                 try {
                     employeService.updateSuggestedField(emp.getId(), isSuggested);
                 } catch (SQLException e) {
-                    // Handle the exception (e.g., log it, show an error message, etc.)
                     e.printStackTrace();
-                    // Optionally, you can provide a user-friendly message
                     System.out.println("Error updating the suggested field: " + e.getMessage());
                 }
 
-                // Return the value for the column (Yes/No)
                 return new ReadOnlyStringWrapper(isSuggested ? "Yes" : "No");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -287,35 +335,39 @@ public class detailOffreController {
             }
         });
 
-        // Set up the color-coding of the "Suggested" column based on the value
-        suggestedColumn.setCellFactory(column -> {
-            return new TableCell<Employe, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                        setStyle("");
+        // Set up color-coding for the "Suggested" column
+        suggestedColumn.setCellFactory(column -> new TableCell<Employe, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    if (item.equals("Yes")) {
+                        setStyle("-fx-background-color: lightgreen;");
                     } else {
-                        setText(item);
-                        if (item.equals("Yes")) {
-                            setStyle("-fx-background-color: lightgreen;");
-                        } else {
-                            setStyle("-fx-background-color: lightcoral;");
-                        }
+                        setStyle("-fx-background-color: lightcoral;");
                     }
                 }
-            };
+            }
         });
 
         // Set the items in the table
         ObservableList<Employe> employes = FXCollections.observableArrayList(
-                employeService.getEmployesByOffreId(offreId)
+                employeService.getEmployesByOffreId(offreId, tempNomMap, tempPrenomMap, tempEmailMap)
         );
 
-        // Populate the TableView with the employees
         employeTable.setItems(employes);
     }
+
+
+
+
+
+
+
 
     @FXML
     private void handleAddEmploye() {
@@ -441,11 +493,14 @@ public class detailOffreController {
     }
 
     private void updateUIText() {
+
         // Labels
         titre.setText(LanguageManager.getString("title"));
         desc.setText(LanguageManager.getString("description"));
         competence.setText(LanguageManager.getString("competence"));
         statut.setText(LanguageManager.getString("status"));
+        PostulerLabel.setText(LanguageManager.getString("PostulerLabel"));
+        DisponibiliteLabel.setText(LanguageManager.getString("DisponibiliteLabel"));
 
         // Buttons
         editButton.setText(LanguageManager.getString("edit"));
@@ -454,10 +509,24 @@ public class detailOffreController {
         cancelButton.setText(LanguageManager.getString("cancel"));
 
         // Table column names
-        user_identifierColumn.setText(LanguageManager.getString("employeeId"));
-        compColumn.setText(LanguageManager.getString("competence"));
-        dispoColumn.setText(LanguageManager.getString("availability"));
-        suggestedColumn.setText(LanguageManager.getString("suggested"));
+        if (nomColumn != null) {
+            nomColumn.setText(LanguageManager.getString("nom"));
+        }
+        if (prenomColumn != null) {
+            prenomColumn.setText(LanguageManager.getString("prenom"));
+        }
+        if (emailColumn != null) {
+            emailColumn.setText(LanguageManager.getString("email"));
+        }
+        if (compColumn != null) {
+            compColumn.setText(LanguageManager.getString("competence"));
+        }
+        if (dispoColumn != null) {
+            dispoColumn.setText(LanguageManager.getString("availability"));
+        }
+        if (suggestedColumn != null) {
+            suggestedColumn.setText(LanguageManager.getString("suggested"));
+        }
 
         // Checkboxes (Availability days)
         mondayCheckBox.setText(LanguageManager.getString("monday"));
