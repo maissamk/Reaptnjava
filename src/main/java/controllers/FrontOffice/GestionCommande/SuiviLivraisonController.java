@@ -121,7 +121,7 @@ public class SuiviLivraisonController {
             }
         }, 0, 10000); // toutes les 10 secondes
     }
-
+// event listener
     public void stopAutoRefresh() {
         refreshTimer.cancel();
     }

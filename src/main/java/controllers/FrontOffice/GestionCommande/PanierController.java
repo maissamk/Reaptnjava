@@ -93,7 +93,6 @@ public class PanierController {
 
             sousTotal += item.getTotal();
 
-            // Actions boutons
             decrementBtn.setOnAction(e -> {
                 PanierSession.retirerProduit(item.getProduit());
                 afficherPanier();

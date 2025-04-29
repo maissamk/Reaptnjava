@@ -355,7 +355,7 @@ private void choisirImageVerso() {
         if (numeroCarteField.getText().trim().isEmpty()) {
             numeroCarteError.setText("Ce champ est obligatoire");
             isValid = false;
-        } else if (numeroCarteField.getText().trim().length() < 16) {
+        } else if (numeroCarteField.getText().trim().length() == 16) {
             numeroCarteError.setText("Doit contenir 16 chiffres");
             isValid = false;
         }
@@ -554,21 +554,22 @@ private void choisirImageVerso() {
     private boolean isJourFerie(Date date) {
         Set<Date> joursFeries = new HashSet<>();
 
-        // Exemple de jours fériés (à personnaliser selon les jours fériés de ton pays)
-        // Ajouter manuellement les jours fériés pour l'année 2025 (par exemple)
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2025, Calendar.JANUARY, 1);  // 1er janvier
+        calendar.set(2025, Calendar.JANUARY, 1);
+        joursFeries.add(calendar.getTime());
+        calendar.set(2025, Calendar.JANUARY, 14);
         joursFeries.add(calendar.getTime());
 
-        calendar.set(2025, Calendar.MAY, 1);  // 1er mai
+        calendar.set(2025, Calendar.MAY, 1);
         joursFeries.add(calendar.getTime());
 
-        calendar.set(2025, Calendar.JULY, 14);  // 14 juillet
+        calendar.set(2025, Calendar.JULY, 14);
         joursFeries.add(calendar.getTime());
 
-        // Ajouter d'autres jours fériés ici...
 
-        // Vérifier si la date est dans la liste des jours fériés
+        calendar.set(2025, Calendar.MARCH, 20);
+        joursFeries.add(calendar.getTime());
+
         for (Date jourFerie : joursFeries) {
             if (isSameDay(date, jourFerie)) {
                 return true;
