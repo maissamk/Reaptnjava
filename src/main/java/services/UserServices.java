@@ -6,10 +6,20 @@ import utils.MaConnexion;
 import utils.PasswordUtils;
 import utils.UserStatusService;
 
-import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import java.util.Map;
+import java.util.HashMap;
+
+
 
 public class UserServices implements UserCrud<user> {
 
@@ -75,6 +85,7 @@ public class UserServices implements UserCrud<user> {
         }
         return null;
     }
+
     public user getUserByGoogleId(String googleId) {
         String sql = "SELECT * FROM user WHERE google_id = ?";
         try (PreparedStatement st = cnx.prepareStatement(sql)) {
@@ -107,8 +118,10 @@ public class UserServices implements UserCrud<user> {
             user.setResetToken(rs.getString("reset_token"));
             user.setTokenExpiry(rs.getTimestamp("token_expiry") != null ?
                     rs.getTimestamp("token_expiry").toLocalDateTime() : null);
+            user.setLoginAttempts(rs.getInt("login_attempts"));
         } catch (SQLException e) {
             // Fields might not exist in all queries
+            user.setLoginAttempts(0);
         }
         return user;
     }
@@ -247,6 +260,7 @@ public class UserServices implements UserCrud<user> {
             return false;
         }
     }
+
     public List<user> getAllUsersWithFaceTokens() {
         List<user> users = new ArrayList<>();
         String query = "SELECT * FROM user WHERE face_token IS NOT NULL";
@@ -270,6 +284,7 @@ public class UserServices implements UserCrud<user> {
         }
         return users;
     }
+
     public user getUserByResetToken(String token) {
         String sql = "SELECT * FROM user WHERE reset_token = ? AND token_expiry > NOW()";
         try (PreparedStatement st = cnx.prepareStatement(sql)) {
@@ -309,6 +324,73 @@ public class UserServices implements UserCrud<user> {
             return st.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Error setting reset token: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public Map<String, Integer> getLoginAttemptStats() {
+        Map<String, Integer> stats = new HashMap<>();
+        String sql = "SELECT " +
+                "COUNT(*) as total, " +
+                "SUM(CASE WHEN status = 'Blocked' THEN 1 ELSE 0 END) as blocked, " +
+                "SUM(CASE WHEN login_attempts >= 3 THEN 1 ELSE 0 END) as high_attempts " +
+                "FROM user";
+
+        try (Statement st = cnx.createStatement()) {
+            ResultSet rs = st.executeQuery(sql);
+            if (rs.next()) {
+                stats.put("total", rs.getInt("total"));
+                stats.put("blocked", rs.getInt("blocked"));
+                stats.put("highAttempts", rs.getInt("high_attempts"));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting login stats: " + e.getMessage());
+        }
+        return stats;
+    }
+
+    public List<user> getUsersWithHighAttempts(int minAttempts) {
+        String sql = "SELECT * FROM user WHERE login_attempts >= ? ORDER BY login_attempts DESC";
+        List<user> users = new ArrayList<>();
+
+        try (PreparedStatement st = cnx.prepareStatement(sql)) {
+            st.setInt(1, minAttempts);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                user user = extractUserFromResultSet(rs);
+                user.setLoginAttempts(rs.getInt("login_attempts"));  // Fixed column name
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching users with high attempts: " + e.getMessage());
+        }
+        return users;
+    }
+
+    public List<user> getAllUsersWithLoginAttempts() {
+        String sql = "SELECT * FROM user ORDER BY login_attempts DESC";
+        List<user> users = new ArrayList<>();
+
+        try (Statement st = cnx.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                user user = extractUserFromResultSet(rs);
+                user.setLoginAttempts(rs.getInt("login_attempts"));
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching all users with attempts: " + e.getMessage());
+        }
+        return users;
+    }
+    public boolean updateLoginAttempts(int userId, int attempts) {
+        String sql = "UPDATE user SET login_attempts = ? WHERE id = ?";
+        try (PreparedStatement st = cnx.prepareStatement(sql)) {
+            st.setInt(1, attempts);
+            st.setInt(2, userId);
+            return st.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error updating login attempts: " + e.getMessage());
             return false;
         }
     }

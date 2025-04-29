@@ -179,7 +179,17 @@ public class Login {
     }
 
     private void redirectToHome() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+        user currentUser = SessionManager.getInstance().getCurrentUser();
+        String homePagePath;
+
+        // Check if user has ROLE_ADMIN
+        if (currentUser.getRoles() != null && currentUser.getRoles().contains("ROLE_ADMIN")) {
+            homePagePath = "/BackOffice/HomeBack.fxml";
+        } else {
+            homePagePath = "/FrontOffice/Home.fxml";
+        }
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(homePagePath));
         Parent root = loader.load();
 
         Stage stage = (Stage) loginButton.getScene().getWindow();
@@ -187,15 +197,11 @@ public class Login {
         double screenWidth = javafx.stage.Screen.getPrimary().getVisualBounds().getWidth();
         double screenHeight = javafx.stage.Screen.getPrimary().getVisualBounds().getHeight();
 
-        Scene scene = new Scene(root, screenWidth * 0.9, screenHeight * 0.9); // Use 90% of screen size
+        Scene scene = new Scene(root, screenWidth * 0.9, screenHeight * 0.9);
         stage.setScene(scene);
         stage.setMinWidth(800);
         stage.setMinHeight(600);
         stage.centerOnScreen();
-
-        // Optional: If you want it full screen, you can enable this
-        // stage.setFullScreen(true);
-
         stage.show();
     }
 

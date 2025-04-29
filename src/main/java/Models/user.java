@@ -19,7 +19,7 @@ public class user {
     private String resetToken;
     private LocalDateTime tokenExpiry;
     private String googleId;
-    private Integer loginAttempts;
+    private Integer login_attempts;
 
 
     public user() {}
@@ -43,7 +43,7 @@ public class user {
                 ", resetToken='" + resetToken + '\'' +
                 ", tokenExpiry=" + tokenExpiry +
                 ", googleId='" + googleId + '\'' +
-                ", loginAttempts=" + loginAttempts +
+                ", login_attempts=" + login_attempts +
                 '}';
     }
 
@@ -198,10 +198,10 @@ public class user {
         this.googleId = googleId;
     }
     public Integer getLoginAttempts() {
-        return loginAttempts;
+        return login_attempts;
     }
 
     public void setLoginAttempts(Integer loginAttempts) {
-        this.loginAttempts = loginAttempts;
+        this.login_attempts = loginAttempts;
     }
 }

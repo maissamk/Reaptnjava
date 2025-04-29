@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<BorderPane prefHeight="800" prefWidth="1200" stylesheets="/css/homeback.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BackOffice.HomeBack">
+<BorderPane  prefHeight="800" prefWidth="1200" stylesheets="/css/homeback.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BackOffice.HomeBack">
 
     <!-- Top Navigation Bar - Modern Glassmorphism Effect -->
     <top>
