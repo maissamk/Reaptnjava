@@ -3,17 +3,23 @@ package controllers.FrontOffice.material.client;
 import Models.MaterielVente;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import services.MaterielService;
 import utils.SessionManager;
+import utils.gestionCommande.PanierSession;
 
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -28,6 +34,8 @@ public class ShowMaterielVenteController implements Initializable {
     @FXML private Label categorieLabel;
     @FXML private Label createdAtLabel;
     @FXML private Button acheter;
+    @FXML private Button ajouterPanierButton;
+    @FXML private Button voirPanierButton;
 
     private final MaterielService service = new MaterielService();
     private MaterielVente currentMateriel;
@@ -35,11 +43,11 @@ public class ShowMaterielVenteController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if (  SessionManager.getInstance().getCurrentUser() == null) {
+        if (SessionManager.getInstance().getCurrentUser() == null) {
             acheter.setDisable(true);
             acheter.setText("vous devez conncter pour louer");
-
-        }    }
+        }
+    }
 
     public void setMateriel(MaterielVente materiel) {
         this.currentMateriel = materiel;
@@ -118,5 +126,33 @@ public class ShowMaterielVenteController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void ajouterAuPanier() {
+        if (currentMateriel != null) {
+            PanierSession.ajouterProduit(currentMateriel, 1);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Ajout au panier");
+            alert.setHeaderText(null);
+            alert.setContentText("Produit ajouté au panier !");
+            alert.showAndWait();
+        } else {
+            showAlert("Erreur", "Aucun matériel sélectionné", Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void voirPanier() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/GestionCommande/PanierView.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Mon Panier");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture du panier: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 }

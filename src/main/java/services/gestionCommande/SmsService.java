@@ -6,9 +6,9 @@ import java.util.Random;
 
 public class SmsService {
 
-    public static final String ACCOUNT_SID = "AC2edde6b3a8cfb7b57a7c4a3a3181d086";
-    public static final String AUTH_TOKEN = "87de261ce9e62d3541040f8a69a934e7";
-    public static final String FROM_PHONE = "+12184767418"; // numéro Twilio
+    public static final String ACCOUNT_SID = "ACbce5a67ef36d3259d016f2cd1ab7dd13";
+    public static final String AUTH_TOKEN = "a30c10d364f25eb3900cbdaf7d40302e";
+    public static final String FROM_PHONE = "+17018071934"; // numéro Twilio
 
     static {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
@@ -20,7 +20,7 @@ public class SmsService {
         Message message = Message.creator(
                 new com.twilio.type.PhoneNumber(numero),
                 new com.twilio.type.PhoneNumber(FROM_PHONE),
-                "Votre code promo est : " + code + ". Utilisez-le pour une réduction de 30% !"
+                "Bonjour Mrs/Mm, Votre code promo est : " + code + ". Utilisez-le pour une réduction de 30% !"
         ).create();
 
         System.out.println("SMS envoyé : " + message.getSid());

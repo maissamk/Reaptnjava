@@ -487,7 +487,7 @@ public class ArchivesController {
             VBox root = new VBox(10);
             root.setPadding(new Insets(20));
 
-            Label lblTitle = new Label("Détails de la Commande #" + commande.getCommande().getId());
+            Label lblTitle = new Label("Détails de la Commande " );
             lblTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
             Label lblCommande = new Label("Date commande: " +
