@@ -25,6 +25,11 @@ import Models.gestionCommande.Livraison;
 import Models.gestionCommande.Paiement;
 import services.gestionCommande.LivraisonService;
 import services.gestionCommande.PaiementService;
+import services.gestionCommande.PayPalService;
+
+import com.paypal.api.payments.Payment;
+import com.paypal.base.rest.PayPalRESTException;
+
 import kong.unirest.*;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -42,10 +47,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.UUID;
-
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PaiementController implements Initializable {
-
 
     // Champs d'adresse
     @FXML private TextField numeroRueField;
@@ -88,13 +92,23 @@ public class PaiementController implements Initializable {
     private static final String APP_TOKEN = "cb172228-ba54-4fce-83a5-c17ad365c9a6";
     private static final String APP_SECRET = "57e46146-f0ea-4130-961c-99885f30a209";
 
+    // PayPal variables
+    private PayPalService paypalService;
+    private AtomicBoolean paypalPaiementEffectue = new AtomicBoolean(false);
+    private String paypalPaymentId;
+    private String paypalPayerId;
+
     public void setCommande(Commande commande) {
         this.commande = commande;
     }
     private File imageRecto;
     private File imageVerso;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Initialisation du service PayPal
+        paypalService = new PayPalService();
+
         // Initialisation des méthodes de paiement
         toggleGroup = new ToggleGroup();
         carteRadio.setToggleGroup(toggleGroup);
@@ -115,6 +129,7 @@ public class PaiementController implements Initializable {
             } else if (newVal == paypalRadio) {
                 paypalDetails.setVisible(true);
                 paypalDetails.setManaged(true);
+                initPayPalPayment();
             } else if (newVal == virementRadio) {
                 virementDetails.setVisible(true);
                 virementDetails.setManaged(true);
@@ -124,6 +139,160 @@ public class PaiementController implements Initializable {
 
         // Validation en temps réel
         setupFieldValidators();
+    }
+
+    private void initPayPalPayment() {
+        // Nettoyer le contenu précédent
+        paypalDetails.getChildren().clear();
+
+        // Ajouter un bouton pour procéder au paiement PayPal
+        Button payerPaypalButton = new Button("Payer avec PayPal");
+        Label paypalInfoLabel = new Label("Cliquez sur le bouton pour être redirigé vers PayPal");
+        paypalInfoLabel.setStyle("-fx-text-fill: #3b7bbf;");
+
+        paypalDetails.getChildren().addAll(paypalInfoLabel, payerPaypalButton);
+
+        payerPaypalButton.setOnAction(event -> {
+            try {
+                lancerPaiementPayPal();
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Erreur de paiement PayPal");
+                alert.setContentText("Une erreur est survenue lors du traitement du paiement: " + e.getMessage());
+                alert.showAndWait();
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void lancerPaiementPayPal() {
+        try {
+            // Créer un serveur HTTP local pour gérer les redirections
+            int port = 9998; // Port différent de Flouci
+
+            // URLs de redirection pour PayPal
+            String returnUrl = "http://localhost:" + port + "/success";
+            String cancelUrl = "http://localhost:" + port + "/cancel";
+
+            // Démarrer le serveur avant de créer le paiement
+            startPayPalServer(port);
+
+            // Créer le paiement PayPal
+            String approvalUrl = paypalService.createPayment(commande, returnUrl, cancelUrl);
+
+            // Ouvrir le navigateur avec l'URL d'approbation
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().browse(new URI(approvalUrl));
+            } else {
+                System.out.println("Desktop non supporté, veuillez visiter: " + approvalUrl);
+            }
+
+        } catch (PayPalRESTException | IOException | URISyntaxException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur PayPal");
+            alert.setContentText("Erreur lors de l'initialisation du paiement PayPal: " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    private void startPayPalServer(int port) {
+        new Thread(() -> {
+            try {
+                com.sun.net.httpserver.HttpServer server = com.sun.net.httpserver.HttpServer.create(
+                        new java.net.InetSocketAddress(port), 0);
+
+                // Gestionnaire pour les paiements réussis
+                server.createContext("/success", httpExchange -> {
+                    // Extraire les paramètres de l'URL
+                    String query = httpExchange.getRequestURI().getQuery();
+                    String paymentId = extractParameter(query, "paymentId");
+                    String payerId = extractParameter(query, "PayerID");
+
+                    if (paymentId != null && payerId != null) {
+                        try {
+                            // Exécuter le paiement
+                            Payment executedPayment = paypalService.executePayment(paymentId, payerId);
+
+                            // Enregistrer les identifiants pour l'utilisation ultérieure
+                            paypalPaymentId = paymentId;
+                            paypalPayerId = payerId;
+                            paypalPaiementEffectue.set(true);
+
+                            // Mettre à jour l'interface utilisateur
+                            Platform.runLater(() -> {
+                                labelConfirmation.setText("✅ Paiement PayPal effectué avec succès !");
+                                labelConfirmation.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                            });
+
+                            // Réponse HTML avec redirection automatique
+                            String responseSuccess = "<html><body>" +
+                                    "<h2>Paiement effectué avec succès</h2>" +
+                                    "<p>Vous pouvez fermer cette fenêtre et retourner à l'application.</p>" +
+                                    "<script>setTimeout(() => window.close(), 3000);</script>" +
+                                    "</body></html>";
+
+                            httpExchange.getResponseHeaders().set("Content-Type", "text/html");
+                            httpExchange.sendResponseHeaders(200, responseSuccess.length());
+                            httpExchange.getResponseBody().write(responseSuccess.getBytes());
+
+                        } catch (PayPalRESTException e) {
+                            String errorMessage = "Erreur lors de l'exécution du paiement: " + e.getMessage();
+                            httpExchange.sendResponseHeaders(500, errorMessage.length());
+                            httpExchange.getResponseBody().write(errorMessage.getBytes());
+                            e.printStackTrace();
+                        }
+                    } else {
+                        String errorMessage = "Paramètres de retour incomplets";
+                        httpExchange.sendResponseHeaders(400, errorMessage.length());
+                        httpExchange.getResponseBody().write(errorMessage.getBytes());
+                    }
+
+                    httpExchange.close();
+                });
+
+                // Gestionnaire pour les paiements annulés
+                server.createContext("/cancel", httpExchange -> {
+                    String responseCanceled = "<html><body>" +
+                            "<h2>Paiement annulé</h2>" +
+                            "<p>Vous avez annulé le paiement. Vous pouvez fermer cette fenêtre et retourner à l'application.</p>" +
+                            "<script>setTimeout(() => window.close(), 3000);</script>" +
+                            "</body></html>";
+
+                    httpExchange.getResponseHeaders().set("Content-Type", "text/html");
+                    httpExchange.sendResponseHeaders(200, responseCanceled.length());
+                    httpExchange.getResponseBody().write(responseCanceled.getBytes());
+                    httpExchange.close();
+
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Paiement annulé");
+                        alert.setContentText("Le paiement PayPal a été annulé.");
+                        alert.showAndWait();
+                    });
+                });
+
+                server.setExecutor(null);
+                server.start();
+                System.out.println("Serveur PayPal démarré sur le port " + port);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private String extractParameter(String query, String paramName) {
+        if (query == null) return null;
+
+        String[] params = query.split("&");
+        for (String param : params) {
+            String[] keyValue = param.split("=");
+            if (keyValue.length == 2 && keyValue[0].equals(paramName)) {
+                return keyValue[1];
+            }
+        }
+        return null;
     }
 
     private void initFlouciPayment() {
@@ -238,16 +407,14 @@ public class PaiementController implements Initializable {
         System.out.println("Corps de la requête: " + jsonBody.toString(4));
     }
 
-
-
-@FXML
-private void choisirImageVerso() {
-    FileChooser fileChooser = new FileChooser();
-    imageVerso = fileChooser.showOpenDialog(null);
-    if (imageVerso != null) {
-        versoLabel.setText(imageVerso.getName());
+    @FXML
+    private void choisirImageVerso() {
+        FileChooser fileChooser = new FileChooser();
+        imageVerso = fileChooser.showOpenDialog(null);
+        if (imageVerso != null) {
+            versoLabel.setText(imageVerso.getName());
+        }
     }
-}
 
     @FXML
     private void extraireDetailsCarte() {
@@ -280,7 +447,6 @@ private void choisirImageVerso() {
             rectoLabel.setText(imageRecto.getName());
         }
     }
-
 
     private float montantFinal;
 
@@ -355,7 +521,7 @@ private void choisirImageVerso() {
         if (numeroCarteField.getText().trim().isEmpty()) {
             numeroCarteError.setText("Ce champ est obligatoire");
             isValid = false;
-        } else if (numeroCarteField.getText().trim().length() == 16) {
+        } else if (numeroCarteField.getText().trim().length() < 16) {
             numeroCarteError.setText("Doit contenir 16 chiffres");
             isValid = false;
         }
@@ -458,6 +624,45 @@ private void choisirImageVerso() {
     }
     @FXML
     private Label messageErreur;
+
+    // Méthode qui vérifie si une date est un jour férié
+    private boolean isJourFerie(Date date) {
+        Set<Date> joursFeries = new HashSet<>();
+
+        // Exemple de jours fériés (à personnaliser selon les jours fériés de ton pays)
+        // Ajouter manuellement les jours fériés pour l'année 2025 (par exemple)
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2025, Calendar.JANUARY, 1);  // 1er janvier
+        joursFeries.add(calendar.getTime());
+
+        calendar.set(2025, Calendar.MAY, 1);  // 1er mai
+        joursFeries.add(calendar.getTime());
+
+        calendar.set(2025, Calendar.JULY, 14);  // 14 juillet
+        joursFeries.add(calendar.getTime());
+
+        // Ajouter d'autres jours fériés ici...
+
+        // Vérifier si la date est dans la liste des jours fériés
+        for (Date jourFerie : joursFeries) {
+            if (isSameDay(date, jourFerie)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Méthode qui vérifie si deux dates sont le même jour
+    private boolean isSameDay(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date1);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
+                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
+    }
+
     @FXML
     private void validerPaiement() {
         if (!validateFields()) return;
@@ -474,13 +679,22 @@ private void choisirImageVerso() {
         } else if (selectedRadio == virementRadio && !paiementEffectue) {
             new Alert(Alert.AlertType.WARNING, "Veuillez effectuer le paiement via Flouci avant de continuer.").show();
             return;
+        } else if (selectedRadio == paypalRadio && !paypalPaiementEffectue.get()) {
+            new Alert(Alert.AlertType.WARNING, "Veuillez effectuer le paiement via PayPal avant de continuer.").show();
+            return;
         }
 
-
+        // Création du paiement
         Paiement paiement = new Paiement();
         paiement.setCommande(commande);
         paiement.setDatePaiement(new Date());
-        paiement.setMethodePaiement(selectedRadio.getText());
+
+        // Définir la méthode de paiement avec plus de détails si nécessaire
+        if (selectedRadio == paypalRadio && paypalPaymentId != null) {
+            paiement.setMethodePaiement("PayPal (ID: " + paypalPaymentId + ")");
+        } else {
+            paiement.setMethodePaiement(selectedRadio.getText());
+        }
 
         PaiementService paiementService = new PaiementService();
         paiementService.ajouter(paiement);
@@ -534,7 +748,6 @@ private void choisirImageVerso() {
             SuiviLivraisonController controller = loader.getController();
             controller.setCommandeId(commande.getId());
 
-
             // Créer une nouvelle scène avec le root chargé
             Scene scene = new Scene(root);
 
@@ -547,45 +760,4 @@ private void choisirImageVerso() {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-
-    // Méthode qui vérifie si une date est un jour férié
-    private boolean isJourFerie(Date date) {
-        Set<Date> joursFeries = new HashSet<>();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2025, Calendar.JANUARY, 1);
-        joursFeries.add(calendar.getTime());
-        calendar.set(2025, Calendar.JANUARY, 14);
-        joursFeries.add(calendar.getTime());
-
-        calendar.set(2025, Calendar.MAY, 1);
-        joursFeries.add(calendar.getTime());
-
-        calendar.set(2025, Calendar.JULY, 14);
-        joursFeries.add(calendar.getTime());
-
-
-        calendar.set(2025, Calendar.MARCH, 20);
-        joursFeries.add(calendar.getTime());
-
-        for (Date jourFerie : joursFeries) {
-            if (isSameDay(date, jourFerie)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Méthode qui vérifie si deux dates sont le même jour
-    private boolean isSameDay(Date date1, Date date2) {
-        Calendar cal1 = Calendar.getInstance();
-        cal1.setTime(date1);
-        Calendar cal2 = Calendar.getInstance();
-        cal2.setTime(date2);
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
-                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
-    }
-}
+    }}
