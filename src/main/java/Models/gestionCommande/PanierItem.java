@@ -1,23 +1,28 @@
 package Models.gestionCommande;
 
+import Models.MaterielVente;
+
 public class PanierItem {
-    private ProduitTestN produit;
+    private MaterielVente produit;
     private int quantite;
 
-    public PanierItem(ProduitTestN produit, int quantite) {
+    public PanierItem(MaterielVente produit, int quantite) {
         this.produit = produit;
         this.quantite = quantite;
     }
 
-    public ProduitTestN getProduit() {
+    public MaterielVente getProduit() {
         return produit;
     }
-
     public int getQuantite() {
         return quantite;
     }
 
-    public float getTotal() {
+    public void setProduit(MaterielVente produit) {
+        this.produit = produit;
+    }
+
+    public double getTotal() {
         return produit.getPrix() * quantite;
     }
 }
