@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.FrontOffice.GestionCommande.PaiementController" spacing="0" stylesheets="@/css/paiement.css">
+
+    <!-- En-tête avec effet parallax -->
+    <StackPane styleClass="header-container">
+        <ImageView fitWidth="902.0" fitHeight="170" preserveRatio="true">
+            <image>
+                <Image url="@/images/cart-page-header-img.jpg" />
+            </image>
+            <effect>
+                <ColorAdjust brightness="-0.1" contrast="0.1" />
+            </effect>
+        </ImageView>
+        <VBox alignment="CENTER" spacing="8">
+            <StackPane>
+                <Label style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white;" text="Paiement">
+                    <effect>
+                        <DropShadow color="rgba(0,0,0,0.5)" radius="5" />
+                    </effect>
+                </Label>
+            </StackPane>
+            <HBox alignment="CENTER" spacing="5">
+                <Label style="-fx-text-fill: white;" text="Accueil / " />
+                <Label style="-fx-font-weight: bold; -fx-text-fill: white; -fx-underline: true;" text="Paiement" />
+            </HBox>
+            <padding>
+                <Insets bottom="15" />
+            </padding>
+        </VBox>
+    </StackPane>
+
+    <!-- Indicateur de progression -->
+    <HBox alignment="CENTER" spacing="5" style="-fx-background-color: #f8f8f8; -fx-padding: 15;">
+        <HBox alignment="CENTER" spacing="5">
+            <Label text="1" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-min-width: 24; -fx-min-height: 24; -fx-alignment: CENTER; -fx-background-radius: 12;" />
+            <Label text="Panier" style="-fx-font-weight: bold;" />
+        </HBox>
+        <Label text="→" style="-fx-font-size: 16; -fx-padding: 0 10;" />
+        <HBox alignment="CENTER" spacing="5">
+            <Label text="2" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-min-width: 24; -fx-min-height: 24; -fx-alignment: CENTER; -fx-background-radius: 12;" />
+            <Label text="Adresse" style="-fx-font-weight: bold;" />
+        </HBox>
+        <Label text="→" style="-fx-font-size: 16; -fx-padding: 0 10;" />
+        <HBox alignment="CENTER" spacing="5">
+            <Label text="3" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-min-width: 24; -fx-min-height: 24; -fx-alignment: CENTER; -fx-background-radius: 12;" />
+            <Label text="Paiement" style="-fx-font-weight: bold; -fx-text-fill: #4CAF50;" />
+        </HBox>
+        <Label text="→" style="-fx-font-size: 16; -fx-padding: 0 10;" />
+        <HBox alignment="CENTER" spacing="5">
+            <Label text="4" style="-fx-background-color: #e0e0e0; -fx-text-fill: #606060; -fx-min-width: 24; -fx-min-height: 24; -fx-alignment: CENTER; -fx-background-radius: 12;" />
+            <Label text="Livraison" style="-fx-text-fill: #606060;" />
+        </HBox>
+    </HBox>
+
+    <!-- Contenu principal -->
+    <ScrollPane fitToWidth="true" styleClass="main-scroll" style="-fx-background-color: white; -fx-border-color: transparent;">
+
+        <HBox alignment="TOP_CENTER" prefHeight="987.0" prefWidth="902.0" spacing="25" style="-fx-padding: 30;">
+            <!-- Adresse -->
+            <VBox alignment="CENTER_LEFT" prefWidth="390.0" spacing="8" styleClass="form-container">
+                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Adresse de livraison">
+                    <graphic>
+                        <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                            <Image url="@/images/location-icon.png" />
+                        </ImageView>
+                    </graphic>
+                </Label>
+
+                <Separator style="-fx-padding: 5 0 10 0;" />
+
+                <Label text="Rue:" />
+                <TextField fx:id="numeroRueField" promptText="Ex: 123 Rue de Paris" />
+                <Label fx:id="numeroRueError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" />
+
+                <Label text="Ville*:" />
+                <TextField fx:id="villeField" promptText="Ex: Nabeul" />
+                <Label fx:id="villeError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" />
+
+                <Label text="Pays*:" />
+                <TextField fx:id="paysField" promptText="Ex: Tunis" />
+                <Label fx:id="paysError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" />
+                <Label text="Code Postal*:" />
+                <TextField fx:id="codePostalField" promptText="Ex: 8071" />
+                <Label fx:id="codePostalError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" />
+
+                <Label text="Numéro de téléphone*:" />
+                <TextField fx:id="telephoneField" promptText="+216 26 789 546" />
+                <Label fx:id="telephoneError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" />
+
+                <Label text="Notes de commande:" />
+                <TextArea fx:id="notesCommandeArea" prefHeight="81.0" prefRowCount="3" prefWidth="420.0"
+                          promptText="Instructions spéciales pour la livraison (facultatif)" wrapText="true" />
+
+
+                <padding>
+                    <Insets top="10" right="20" bottom="10" left="20" />
+                </padding>
+                <VBox.margin>
+                    <Insets top="0" right="0" bottom="0" left="0" />
+                </VBox.margin>
+                <style>
+                    -fx-background-color: #ffffff;
+                    -fx-border-color: #e0e0e0;
+                    -fx-border-radius: 8;
+                    -fx-background-radius: 8;
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3);
+                </style>
+            </VBox>
+
+            <!-- Paiement -->
+            <VBox alignment="CENTER_LEFT" spacing="40" styleClass="payment-container">
+                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Méthode de paiement">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                            <Image url="@/images/payment-icon.png" />
+                        </ImageView>
+                    </graphic>
+                </Label>
+
+                <Separator style="-fx-padding: 0 0 10 0;" />
+
+                <!-- Payment Method Icons with hover effect -->
+                <HBox alignment="CENTER" spacing="15" style="-fx-padding: 5 0 20 0;">
+                    <ImageView fitHeight="35" preserveRatio="true" styleClass="payment-icon">
+                        <Image url="@/images/mastercard-icon.png" />
+                        <effect>
+                            <DropShadow color="rgba(0,0,0,0.1)" radius="3" />
+                        </effect>
+                    </ImageView>
+                    <ImageView fitHeight="35" preserveRatio="true" styleClass="payment-icon">
+                        <Image url="@/images/visa-icon.png" />
+                        <effect>
+                            <DropShadow color="rgba(0,0,0,0.1)" radius="3" />
+                        </effect>
+                    </ImageView>
+                    <ImageView fitHeight="35" preserveRatio="true" styleClass="payment-icon">
+                        <Image url="@/images/paypal-icon.png" />
+                        <effect>
+                            <DropShadow color="rgba(0,0,0,0.1)" radius="3" />
+                        </effect>
+                    </ImageView>
+                    <ImageView fitHeight="35" preserveRatio="true" styleClass="payment-icon">
+                        <Image url="@/images/amex-icon.png" />
+                        <effect>
+                            <DropShadow color="rgba(0,0,0,0.1)" radius="3" />
+                        </effect>
+                    </ImageView>
+                    <ImageView fitHeight="35" preserveRatio="true" styleClass="payment-icon">
+                        <Image url="@/images/flouci-icon.png" />
+                        <effect>
+                            <DropShadow color="rgba(0,0,0,0.1)" radius="3" />
+                        </effect>
+                    </ImageView>
+                </HBox>
+
+                <VBox alignment="CENTER_LEFT" spacing="15">
+                    <!-- Carte Bancaire -->
+                    <VBox spacing="5" styleClass="payment-option">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <RadioButton fx:id="carteRadio" style="-fx-font-size: 16px;" text="Carte Bancaire" />
+                            <Label style="-fx-text-fill: #4CAF50; -fx-font-size: 12px;" text="Sécurisé" />
+                        </HBox>
+                        <VBox fx:id="carteDetails" managed="false" visible="false" spacing="15"
+                              style="-fx-padding: 20; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-color: #fafafa;">
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="Détails de la Carte Bancaire" />
+                                <ImageView fitHeight="24" preserveRatio="true">
+                                    <Image url="@/images/secure-lock-icon.png" />
+                                </ImageView>
+                            </HBox>
+                            <Separator />
+                            <GridPane hgap="15" vgap="15">
+                                <columnConstraints>
+                                    <ColumnConstraints halignment="RIGHT" minWidth="150" />
+                                    <ColumnConstraints minWidth="250" />
+                                </columnConstraints>
+
+                                <Label text="Numéro de carte:" GridPane.rowIndex="0" />
+                                <TextField fx:id="numeroCarteField" promptText="1234 5678 9012 3456" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                <Label fx:id="numeroCarteError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.valignment="BOTTOM" />
+
+                                <Label text="Date expiration:" GridPane.rowIndex="1" />
+                                <HBox spacing="15" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <TextField fx:id="dateExpirationField" prefWidth="100" promptText="MM/AA" />
+                                    <Label text="CVV:" />
+                                    <TextField fx:id="cvvField" prefWidth="60" promptText="123" />
+                                    <ImageView fitHeight="60" preserveRatio="true">
+                                        <Image url="@/images/cvv-help-icon.png" />
+                                    </ImageView>
+                                </HBox>
+                                <HBox spacing="15" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" >
+                                    <Label fx:id="dateExpirationError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" prefWidth="100" />
+                                    <Label text="" prefWidth="40" /> <!-- Spacer -->
+                                    <Label fx:id="cvvError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" prefWidth="60" />
+                                </HBox>
+
+                                <Label text="Nom du titulaire:" GridPane.rowIndex="2" />
+                                <TextField fx:id="nomTitulaireField" promptText="Tel qu'il apparaît sur la carte" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                <Label fx:id="nomTitulaireError" style="-fx-text-fill: red; -fx-font-size: 11px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
+
+                                <Label text="Image du Recto:" GridPane.rowIndex="3" />
+                                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                    <HBox spacing="10" alignment="CENTER_LEFT">
+                                        <Button text="Choisir un fichier" onAction="#choisirImageRecto" styleClass="file-button">
+                                            <graphic>
+                                                <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                                                    <Image url="@/images/upload-icon.png" />
+                                                </ImageView>
+                                            </graphic>
+                                        </Button>
+                                        <Label fx:id="rectoLabel" style="-fx-text-fill: #808080;" text="Aucun fichier choisi" />
+                                    </HBox>
+                                    <Label style="-fx-text-fill: #606060; -fx-font-style: italic; -fx-font-size: 11px;"
+                                           text="Format accepté: JPG, PNG. Taille max: 5MB" />
+                                </VBox>
+
+                                <Label text="Image du Verso:" GridPane.rowIndex="4" />
+                                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                    <HBox spacing="10" alignment="CENTER_LEFT">
+                                        <Button text="Choisir un fichier" onAction="#choisirImageVerso" styleClass="file-button">
+                                            <graphic>
+                                                <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                                                    <Image url="@/images/upload-icon.png" />
+                                                </ImageView>
+                                            </graphic>
+                                        </Button>
+                                        <Label fx:id="versoLabel" style="-fx-text-fill: #808080;" text="Aucun fichier choisi" />
+                                    </HBox>
+                                    <Label style="-fx-text-fill: #606060; -fx-font-style: italic; -fx-font-size: 11px;"
+                                           text="Format accepté: JPG, PNG. Taille max: 5MB" />
+                                </VBox>
+                            </GridPane>
+
+                            <HBox alignment="CENTER_RIGHT" spacing="10">
+                                <Button fx:id="extraireDetailsButton" onAction="#extraireDetailsCarte" text="Extraire les Détails" styleClass="secondary-button" />
+                            </HBox>
+                        </VBox>
+                    </VBox>
+
+                    <!-- PayPal -->
+                    <VBox spacing="5" styleClass="payment-option">
+                        <RadioButton fx:id="paypalRadio" style="-fx-font-size: 16px;" text="PayPal" />
+                        <VBox fx:id="paypalDetails" managed="false" visible="false" spacing="10"
+                              style="-fx-padding: 20; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-color: #fafafa;">
+                            <HBox alignment="CENTER" spacing="10">
+                                <ImageView fitHeight="60" preserveRatio="true">
+                                    <Image url="@/images/paypal-large.png" />
+                                </ImageView>
+                            </HBox>
+                            <Label style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-alignment: center;" text="Connectez-vous à PayPal" textAlignment="CENTER" />
+                            <Label style="-fx-text-fill: #606060;" text="Vous serez redirigé vers la page de paiement sécurisée de PayPal après confirmation de votre commande." wrapText="true" />
+                            <HBox alignment="CENTER" style="-fx-padding: 10 0 0 0;">
+                                <ImageView fitHeight="40" preserveRatio="true">
+                                    <Image url="@/images/paypal-security-badge.png" />
+                                </ImageView>
+                            </HBox>
+                        </VBox>
+                    </VBox>
+
+                    <!-- Virement -->
+                    <VBox spacing="5" styleClass="payment-option">
+                        <RadioButton fx:id="virementRadio" style="-fx-font-size: 16px;" text="Payer avec Flouci" />
+                        <VBox fx:id="virementDetails" managed="false" visible="false" spacing="10"
+                              style="-fx-padding: 20; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-background-color: #fafafa;">
+                            <HBox alignment="CENTER" spacing="10">
+                                <ImageView fitHeight="50" preserveRatio="true">
+                                    <Image url="@/images/flouci-large.png" />
+                                </ImageView>
+                            </HBox>
+                            <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="Détails pour le Paiement Flouci" />
+                            <Label style="-fx-text-fill: #606060;" text="Suivez ces étapes pour compléter votre paiement:" wrapText="true" />
+                            <VBox spacing="5" style="-fx-padding: 0 0 0 20;">
+                                <Label text="1. Vous recevrez un code QR après validation de la commande" />
+                                <Label text="2. Scannez le code avec votre application Flouci" />
+                                <Label text="3. Confirmez le paiement dans l'application" />
+                                <Label text="4. Votre commande sera traitée immédiatement" />
+                            </VBox>
+                        </VBox>
+                    </VBox>
+                </VBox>
+
+
+
+                <!-- Confirmer -->
+                <HBox alignment="CENTER" spacing="15">
+                    <Button onAction="#validerPaiement" styleClass="confirm-button" text="CONFIRMER LE PAIEMENT">
+                        <graphic>
+                            <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                                <Image url="@/images/check-icon.png" />
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
+
+                <!-- Label de confirmation -->
+                <Label fx:id="labelConfirmation" text="" style="-fx-font-size: 16px; -fx-text-fill: green; -fx-font-weight: bold;" />
+
+                <padding>
+                    <Insets top="10" right="20" bottom="20" left="20" />
+                </padding>
+                <style>
+                    -fx-background-color: #ffffff;
+                    -fx-border-color: #e0e0e0;
+                    -fx-border-radius: 8;
+                    -fx-background-radius: 8;
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3);
+                </style>
+            </VBox>
+        </HBox>
+    </ScrollPane>
+
+
+
+</VBox>

@@ -13,7 +13,22 @@ public class UserServices implements UserCrud<user> {
 
     Connection cnx = MaConnexion.getInstance().getConn();
 
-    public user authenticateSymfonyUser(String email, String plainPassword) {
+    // Add this new method to find user by email
+    public user getUserByEmail(String email) {
+        String sql = "SELECT * FROM user WHERE email = ?";
+        try (PreparedStatement st = cnx.prepareStatement(sql)) {
+            st.setString(1, email);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return extractUserFromResultSet(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching user by email: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public user authenticateSymfonyUser(String email, String plainPassword) throws SecurityException {
         String sql = "SELECT * FROM user WHERE email = ?";
         try {
             PreparedStatement st = cnx.prepareStatement(sql);
@@ -21,23 +36,28 @@ public class UserServices implements UserCrud<user> {
             ResultSet rs = st.executeQuery();
 
             if (rs.next()) {
-                String symfonyHash = rs.getString("password");
-                System.out.println("Stored hash from DB: " + symfonyHash);
-                System.out.println("Password entered by user: " + plainPassword);
+                // First check account status
+                String status = rs.getString("status");
+                if ("Blocked".equalsIgnoreCase(status)) {
+                    throw new SecurityException("This account has been blocked. Please contact administrator.");
+                }
 
-                boolean match = PasswordUtils.checkSymfonyPassword(plainPassword, symfonyHash);
-                System.out.println("Password match: " + match);
+                // Skip password check if password is empty (Google users)
+                String storedPassword = rs.getString("password");
+                if (storedPassword == null || storedPassword.isEmpty()) {
+                    return extractUserFromResultSet(rs);
+                }
 
+                boolean match = PasswordUtils.checkSymfonyPassword(plainPassword, storedPassword);
                 if (match) {
                     return extractUserFromResultSet(rs);
-                } else {
-                    System.out.println(" Password did not match");
                 }
             }
         } catch (SQLException e) {
             System.err.println("Authentication error: " + e.getMessage());
+            throw new SecurityException("Database error during authentication");
         }
-        return null;
+        throw new SecurityException("Invalid credentials");
     }
 
     public user getUserById(int userId) {
@@ -72,22 +92,91 @@ public class UserServices implements UserCrud<user> {
     public void add(user user) {
         String sql = "INSERT INTO user (email, password, roles, nom, prenom, telephone, status, avatar) VALUES (?,?,?,?,?,?,?,?)";
         try {
-            PreparedStatement st = cnx.prepareStatement(sql);
+            PreparedStatement st = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setString(1, user.getEmail());
-            st.setString(2, user.getPassword());            String rolesJson = "[\"" + user.getRoles() + "\"]";
+            st.setString(2, user.getPassword() != null ? user.getPassword() : ""); // Handle null password
+            String rolesJson = user.getRoles().startsWith("[") ? user.getRoles() : "[\"" + user.getRoles() + "\"]";
             st.setString(3, rolesJson);
             st.setString(4, user.getNom());
             st.setString(5, user.getPrenom());
-            st.setString(6, user.getTelephone());
+            st.setString(6, user.getTelephone() != null ? user.getTelephone() : "");
             st.setString(7, user.getStatus());
             st.setString(8, user.getAvatar());
 
-            st.executeUpdate();
+            int affectedRows = st.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = st.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    user.setId(generatedKeys.getInt(1));
+                } else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Database error", e);
         }
     }
 
+    @Override
+    public void update(user user) {
+        // Separate update for password and non-password fields
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            updateWithPassword(user);
+        } else {
+            updateWithoutPassword(user);
+        }
+    }
+
+    private void updateWithPassword(user user) {
+        String sql = "UPDATE user SET email = ?, password = ?, roles = ?, nom = ?, prenom = ?, telephone = ?, status = ?, avatar = ? WHERE id = ?";
+        try {
+            PreparedStatement st = cnx.prepareStatement(sql);
+            st.setString(1, user.getEmail());
+            st.setString(2, user.getPassword());
+            String rolesJson = user.getRoles().startsWith("[") ? user.getRoles() : "[\"" + user.getRoles() + "\"]";
+            st.setString(3, rolesJson);
+            st.setString(4, user.getNom());
+            st.setString(5, user.getPrenom());
+            st.setString(6, user.getTelephone() != null ? user.getTelephone() : "");
+            st.setString(7, user.getStatus());
+            st.setString(8, user.getAvatar());
+            st.setInt(9, user.getId());
+
+            int rowsAffected = st.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Updating user failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update user with password: " + e.getMessage(), e);
+        }
+    }
+
+    private void updateWithoutPassword(user user) {
+        String sql = "UPDATE user SET email = ?, roles = ?, nom = ?, prenom = ?, telephone = ?, status = ?, avatar = ? WHERE id = ?";
+        try {
+            PreparedStatement st = cnx.prepareStatement(sql);
+            st.setString(1, user.getEmail());
+            String rolesJson = user.getRoles().startsWith("[") ? user.getRoles() : "[\"" + user.getRoles() + "\"]";
+            st.setString(2, rolesJson);
+            st.setString(3, user.getNom());
+            st.setString(4, user.getPrenom());
+            st.setString(5, user.getTelephone() != null ? user.getTelephone() : "");
+            st.setString(6, user.getStatus());
+            st.setString(7, user.getAvatar());
+            st.setInt(8, user.getId());
+
+            int rowsAffected = st.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Updating user failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update user without password: " + e.getMessage(), e);
+        }
+    }
 
     @Override
     public void delete(user user) {
@@ -102,36 +191,6 @@ public class UserServices implements UserCrud<user> {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to delete user: " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void update(user user) {
-        String sql = "UPDATE user SET email = ?, password = ?, roles = ?, nom = ?, prenom = ?, telephone = ?, status = ?, avatar = ? WHERE id = ?";
-
-        try {
-            PreparedStatement st = cnx.prepareStatement(sql);
-            st.setString(1, user.getEmail());
-            st.setString(2, user.getPassword());
-
-            // Format roles as JSON array if it's not already
-            String rolesJson = user.getRoles().startsWith("[") ? user.getRoles() : "[\"" + user.getRoles() + "\"]";
-            st.setString(3, rolesJson);
-
-            st.setString(4, user.getNom());
-            st.setString(5, user.getPrenom());
-            st.setString(6, user.getTelephone());
-            st.setString(7, user.getStatus());
-            st.setString(8, user.getAvatar());
-            st.setInt(9, user.getId());
-
-            int rowsAffected = st.executeUpdate();
-
-            if (rowsAffected == 0) {
-                throw new SQLException("Updating user failed, no rows affected.");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to update user: " + e.getMessage(), e);
         }
     }
 
@@ -151,6 +210,4 @@ public class UserServices implements UserCrud<user> {
         }
         return users;
     }
-
-
 }

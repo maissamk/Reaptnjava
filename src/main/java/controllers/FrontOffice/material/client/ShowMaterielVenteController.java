@@ -13,10 +13,19 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
+import services.MaterielService;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -24,6 +33,8 @@ import okhttp3.Response;
  import services.MaterielService;
 import services.SimpleImageAnalysisService;
 import utils.SessionManager;
+import utils.gestionCommande.PanierSession;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -45,9 +56,12 @@ public class ShowMaterielVenteController implements Initializable {
     @FXML private Button generateQRButton;
     @FXML private Button analyzeImageButton;
     @FXML private ProgressIndicator analyzeProgress;
+    @FXML private Button ajouterPanierButton;
+    @FXML private Button voirPanierButton;
 
     private final MaterielService service = new MaterielService();
     private MaterielVente currentMateriel;
+    private int currentUserId;
     private SimpleImageAnalysisService imageAnalysisService;
 
     @Override
@@ -61,13 +75,17 @@ public class ShowMaterielVenteController implements Initializable {
 
         if (SessionManager.getInstance().getCurrentUser() == null) {
             acheter.setDisable(true);
-            acheter.setText("Vous devez vous connecter pour louer");
+            acheter.setText("vous devez conncter pour louer");
         }
     }
 
     public void setMateriel(MaterielVente materiel) {
         this.currentMateriel = materiel;
         updateUI();
+    }
+
+    public void setCurrentUserId(int userId) {
+        this.currentUserId = userId;
     }
 
     private void updateUI() {
@@ -200,5 +218,33 @@ private void showAlert(String title, String message, Alert.AlertType type) {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void ajouterAuPanier() {
+        if (currentMateriel != null) {
+            PanierSession.ajouterProduit(currentMateriel, 1);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Ajout au panier");
+            alert.setHeaderText(null);
+            alert.setContentText("Produit ajouté au panier !");
+            alert.showAndWait();
+        } else {
+            showAlert("Erreur", "Aucun matériel sélectionné", Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void voirPanier() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/GestionCommande/PanierView.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Mon Panier");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture du panier: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 }

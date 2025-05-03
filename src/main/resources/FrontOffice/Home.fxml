@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
+<?import javafx.scene.layout.StackPane?>
 <BorderPane prefHeight="100.0" prefWidth="1250.0" stylesheets="/css/home.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.Home">
 
    <!-- Top Navigation Bar -->
@@ -42,6 +43,7 @@
          <Button fx:id="produitsDetailButton" styleClass="nav-button" text="Produits Detail" />
          <Button fx:id="parcelleButton" styleClass="nav-button" text="Parcelle" />
          <Button fx:id="offersButton" onAction="#handleOffers" styleClass="nav-button" text="Offers" />
+         <Button fx:id="commandeButton" onAction="#handleCommande" styleClass="featured-button" text="Commande" />
          <Button fx:id="masterfulButton" styleClass="featured-button" text="Masterful Agricole" />
 
          <Region HBox.hgrow="ALWAYS" />
@@ -54,30 +56,33 @@
 
    <!-- Main Content Area -->
    <center>
-      <VBox alignment="CENTER" spacing="40" style="-fx-padding: 50;">
-         <VBox alignment="CENTER" spacing="10">
-            <Label fx:id="welcomeLabel" styleClass="welcome-text" text="Welcome to Agricultural Management System" />
-            <Label styleClass="tagline" text="YOU SOW, YOU REAP" />
-         </VBox>
+      <StackPane fx:id="mainContentPane" />
+   <!-- <VBox alignment="CENTER" spacing="40" style="-fx-padding: 50;">
+       <VBox alignment="CENTER" spacing="10">
 
-         <!-- Hero Image -->
-         <ImageView fitHeight="400" fitWidth="800" pickOnBounds="true" preserveRatio="true" styleClass="hero-image">
-            <Image url="@/images/agriculture-hero.jpg" />
-         </ImageView>
+          <Label styleClass="tagline" text="YOU SOW, YOU REAP" />
+       </VBox>
 
-         <!-- Call to Action -->
-         <HBox alignment="CENTER" spacing="20">
-            <Button fx:id="HomeBackButton" onAction="#HomeBack" styleClass="featured-button" text="Back" />
 
-         </HBox>
-      </VBox>
-   </center>
+       <ImageView fitHeight="400" fitWidth="800" pickOnBounds="true" preserveRatio="true" styleClass="hero-image">
+          <Image url="@/images/agriculture-hero.jpg" />
+       </ImageView>
+
+
+
+    </VBox>-->
+ </center>
 
    <!-- Footer -->
+   <HBox alignment="CENTER" spacing="20">
+      <Button fx:id="HomeBackButton" onAction="#HomeBack" styleClass="featured-button" text="Back" />
+
+         </HBox>
    <bottom>
       <VBox spacing="0">
          <Separator style="-fx-background-color: #c8e6c9;" />
          <HBox alignment="CENTER" styleClass="footer">
+            <Label fx:id="welcomeLabel" styleClass="welcome-text" text="Welcome to Agricultural Management System" />
             <Label styleClass="footer-text" text="AgronianofExample.com © 2023" />
             <Region HBox.hgrow="ALWAYS" />
             <HBox spacing="20">

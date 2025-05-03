@@ -1,7 +1,12 @@
 package controllers.FrontOffice;
 
 import Models.user;
- import controllers.FrontOffice.material.client.ShowMaterielLocationController;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.scene.image.ImageView;
+import javafx.fxml.Initializable;
+import controllers.FrontOffice.material.client.ShowMaterielLocationController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,6 +42,8 @@ public class Home implements Initializable {
     @FXML private Button masterfulButton;
     @FXML private Button loginButton;
     @FXML private Button profileButton;
+    @FXML
+    private Button commandeButton;
 
     // User info elements
     @FXML private ImageView userAvatar;
@@ -46,6 +53,7 @@ public class Home implements Initializable {
     // Main content
     @FXML private StackPane mainContentPane;
     @FXML private Label welcomeLabel;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -102,6 +110,7 @@ public class Home implements Initializable {
         // Navigation buttons
         accueilButton.setOnAction(e -> handleAccueil());
 
+        commandeButton.setOnAction(this::handleCommande);
 
         material.setOnAction(this::handleMaterial);
         produitsButton.setOnAction(e -> handleProduitsDetail());
@@ -129,9 +138,9 @@ public class Home implements Initializable {
             Parent root = loader.load();
 
             // Get the stage from the event source
-          //  Node source = (Node) event.getSource();
-        //    Stage stage = (Stage) source.getScene().getWindow();
-        //stage.setFullScreen(true);
+            //  Node source = (Node) event.getSource();
+            //    Stage stage = (Stage) source.getScene().getWindow();
+            //stage.setFullScreen(true);
             // Set the new scene
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
@@ -145,6 +154,11 @@ public class Home implements Initializable {
     // Usage in your button handler:
     @FXML
     private void handleProduits(ActionEvent event) {
+    }
+
+    @FXML
+    private void handleCommande(ActionEvent event) {
+        navigateTo("/BackOffice/GestionCommandeBack/CommandesAvecDetails.fxml", event);
     }
 
     private void handleMaterial(ActionEvent event) {
@@ -168,13 +182,14 @@ public class Home implements Initializable {
             BaseFrontController baseController = baseLoader.getController();
 
             FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/Frontoffice/Offre/indexOffre.fxml"));
-            Parent content = contentLoader.load();
+            Parent content = contentLoader.load(); // content with its own controller & methods
 
+            // Inject the page content into base layout
             baseController.getContentPane().getChildren().setAll(content);
 
+            // Now show the complete scene
             Scene scene = new Scene(baseRoot);
-       //     Stage stage = (Stage) offersButton.getScene().getWindow();
-            Stage stage = new Stage();
+            Stage stage = (Stage) offersButton.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
 
@@ -190,11 +205,11 @@ public class Home implements Initializable {
     @FXML
     private void handleProfile() {
         try {
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/Frontoffice/baseFront.fxml"));
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
             Parent baseRoot = baseLoader.load();
             BaseFrontController baseController = baseLoader.getController();
 
-            FXMLLoader profileLoader = new FXMLLoader(getClass().getResource("/profile.fxml"));
+            FXMLLoader profileLoader = new FXMLLoader(getClass().getResource("/FrontOffice/user/profile.fxml"));
             Parent profileContent = profileLoader.load();
 
             baseController.getContentPane().getChildren().setAll(profileContent);
@@ -224,7 +239,7 @@ public class Home implements Initializable {
                 stage.show();
             } else {
                 // Login logic - redirect to login page
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/Login.fxml"));
                 Parent root = loader.load();
 
                 Stage stage = (Stage) loginButton.getScene().getWindow();

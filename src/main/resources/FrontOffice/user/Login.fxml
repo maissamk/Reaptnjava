@@ -63,15 +63,17 @@
                 <Line endX="80.0" stroke="#4a934a" />
             </HBox>
 
-            <Button layoutX="48.0" layoutY="350.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #f5142a; -fx-text-fill: white;">
+            <Button fx:id="googleLoginButton" layoutX="48.0" layoutY="350.0"
+                    onAction="#handleGoogleLogin" prefHeight="40.0" prefWidth="200.0"
+                    style="-fx-background-color: #f5142a; -fx-text-fill: white;">
                 <graphic>
                     <HBox alignment="CENTER" spacing="10.0">
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../../images/googlelogo.png" />
+                                <Image url="@../../images/googlelogo.png"/>
                             </image>
                         </ImageView>
-                        <Label text="Se Connecter avec Google" />
+                        <Label text="Se Connecter avec Google"/>
                     </HBox>
                 </graphic>
             </Button>
@@ -79,7 +81,7 @@
 
         <ImageView fitHeight="154.0" fitWidth="213.0" layoutX="56.0" layoutY="146.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@../../images/logoapp.png" />
+                <Image url="@/images/logoapp.jpg" />
             </image>
         </ImageView>
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.FrontOffice.Offer.modifierOffreController">
+    <VBox spacing="15" alignment="CENTER" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+
+        <Label text="Modifier Offre" style="-fx-font-size: 22px; -fx-font-weight: bold;" />
+
+        <GridPane hgap="10" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints minWidth="100" halignment="RIGHT"/>
+                <ColumnConstraints minWidth="200"/>
+            </columnConstraints>
+
+            <Label text="Titre:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="titreField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="Description:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="descrField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="Compétence:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="competenceField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Label text="Statut:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <CheckBox fx:id="statutCheckBox" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        </GridPane>
+
+        <HBox spacing="10" alignment="CENTER">
+            <Button fx:id="saveButton" text="Enregistrer" onAction="#handleSave"/>
+            <Button fx:id="RetourButton" text="Annuler" onAction="#handleRetour"/>
+        </HBox>
+    </VBox>
+</AnchorPane>

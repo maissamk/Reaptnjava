@@ -1,0 +1,33 @@
+.status-label {
+    -fx-font-weight: bold;
+    -fx-padding: 2 5 2 5;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+}
+
+.status-label.active {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+.status-label.inactive {
+    -fx-background-color: #9E9E9E;
+    -fx-text-fill: white;
+}
+
+.status-label.blocked {
+    -fx-background-color: #F44336;
+    -fx-text-fill: white;
+}
+.combo-box.blocked .list-cell {
+    -fx-background-color: #FFCDD2;
+    -fx-text-fill: #D32F2F;
+}
+
+.combo-box.blocked .arrow-button {
+    -fx-background-color: #FFCDD2;
+}
+
+.combo-box.blocked .arrow {
+    -fx-background-color: #D32F2F;
+}
