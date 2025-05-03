@@ -73,7 +73,13 @@
                     </ImageView>
                 </graphic>
             </Button>
-
+            <Button fx:id="statisticsBtnUser" styleClass="side-btn" text="Statistics" >
+                <graphic>
+                    <ImageView fitHeight="22" fitWidth="22">
+                        <Image url="@/images/icons/stats.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
             <Button fx:id="farmersBtn" styleClass="side-btn" text="Farmers">
                 <graphic>
                     <ImageView fitHeight="22" fitWidth="22">

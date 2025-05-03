@@ -48,6 +48,7 @@ public class HomeBack implements Initializable {
 
     // Sidebar Buttons
     @FXML private Button statisticsBtn;
+    @FXML private Button statisticsBtnUser;
     @FXML private Button farmersBtn;
     @FXML private Button parcelsBtn;
     @FXML private Button harvestBtn;
@@ -109,7 +110,7 @@ public class HomeBack implements Initializable {
         reportsBtn.setOnAction(e -> loadContent("/views/BackOffice/Reports.fxml"));
 
         // Sidebar Navigation
-        statisticsBtn.setOnAction(this::handleStatisticsButton);
+        statisticsBtnUser.setOnAction(this::handleStatisticsButton);
         //statisticsBtn.setOnAction(e -> loadContent("/views/BackOffice/Statistics.fxml"));
         farmersBtn.setOnAction(e -> loadContent("/views/BackOffice/Farmers.fxml"));
         parcelsBtn.setOnAction(e -> loadContent("/views/BackOffice/Parcels.fxml"));
