@@ -1,0 +1,476 @@
+/* panier.css - Version améliorée */
+
+/* Styles généraux */
+.container {
+    -fx-font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+    -fx-background-color: linear-gradient(to bottom right, #fff9f0, #f2efe6);
+    -fx-padding: 20px;
+}
+/* styles-panier.css - Thème orange, vert et marron */
+
+/* Styles généraux */
+.root {
+    -fx-font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+    -fx-background-color: linear-gradient(to bottom right, #fff9f0, #f2efe6);
+}
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical {
+    -fx-background-color: #f0f0f0;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #aaaaaa;
+}
+.main-container {
+    -fx-padding: 3% 5%;
+    -fx-spacing: 2%;
+    -fx-alignment: TOP_CENTER;
+}
+
+/* En-tête */
+.header-banner {
+    -fx-background-color: linear-gradient(to right, #5d4037, #8d6e63, #d7ccc8);
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(93,64,55,0.4), 15, 0, 0, 6);
+    -fx-pref-height: 20vh;
+    -fx-pref-width: 100%;
+}
+
+.header-title {
+    -fx-font-size: 5vw;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 8, 0, 0, 2);
+    -fx-letter-spacing: 1.2;
+}
+
+/* Liste des éléments du panier */
+.item-header {
+    -fx-font-weight: bold;
+    -fx-pref-width: 20%;
+    -fx-text-fill: #5d4037;
+}
+
+.item-row {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 5%;
+    -fx-padding: 10px 0;
+}
+
+.item-image {
+    -fx-pref-width: 15vw;
+    -fx-pref-height: 15vw;
+}
+
+.item-name {
+    -fx-font-weight: bold;
+    -fx-pref-width: 20%;
+}
+
+.item-price, .item-quantity, .item-total, .item-action {
+    -fx-font-weight: bold;
+}
+
+/* Section code promo */
+.promo-section {
+    -fx-alignment: CENTER;
+    -fx-spacing: 2%;
+}
+
+.promo-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #0066cc;
+    -fx-font-weight: bold;
+}
+
+.promo-field {
+    -fx-pref-width: 30%;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4px;
+}
+
+/* Détails du panier */
+.cart-details {
+    -fx-background-color: #e0e0e0;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-padding: 5%;
+    -fx-spacing: 5%;
+}
+
+.cart-details h2 {
+    -fx-font-size: 4vw;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5d4037;
+}
+
+.cart-summary {
+    -fx-font-size: 3vw;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2e7d32;
+}
+
+/* Bouton passer à la caisse */
+.checkout-button {
+    -fx-background-color: linear-gradient(to right, #ff9800, #f57c00);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 30px;
+    -fx-padding: 12px 5%;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(245,124,0,0.4), 10, 0, 0, 3);
+    -fx-transition: all 0.3s ease;
+}
+
+.checkout-button:hover {
+    -fx-background-color: linear-gradient(to right, #f57c00, #e65100);
+    -fx-effect: dropshadow(gaussian, rgba(245,124,0,0.6), 15, 0, 0, 5);
+    -fx-translate-y: -2;
+}
+
+/* Message d'erreur */
+.error-message {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+    -fx-font-size: 3vw;
+}
+
+/* Animation de survol pour les éléments */
+@keyframes pulse {
+    0% {-fx-scale-x: 1; -fx-scale-y: 1;}
+    50% {-fx-scale-x: 1.05; -fx-scale-y: 1.05;}
+    100% {-fx-scale-x: 1; -fx-scale-y: 1;}
+}
+
+.animated-pulse {
+    -fx-animation: pulse 2s infinite;
+}
+
+/* Styles pour l'en-tête */
+.header-container {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 10, 0, 0, 4);
+    -fx-background-radius: 15px;
+    -fx-min-height: 180px;
+    -fx-margin-bottom: 15px;
+}
+
+.header-image {
+    -fx-background-radius: 15px;
+    -fx-opacity: 0.85;
+}
+
+.header-content {
+    -fx-padding: 20px;
+    -fx-spacing: 10px;
+}
+
+.header-title {
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.7), 8, 0, 0, 2);
+    -fx-letter-spacing: 1.5;
+}
+
+.breadcrumb {
+    -fx-font-size: 16px;
+    -fx-text-fill: #f5f5f5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 1);
+}
+
+.breadcrumb-bold {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 1);
+}
+
+/* Styles pour les éléments du panier */
+.items-scroll-pane {
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+    -fx-fit-to-width: true;
+}
+
+.items-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.item-header {
+    -fx-background-color: linear-gradient(to right, #8d6e63, #a1887f);
+    -fx-background-radius: 10px 10px 0 0;
+    -fx-padding: 15px;
+    -fx-alignment: center-left;
+}
+
+.item-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-alignment: center-left;
+}
+
+/* Styles pour la liste des articles */
+.item-list {
+    -fx-spacing: 10px;
+    -fx-padding: 5px 0;
+}
+
+/* Style pour chaque élément du panier (à appliquer dynamiquement dans le contrôleur) */
+.cart-item {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1px 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+    -fx-transition: all 0.3s ease;
+}
+
+.cart-item:hover {
+    -fx-background-color: #f8f8f8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 8, 0, 0, 3);
+    -fx-translate-y: -1;
+}
+
+/* Styles pour les contrôles de quantité */
+.quantity-button {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #ddd;
+    -fx-min-width: 30px;
+    -fx-min-height: 30px;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.quantity-button:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+.quantity-label {
+    -fx-padding: 0 10px;
+    -fx-font-size: 14px;
+}
+
+/* Styles pour la section code promo */
+.promo-container {
+    -fx-padding: 15px;
+    -fx-spacing: 15px;
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 5, 0, 0, 2);
+}
+
+.promo-button {
+    -fx-background-color: linear-gradient(to right, #ff9800, #f57c00);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 30px;
+    -fx-padding: 12px 25px;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s ease;
+}
+
+.promo-button:hover {
+    -fx-background-color: linear-gradient(to right, #f57c00, #e65100);
+    -fx-translate-y: -2;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);
+}
+
+.promo-field {
+    -fx-padding: 12px 20px;
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 2;
+    -fx-border-radius: 20px;
+    -fx-font-size: 14px;
+    -fx-min-width: 200px;
+}
+
+.promo-field:focused {
+    -fx-border-color: #ff9800;
+    -fx-background-color: white;
+}
+
+.apply-button {
+    -fx-background-color: linear-gradient(to right, #66bb6a, #43a047);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 30px;
+    -fx-padding: 12px 25px;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s ease;
+}
+
+.apply-button:hover {
+    -fx-background-color: linear-gradient(to right, #43a047, #2e7d32);
+    -fx-translate-y: -2;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);
+}
+
+/* Styles pour le total */
+.total-container {
+    -fx-alignment: center-right;
+    -fx-spacing: 15px;
+}
+
+.total-box {
+    -fx-background-color: white;
+    -fx-padding: 25px;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 8, 0, 0, 3);
+}
+
+.total-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5d4037;
+    -fx-padding: 0 0 10px 0;
+    -fx-border-color: transparent transparent #e0e0e0 transparent;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.summary-row {
+    -fx-padding: 5px 0;
+}
+
+.total-label {
+    -fx-font-size: 15px;
+    -fx-text-fill: #6d4c41;
+}
+
+.total-value {
+    -fx-font-size: 15px;
+    -fx-text-fill: #6d4c41;
+    -fx-font-weight: medium;
+}
+
+.total-label-bold {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5d4037;
+}
+
+.total-value-bold {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5d4037;
+}
+
+.separator {
+    -fx-background-color: #e0e0e0;
+    -fx-stroke-width: 1;
+    -fx-opacity: 0.7;
+    -fx-padding: 5px 0;
+}
+
+.reduction-label {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ff9800;
+}
+
+.discount-row {
+    -fx-background-color: #fff8e1;
+    -fx-background-radius: 5px;
+    -fx-padding: 8px 10px;
+}
+
+.total-final-row {
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 5px;
+    -fx-padding: 12px 10px;
+    -fx-margin: 10px 0;
+}
+
+/* Styles pour le bouton de paiement */
+.checkout-button {
+    -fx-background-color: linear-gradient(to right, #ff9800, #f57c00);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-radius: 30px;
+    -fx-padding: 15px 25px;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s ease;
+    -fx-margin-top: 15px;
+    -fx-max-width: infinity;
+}
+
+.checkout-button:hover {
+    -fx-background-color: linear-gradient(to right, #f57c00, #e65100);
+    -fx-translate-y: -2;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);
+}
+
+/* Styles pour les messages d'erreur */
+.error-message {
+    -fx-font-size: 14px;
+    -fx-text-fill: #d32f2f;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 0 0 0;
+}
+
+/* Style pour le bouton de suppression */
+.delete-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e53935;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+}
+
+.delete-button:hover {
+    -fx-background-color: #ffebee;
+    -fx-text-fill: #d32f2f;
+}
+
+/* Animation pour les éléments de la page */
+@keyframes pulse {
+    0% {
+        -fx-scale-x: 1;
+        -fx-scale-y: 1;
+    }
+
+    50% {
+        -fx-scale-x: 1.03;
+        -fx-scale-y: 1.03;
+    }
+
+    100% {
+        -fx-scale-x: 1;
+        -fx-scale-y: 1;
+    }
+}
+
+.animated-pulse {
+    -fx-animation: pulse 2s infinite;
+}
+
+/* Styles responsive */
+@media screen and (max-width: 600px) {
+    .header-title {
+        -fx-font-size: 30px;
+    }
+
+    .total-box {
+        -fx-padding: 15px;
+    }
+
+    .promo-container {
+        -fx-orientation: vertical;
+    }
+}
