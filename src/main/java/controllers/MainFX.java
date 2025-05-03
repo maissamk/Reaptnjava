@@ -11,9 +11,9 @@ public class MainFX extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         AccountStatusChecker.startChecking();
-        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+//    FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/login.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
         primaryStage.setFullScreen(true);
