@@ -1,0 +1,414 @@
+/* styles-paiement.css - Thème orange, vert et marron */
+
+/* Styles généraux */
+.root {
+    -fx-font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+    -fx-background-color: linear-gradient(to bottom right, #fff9f0, #f2efe6);
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical {
+    -fx-background-color: #f0f0f0;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #aaaaaa;
+}
+
+/* En-tête */
+ImageView {
+    -fx-opacity: 0.85;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 10, 0, 0, 4);
+    -fx-background-radius: 15px;
+}
+
+.header-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.7), 8, 0, 0, 2);
+    -fx-letter-spacing: 1.5;
+}
+
+.breadcrumb {
+    -fx-font-size: 16px;
+    -fx-text-fill: #f5f5f5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 1);
+}
+
+.breadcrumb-bold {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 1);
+}
+
+/* Contenu principal */
+HBox {
+    -fx-padding: 3% 5%;
+    -fx-spacing: 2%;
+}
+
+/* Section adresse */
+VBox {
+    -fx-spacing: 10px;
+}
+
+Label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #5d4037;
+}
+
+Label[style*="font-weight: bold"] {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5d4037;
+    -fx-padding: 0 0 10px 0;
+}
+
+TextField, TextArea {
+    -fx-padding: 10px;
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 2;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-size: 14px;
+}
+
+TextField:focused, TextArea:focused {
+    -fx-border-color: #ff9800;
+    -fx-background-color: white;
+}
+
+Label[fx|id*="Error"] {
+    -fx-font-size: 11px;
+    -fx-text-fill: #d32f2f;
+    -fx-padding: 0 0 5px 0;
+}
+
+/* Section paiement */
+RadioButton {
+    -fx-font-size: 14px;
+    -fx-text-fill: #5d4037;
+    -fx-padding: 5px 0;
+}
+
+RadioButton .radio {
+    -fx-background-color: white;
+    -fx-border-color: #8d6e63;
+    -fx-border-width: 2px;
+    -fx-border-radius: 15px;
+}
+
+RadioButton:selected .radio .dot {
+    -fx-background-color: #ff9800;
+}
+
+VBox[fx|id*="Details"] {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+    -fx-transition: all 0.3s ease;
+}
+
+GridPane {
+    -fx-hgap: 10px;
+    -fx-vgap: 10px;
+}
+
+Button {
+    -fx-background-color: linear-gradient(to right, #66bb6a, #43a047);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 30px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s ease;
+}
+
+Button:hover {
+    -fx-background-color: linear-gradient(to right, #43a047, #2e7d32);
+    -fx-translate-y: -2;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);
+}
+
+Button[text="Choisir un fichier"] {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #5d4037;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px 10px;
+}
+
+Button[text="Choisir un fichier"]:hover {
+    -fx-background-color: #e0e0e0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+}
+
+Button[text="Extraire les Détails"] {
+    -fx-background-color: linear-gradient(to right, #78909c, #546e7a);
+    -fx-text-fill: white;
+    -fx-padding: 8px 15px;
+    -fx-margin-top: 10px;
+}
+
+Button[text="Extraire les Détails"]:hover {
+    -fx-background-color: linear-gradient(to right, #546e7a, #455a64);
+}
+
+/* Bouton de confirmation */
+Button[text="CONFIRMER LE PAIEMENT"] {
+    -fx-background-color: linear-gradient(to right, #ff9800, #f57c00);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-radius: 30px;
+    -fx-padding: 15px 30px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(245,124,0,0.4), 10, 0, 0, 3);
+    -fx-margin-top: 20px;
+}
+
+Button[text="CONFIRMER LE PAIEMENT"]:hover {
+    -fx-background-color: linear-gradient(to right, #f57c00, #e65100);
+    -fx-translate-y: -2;
+    -fx-effect: dropshadow(gaussian, rgba(245,124,0,0.6), 15, 0, 0, 5);
+}
+
+/* Label de confirmation */
+Label[fx|id="labelConfirmation"] {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2e7d32;
+    -fx-padding: 10px 0;
+}
+
+/* Styles pour les détails des méthodes de paiement */
+Label[style*="font-weight: bold; -fx-font-size: 16px;"] {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5d4037;
+    -fx-padding: 0 0 5px 0;
+    -fx-border-color: transparent transparent #e0e0e0 transparent;
+    -fx-border-width: 0 0 1px 0;
+}
+
+Label[style*="text-fill: #606060"] {
+    -fx-font-size: 13px;
+    -fx-text-fill: #606060;
+    -fx-wrap-text: true;
+}
+
+Label[style*="text-fill: #808080"] {
+    -fx-font-size: 12px;
+    -fx-text-fill: #808080;
+}
+
+/* Animation pour les éléments actifs */
+@keyframes pulse {
+    0% {
+        -fx-scale-x: 1;
+        -fx-scale-y: 1;
+    }
+
+    50% {
+        -fx-scale-x: 1.03;
+        -fx-scale-y: 1.03;
+    }
+
+    100% {
+        -fx-scale-x: 1;
+        -fx-scale-y: 1;
+    }
+}
+
+.animated-pulse {
+    -fx-animation: pulse 2s infinite;
+}
+/* paiement.css */
+
+/* Base styles */
+.root {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-background-color: white;
+}
+
+/* Scroll pane styling */
+.main-scroll {
+    -fx-background-color: white;
+    -fx-background: white;
+    -fx-border-color: transparent;
+}
+
+.main-scroll > .viewport {
+    -fx-background-color: white;
+}
+
+/* Text Fields */
+.text-field, .text-area, .combo-box {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 4;
+    -fx-padding: 8;
+    -fx-font-size: 13px;
+}
+
+.text-field:focused, .text-area:focused, .combo-box:focused {
+    -fx-border-color: #4CAF50;
+    -fx-background-color: white;
+}
+
+/* Labels */
+Label {
+    -fx-font-size: 13px;
+}
+
+/* Buttons */
+.button {
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s ease;
+}
+
+.confirm-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 12 20;
+    -fx-background-radius: 4;
+}
+
+.confirm-button:hover {
+    -fx-background-color: #45a049;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 1);
+}
+
+.back-button {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #505050;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 12 20;
+    -fx-background-radius: 4;
+}
+
+.back-button:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+.secondary-button {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-padding: 8 15;
+    -fx-font-weight: normal;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #1976D2;
+}
+
+.file-button {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #505050;
+    -fx-padding: 6 12;
+}
+
+.file-button:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+/* Radio buttons */
+.radio-button {
+    -fx-font-size: 14px;
+    -fx-padding: 5;
+}
+
+.radio-button .radio {
+    -fx-background-color: white;
+    -fx-border-color: #c0c0c0;
+    -fx-border-radius: 10;
+    -fx-padding: 3;
+}
+
+.radio-button:selected .radio .dot {
+    -fx-background-color: #4CAF50;
+}
+
+/* Payment method icons with hover effect */
+.payment-icon {
+    -fx-cursor: hand;
+    -fx-opacity: 0.8;
+    -fx-transition: all 0.2s ease;
+}
+
+.payment-icon:hover {
+    -fx-opacity: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* Payment options */
+.payment-option {
+    -fx-padding: 5;
+    -fx-background-radius: 5;
+    -fx-transition: all 0.2s ease;
+}
+
+.payment-option:hover {
+    -fx-background-color: rgba(0,0,0,0.02);
+}
+
+/* Header styling */
+.header-container {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);
+}
+
+/* Footer links */
+.footer-link {
+    -fx-text-fill: #2196F3;
+    -fx-cursor: hand;
+}
+
+.footer-link:hover {
+    -fx-underline: true;
+}
+
+/* Separator styling */
+.separator .line {
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0.5;
+}
+
+/* Tooltip */
+.tooltip {
+    -fx-background-color: #424242;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 5 10;
+    -fx-background-radius: 3;
+}
+/* Styles responsifs */
+@media screen and (max-width: 800px) {
+    HBox {
+        -fx-orientation: vertical;
+    }
+
+    VBox[alignment="CENTER_LEFT"] {
+        -fx-pref-width: 100%;
+    }
+}

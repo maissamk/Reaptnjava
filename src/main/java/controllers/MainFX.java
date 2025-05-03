@@ -5,14 +5,34 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import utils.AccountStatusChecker;
 
 public class MainFX extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/Home.fxml")); // Mets ici le bon chemin
-        primaryStage.setTitle("Ajouter une parcelle");
-        primaryStage.setScene(new Scene(root));
+//        Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/Home.fxml")); // Mets ici le bon chemin
+//        primaryStage.setTitle("Ajouter une parcelle");
+//        primaryStage.setScene(new Scene(root));
+        AccountStatusChecker.startChecking();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+//    FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/login.fxml"));
+        AccountStatusChecker.startChecking();
+        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/Offre/indexOffreBack.fxml"));
+        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/Employe/indexEmployeBack.fxml"));
+        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+       //  FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
+
+
+
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        primaryStage.setFullScreen(true);
+        primaryStage.setTitle("Connexion");
+        primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 

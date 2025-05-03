@@ -1,0 +1,259 @@
+
+/* Styles généraux */
+.root {
+    -fx-font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+    -fx-background-color: linear-gradient(to bottom right, #fff9f0, #f2efe6);
+}
+
+.main-container {
+    -fx-padding: 30px;
+    -fx-spacing: 28px;
+    -fx-alignment: TOP_CENTER;
+}
+
+/* Styles pour l'en-tête - thème orange et marron */
+.header-banner {
+    -fx-background-color: linear-gradient(to right, #5d4037, #8d6e63, #d7ccc8);
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(93,64,55,0.4), 15, 0, 0, 6);
+}
+
+.header-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 8, 0, 0, 2);
+    -fx-letter-spacing: 1.2;
+}
+
+/* Styles pour les cartes */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 18px;
+    -fx-effect: dropshadow(gaussian, rgba(93,64,55,0.15), 15, 0, 0, 5);
+    -fx-padding: 25px;
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+    -fx-border-radius: 18px;
+    -fx-transition: all 0.3s ease;
+}
+
+.card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(93,64,55,0.25), 20, 0, 0, 8);
+    -fx-translate-y: -2;
+}
+
+.card-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5d4037;
+}
+
+.card-subtitle {
+    -fx-font-size: 15px;
+    -fx-text-fill: #6d4c41;
+}
+
+.card-divider {
+    -fx-stroke: linear-gradient(to right, #ff8a65, #a5d6a7);
+    -fx-stroke-width: 2;
+    -fx-opacity: 0.8;
+}
+
+/* Styles pour les étapes de progression - vert et orange */
+.progress-container {
+    -fx-padding: 35px 10px 45px 10px;
+}
+
+.progress-line {
+    -fx-stroke: #d7ccc8;
+    -fx-stroke-width: 4;
+    -fx-effect: innershadow(gaussian, rgba(93,64,55,0.1), 2, 0, 0, 0);
+}
+
+.step-container {
+    -fx-alignment: CENTER;
+    -fx-spacing: 14px;
+}
+
+.step-circle {
+    -fx-min-width: 55px;
+    -fx-min-height: 55px;
+    -fx-max-width: 55px;
+    -fx-max-height: 55px;
+    -fx-background-radius: 50%;
+    -fx-transition: all 0.3s ease;
+}
+
+.step-circle:hover {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.step-active {
+    -fx-background-color: linear-gradient(to bottom right, #66bb6a, #2e7d32);
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50,0.6), 15, 0, 0, 0);
+}
+
+.step-current {
+    -fx-background-color: linear-gradient(to bottom right, #ff9800, #e65100);
+    -fx-effect: dropshadow(gaussian, rgba(230,81,0,0.6), 15, 0, 0, 0);
+}
+
+.step-pending {
+    -fx-background-color: white;
+    -fx-border-color: #d7ccc8;
+    -fx-border-width: 3;
+    -fx-border-radius: 50%;
+}
+
+.step-pending-active {
+    -fx-background-color: white;
+    -fx-border-color: #8d6e63;
+    -fx-border-width: 3;
+    -fx-border-radius: 50%;
+    -fx-effect: dropshadow(gaussian, rgba(141,110,99,0.4), 10, 0, 0, 0);
+}
+
+.step-icon {
+    -fx-font-size: 24px;
+}
+
+.step-text-active {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2e7d32;
+}
+
+.step-text-current {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e65100;
+}
+
+.step-text-pending {
+    -fx-font-size: 14px;
+    -fx-text-fill: #6d4c41;
+}
+
+/* Styles pour les détails de livraison */
+.detail-container {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 18px;
+    -fx-padding: 5px 20px;
+    -fx-background-color: rgba(255, 249, 240, 0.7);
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(93,64,55,0.08), 5, 0, 0, 2);
+}
+
+.detail-icon-container {
+    -fx-min-width: 48px;
+    -fx-min-height: 48px;
+    -fx-max-width: 48px;
+    -fx-max-height: 48px;
+    -fx-background-radius: 50%;
+    -fx-alignment: CENTER;
+}
+
+.detail-icon-address {
+    -fx-background-color: linear-gradient(to bottom right, #c8e6c9, #66bb6a);
+}
+
+.detail-icon-date {
+    -fx-background-color: linear-gradient(to bottom right, #ffe0b2, #ffb74d);
+}
+
+.detail-icon-status {
+    -fx-background-color: linear-gradient(to bottom right, #d7ccc8, #a1887f);
+}
+
+.detail-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5d4037;
+}
+
+.detail-value {
+    -fx-font-size: 14px;
+    -fx-text-fill: #6d4c41;
+    -fx-font-weight: normal;
+}
+
+.status-badge {
+    -fx-background-color: linear-gradient(to right, #66bb6a, #2e7d32);
+    -fx-background-radius: 20px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 6px 14px;
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50,0.4), 10, 0, 0, 2);
+}
+
+/* Styles pour le message de remerciement */
+.thank-you-container {
+    -fx-alignment: CENTER;
+    -fx-spacing: 18px;
+    -fx-padding: 25px;
+    -fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.7), rgba(255,243,224,0.9));
+}
+
+.thank-you-title {
+    -fx-text-fill: #5d4037;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(93,64,55,0.2), 5, 0, 0, 1);
+}
+
+.thank-you-text {
+    -fx-text-alignment: center;
+    -fx-wrap-text: true;
+    -fx-text-fill: #6d4c41;
+    -fx-font-size: 15px;
+    -fx-line-spacing: 1.2;
+}
+
+/* Styles pour les boutons */
+.button-primary {
+    -fx-background-color: linear-gradient(to right, #ff9800, #f57c00);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 30px;
+    -fx-padding: 12px 20px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(245,124,0,0.4), 10, 0, 0, 3);
+    -fx-transition: all 0.3s ease;
+}
+
+.button-primary:hover {
+    -fx-background-color: linear-gradient(to right, #f57c00, #e65100);
+    -fx-effect: dropshadow(gaussian, rgba(245,124,0,0.6), 15, 0, 0, 5);
+    -fx-translate-y: -2;
+}
+
+.button-outline {
+    -fx-background-color: transparent;
+    -fx-text-fill: #5d4037;
+    -fx-border-color: linear-gradient(to right, #8d6e63, #a1887f);
+    -fx-border-width: 2;
+    -fx-border-radius: 30px;
+    -fx-background-radius: 30px;
+    -fx-padding: 10px 18px;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s ease;
+}
+
+.button-outline:hover {
+    -fx-background-color: rgba(141,110,99,0.1);
+    -fx-translate-y: -2;
+    -fx-effect: dropshadow(gaussian, rgba(93,64,55,0.3), 10, 0, 0, 3);
+}
+
+/* Animations pour les transitions */
+@keyframes pulse {
+    0% {-fx-scale-x: 1; -fx-scale-y: 1;}
+    50% {-fx-scale-x: 1.05; -fx-scale-y: 1.05;}
+    100% {-fx-scale-x: 1; -fx-scale-y: 1;}
+}
+
+.animated-pulse {
+    -fx-animation: pulse 2s infinite;
+}

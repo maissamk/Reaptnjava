@@ -3,6 +3,7 @@ package controllers.BackOffice;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,7 +18,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-//import utils.SessionManager;
+import utils.NavigationUtil;
+import utils.SessionManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,9 +42,12 @@ public class HomeBack implements Initializable {
     @FXML private Button ordersBtn;
     @FXML private Button reportsBtn;
     @FXML private Button logoutBtn;
+    @FXML private Button categoriebtn;
+    @FXML private Button location;
 
     // Sidebar Buttons
     @FXML private Button statisticsBtn;
+    @FXML private Button statisticsBtnUser;
     @FXML private Button farmersBtn;
     @FXML private Button parcelsBtn;
     @FXML private Button harvestBtn;
@@ -58,25 +63,25 @@ public class HomeBack implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-       // loadUserData();
+        loadUserData();
         setupEventHandlers();
         updateSystemStatus();
         startClock();
         addButtonHoverEffects();
     }
 
-//    private void loadUserData() {
-//        if (SessionManager.getInstance().isLoggedIn()) {
-//            Models.user currentUser = SessionManager.getInstance().getCurrentUser();
-//            adminNameLabel.setText(currentUser.getNom());
-//            adminRoleLabel.setText(String.join(", ", currentUser.getRoles()));
-//
-//            // Load avatar image safely
-//            String avatarPath = "/images/" + (currentUser.getAvatar() != null ?
-//                    currentUser.getAvatar() : "default-avatar.png");
-//            loadImage(adminAvatar, avatarPath);
-//        }
-//    }
+    private void loadUserData() {
+        if (SessionManager.getInstance().isLoggedIn()) {
+            Models.user currentUser = SessionManager.getInstance().getCurrentUser();
+            adminNameLabel.setText(currentUser.getNom());
+            adminRoleLabel.setText(String.join(", ", currentUser.getRoles()));
+
+            // Load avatar image safely
+            String avatarPath = "/images/" + (currentUser.getAvatar() != null ?
+                    currentUser.getAvatar() : "default-avatar.png");
+            loadImage(adminAvatar, avatarPath);
+        }
+    }
 
     private void loadImage(ImageView imageView, String path) {
         try {
@@ -98,26 +103,53 @@ public class HomeBack implements Initializable {
     private void setupEventHandlers() {
         // Main Navigation
         dashboardBtn.setOnAction(e -> loadDashboardContent());
-        usersBtn.setOnAction(e -> loadContent("/views/BackOffice/Users.fxml"));
+        usersBtn.setOnAction(e -> loadContent("/BackOffice/user/UserList.fxml"));
         productsBtn.setOnAction(e -> loadContent("/views/BackOffice/Products.fxml"));
         ordersBtn.setOnAction(e -> loadContent("/views/BackOffice/Orders.fxml"));
         reportsBtn.setOnAction(e -> loadContent("/views/BackOffice/Reports.fxml"));
 
         // Sidebar Navigation
-        statisticsBtn.setOnAction(e -> loadContent("/views/BackOffice/Statistics.fxml"));
+        statisticsBtnUser.setOnAction(this::handleStatisticsButton);
+        //statisticsBtn.setOnAction(e -> loadContent("/views/BackOffice/Statistics.fxml"));
+        statisticsBtn.setOnAction(e -> loadContent("/BackOffice/Offre/statistiques.fxml"));
         farmersBtn.setOnAction(e -> loadContent("/views/BackOffice/Farmers.fxml"));
         parcelsBtn.setOnAction(e -> loadContent("/views/BackOffice/Parcels.fxml"));
         harvestBtn.setOnAction(e -> loadContent("/views/BackOffice/Harvest.fxml"));
         settingsBtn.setOnAction(e -> loadContent("/views/BackOffice/Settings.fxml"));
         logsBtn.setOnAction(e -> loadContent("/views/BackOffice/Logs.fxml"));
+        location.setOnAction(this::IndexMateriels);
+        categoriebtn.setOnAction(this::handleCategory);
 
         // Logout
         logoutBtn.setOnAction(e -> handleLogout());
     }
+    private void navigateTo(String fxmlPath, ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+
+            // Get the stage from the event source
+        //    Node source = (Node) event.getSource();
+      //      Stage stage = (Stage) source.getScene().getWindow();
+                Stage stage = new Stage();
+         //   stage.setFullScreen(true);
+            // Set the new scene
+            stage.setScene(new Scene(root));
+            stage.sizeToScene(); // Optional: resize to fit new content
+            stage.show();
+        } catch (IOException e) {
+        }
+    }
+    private void IndexMateriels(ActionEvent event) {
+        navigateTo("/BackOffice/materials/IndexMateriel.fxml", event);
+    }
+    private void handleCategory(ActionEvent event) {
+        navigateTo("/BackOffice/category/IndexCategorie.fxml", event);
+    }
 
     private void loadDashboardContent() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/BackOffice/Dashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
             Parent dashboard = loader.load();
             contentPane.getChildren().setAll(dashboard);
         } catch (IOException e) {
@@ -168,15 +200,34 @@ public class HomeBack implements Initializable {
             });
         }
     }
+    @FXML
+    private void handleStatisticsButton(ActionEvent event) {
+        try {
+            // Load the UserStats content into the main content area
+            loadContent("/BackOffice/user/UserStats.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            NavigationUtil.showErrorAlert("Navigation Error", "Failed to open statistics", e.getMessage());
+        }
+    }
 
     private void handleLogout() {
-//        SessionManager.getInstance().logout();
+        SessionManager.getInstance().logout();
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/views/Auth/Login.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/user/Login.fxml"));
             Stage stage = (Stage) logoutBtn.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void handleBack(ActionEvent event) {
+        // Just load the dashboard content
+        try {
+            loadContent("/BackOffice/HomeBack.fxml");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

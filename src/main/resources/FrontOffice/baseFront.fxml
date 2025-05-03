@@ -3,53 +3,75 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<AnchorPane  stylesheets="/css/home.css" xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.FrontOffice.BaseFrontController">
-    <VBox spacing="10" prefWidth="800" prefHeight="600">
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.image.Image?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" stylesheets="/css/home.css" fx:controller="controllers.FrontOffice.BaseFrontController">
+    <VBox spacing="10" prefWidth="1200" prefHeight="600">
 
         <!-- Header -->
         <!-- Top Navigation Bar -->
         <VBox>
-            <HBox>
-                <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header">
+        <HBox>
+            <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header">
+                <!-- Logo -->
+                <ImageView fitHeight="71.0" fitWidth="280.0" preserveRatio="true" styleClass="logo">
+                    <Image url="@/images/logoapp.jpg" />
+                </ImageView>
 
-
-
-
-
-
-                    <!-- Navigation Buttons -->
-                    <Button fx:id="accueilButton" styleClass="nav-button" text="Accueil" />
-                    <Button fx:id="produitsButton" styleClass="nav-button" text="Produits" />
-                    <Button fx:id="produitsDetailButton" styleClass="nav-button" text="Produits Detail" />
-                    <Button fx:id="parcelleButton" styleClass="nav-button" text="Parcelle" />
-                    <Button fx:id="offersButton" styleClass="nav-button" text="Offers" />
-                    <Button fx:id="masterfulButton" styleClass="featured-button" text="Masterful Agricole" />
-
-
-
-                    <!-- Auth Buttons -->
-                    <Button fx:id="loginButton" styleClass="auth-button" text="Login" />
-                    <Button fx:id="profileButton" styleClass="profile-button" text="My Profile" />
+                <!-- User Info -->
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <ImageView fx:id="userAvatar" fitHeight="42.0" fitWidth="42.0" preserveRatio="true" styleClass="user-avatar">
+                        <clip>
+                            <Circle centerX="21.0" centerY="21.0" radius="21.0" />
+                        </clip>
+                    </ImageView>
+                    <VBox spacing="1">
+                        <Label fx:id="userNameLabel" styleClass="user-name" />
+                        <Label fx:id="userRoleLabel" styleClass="user-role" />
+                    </VBox>
                 </HBox>
+
+                <Region HBox.hgrow="ALWAYS" />
+
+
+
+
+                <!-- Navigation Buttons -->
+                <Button fx:id="accueilButton" styleClass="nav-button" text="Accueil" />
+                <Button fx:id="material" styleClass="nav-button" text="Matérielle" />
+                <Button fx:id="produitsButton" styleClass="nav-button" text="Produits" />
+                <Button fx:id="produitsDetailButton" styleClass="nav-button" text="Produits Detail" />
+                <Button fx:id="parcelleButton" styleClass="nav-button" text="Parcelle" />
+                <Button fx:id="offersButton" styleClass="nav-button" text="Offers" />
+                <Button fx:id="masterfulButton" styleClass="featured-button" text="Masterful Agricole" />
+
+                <Region HBox.hgrow="ALWAYS" />
+
+
+                <!-- Auth Buttons -->
+                <Button fx:id="loginButton" styleClass="auth-button" text="Login" />
+                <Button fx:id="profileButton" styleClass="profile-button" text="My Profile" />
             </HBox>
+        </HBox>
         </VBox>
 
         <!-- Content placeholder -->
-        <AnchorPane fx:id="contentPane" VBox.vgrow="ALWAYS" />
+        <AnchorPane fx:id="contentPane" VBox.vgrow="ALWAYS"/>
 
         <!-- Footer -->
         <HBox style="-fx-background-color: #ecf0f1;" prefHeight="30" alignment="CENTER">
             <!-- Footer -->
 
-            <HBox alignment="CENTER" style="-fx-background-color: #2d572c; -fx-padding: 10 20;">
-                <Label style="-fx-text-fill: white; -fx-font-size: 12;" text="AgronianofExample.com" />
-                <Region HBox.hgrow="ALWAYS" />
-                <HBox spacing="15">
-                    <Label style="-fx-text-fill: white; -fx-font-size: 12; -fx-underline: true;" text="Privacy Policy" />
-                    <Label style="-fx-text-fill: white; -fx-font-size: 12; -fx-underline: true;" text="Terms of Use" />
-                    <Label style="-fx-text-fill: white; -fx-font-size: 12; -fx-underline: true;" text="Sales and Refunds" />
+                <HBox alignment="CENTER" style="-fx-background-color: #2d572c; -fx-padding: 10 20;">
+                    <Label style="-fx-text-fill: white; -fx-font-size: 12;" text="AgronianofExample.com" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <HBox spacing="15">
+                        <Label style="-fx-text-fill: white; -fx-font-size: 12; -fx-underline: true;" text="Privacy Policy" />
+                        <Label style="-fx-text-fill: white; -fx-font-size: 12; -fx-underline: true;" text="Terms of Use" />
+                        <Label style="-fx-text-fill: white; -fx-font-size: 12; -fx-underline: true;" text="Sales and Refunds" />
+                    </HBox>
                 </HBox>
-            </HBox>
 
         </HBox>
 

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<?import java.net.URL?>
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.User.Login">
+    <stylesheets>
+        <URL value="@../../css/login.css" />
+    </stylesheets>
+    <!-- Background Image -->
+    <ImageView fitHeight="700.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="false">
+        <image>
+            <Image url="@../../images/backgroundlog.jpg" />
+        </image>
+    </ImageView>
+
+    <!-- Semi-transparent card -->
+    <Pane layoutX="200.0" layoutY="100.0" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: rgba(255,255,255,0.8); -fx-background-radius: 20;">
+
+        <!-- Right side with form -->
+        <Pane layoutX="350.0" prefHeight="500.0" prefWidth="350.0">
+
+            <Label layoutX="50.0" layoutY="50.0" text="Se Connecter" textFill="#4a934a">
+                <font>
+                    <Font name="System Bold" size="28.0" />
+                </font>
+            </Label>
+
+            <ImageView fitHeight="30.0" fitWidth="32.0" layoutX="16.0" layoutY="120.0" opacity="0.61" pickOnBounds="true" preserveRatio="true">
+                <image>
+                    <Image url="@../../images/emailicon.png" />
+                </image>
+            </ImageView>
+            <TextField fx:id="emailField" layoutX="60.0" layoutY="120.0" prefWidth="250.0" promptText="Address Email" style="-fx-font-size: 14px;" />
+
+            <ImageView fitHeight="30.0" fitWidth="32.0" layoutX="16.0" layoutY="180.0" opacity="0.61" pickOnBounds="true" preserveRatio="true">
+                <image>
+                    <Image url="@../../images/lock1.png" />
+                </image>
+            </ImageView>
+            <PasswordField fx:id="passwordField" layoutX="60.0" layoutY="180.0" prefWidth="250.0" promptText="Mot De Passe" style="-fx-font-size: 14px;" />
+
+            <Button layoutX="60.0" layoutY="310.0" style="-fx-background-color: transparent; -fx-text-fill: #4a934a; -fx-font-size: 12px;" text="Mot de passe oublié?" onAction="#handleForgotPassword" />
+            <Button fx:id="loginButton" layoutX="60.0" layoutY="250.0" onAction="#userLogin" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: #4a934a; -fx-text-fill: white; -fx-font-size: 16px;" text="Se Connecter" />
+
+            <HBox alignment="CENTER" layoutX="25.0" layoutY="330.0" spacing="5.0">
+                <Label text="Vous n'avez pas de compte ?" style="-fx-font-size: 14px;" />
+                <Button fx:id="CreateAcoount" onAction="#CreateAccount" style="-fx-background-color: transparent; -fx-text-fill: #4a934a; -fx-font-size: 14px;" text="Inscrivez-vous" />
+            </HBox>
+
+            <!-- OR Separator -->
+            <HBox alignment="CENTER" layoutX="50.0" layoutY="370.0" prefWidth="250.0" spacing="10.0">
+                <Line endX="100.0" startX="0.0" stroke="#4a934a" />
+                <Label text="OU" style="-fx-font-size: 14px;">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+                <Line endX="100.0" stroke="#4a934a" />
+            </HBox>
+
+            <Button fx:id="googleLoginButton" layoutX="60.0" layoutY="400.0"
+                    onAction="#handleGoogleLogin" prefHeight="45.0" prefWidth="250.0"
+                    styleClass="google-login-button">
+                <graphic>
+                    <HBox alignment="CENTER" spacing="10.0">
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../../images/googlelogo.png"/>
+                            </image>
+                        </ImageView>
+                        <Label text="Se Connecter avec Google" style="-fx-font-size: 14px;"/>
+                    </HBox>
+                </graphic>
+            </Button>
+
+            <!-- Face Login Button - Moved up slightly -->
+            <Button fx:id="faceLoginButton" layoutX="60.0" layoutY="455.0"
+                    onAction="#handleFaceLogin" prefHeight="45.0" prefWidth="250.0"
+                    styleClass="face-login-button">
+                <graphic>
+                    <HBox alignment="CENTER" spacing="10.0">
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../../images/face-icon.png"/>
+                            </image>
+                        </ImageView>
+                        <Label text="Se Connecter avec Visage" style="-fx-font-size: 14px;"/>
+                    </HBox>
+                </graphic>
+            </Button>
+
+            <!-- Status label and loading indicator -->
+            <ProgressIndicator fx:id="googleLoadingIndicator" layoutX="160.0" layoutY="510.0" visible="false" progress="-1"/>
+            <Label fx:id="statusLabel" layoutX="60.0" layoutY="510.0" style="-fx-text-fill: #666;"/>
+        </Pane>
+
+        <!-- Left side with logo -->
+        <ImageView fitHeight="200.0" fitWidth="273.0" layoutX="60.0" layoutY="180.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@/images/logoapp.jpg" />
+            </image>
+        </ImageView>
+
+        <!-- Vertical separator -->
+        <Separator layoutX="350.0" layoutY="100.0" orientation="VERTICAL" prefHeight="300.0" prefWidth="2.0" style="-fx-background-color: #4a934a;" />
+    </Pane>
+</AnchorPane>

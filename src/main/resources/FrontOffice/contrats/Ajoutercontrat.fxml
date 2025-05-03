@@ -10,7 +10,7 @@
       fx:controller="controllers.FrontOffice.contrats.Ajoutercontrat"
       spacing="25"
       prefWidth="600"
-      prefHeight="650"
+      prefHeight="400"
       style="-fx-background-color: #f5f8fa;">
 
     <padding>
