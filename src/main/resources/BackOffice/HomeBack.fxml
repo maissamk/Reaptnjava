@@ -74,6 +74,13 @@
                 </graphic>
             </Button>
 
+            <Button fx:id="statisticsBtnUser" styleClass="side-btn" text="Statistics" >
+                <graphic>
+                    <ImageView fitHeight="22" fitWidth="22">
+                        <Image url="@/images/icons/stats.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
             <Button fx:id="farmersBtn" styleClass="side-btn" text="Farmers">
                 <graphic>
                     <ImageView fitHeight="22" fitWidth="22">
@@ -156,7 +163,7 @@
             <VBox alignment="CENTER" spacing="40" styleClass="welcome-container">
                 <StackPane>
                     <ImageView fitHeight="180" fitWidth="180" styleClass="welcome-logo">
-                        <Image url="@/images/logoapp.png" />
+                        <Image url="@/images/logoapp.jpg" />
                     </ImageView>
                     <Circle fill="radial-gradient(focus-angle 45deg, focus-distance 20%, center 50% 50%, radius 60%, #E8F5E966, #81C78400)" radius="90" />
                 </StackPane>

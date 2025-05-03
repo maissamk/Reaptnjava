@@ -4,22 +4,38 @@ import Models.user;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import services.UserServices;
-import utils.PasswordUtils;
+import utils.EmailSenderUser;
+import utils.NavigationUtil;
+import utils.SessionManager;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class Register {
 
-    @FXML private RadioButton agriculteurRadio;
-    @FXML private RadioButton clientRadio;
-    @FXML private TextField emailField;
-    @FXML private TextField nomField;
-    @FXML private PasswordField passwordField;
-    @FXML private TextField prenomField;
-    @FXML private TextField telephoneField;
+    @FXML
+    private RadioButton agriculteurRadio;
+    @FXML
+    private RadioButton clientRadio;
+    @FXML
+    private TextField emailField;
+    @FXML
+    private TextField nomField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private TextField prenomField;
+    @FXML
+    private TextField telephoneField;
+    @FXML
+    private Node rootPane;
 
     private final UserServices us = new UserServices();
     private ToggleGroup roleToggleGroup;
@@ -48,20 +64,44 @@ public class Register {
 
         try {
             user newUser = createUserFromInputs();
-
             newUser.setAvatar(DEFAULT_AVATAR);
 
+            String verificationCode = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+            newUser.setVerificationCode(verificationCode);
+            newUser.setVerificationSentAt(LocalDateTime.now());
 
-            String hashedPassword = PasswordUtils.hashForSymfony(newUser.getPassword());
-            newUser.setPassword(hashedPassword);
+            SessionManager.setPendingUser(newUser);
 
-            us.add(newUser);
-            showSuccessAndRedirect();
+            try {
+                EmailSenderUser.sendVerificationEmail(newUser.getEmail(), verificationCode);
+
+                // Get current stage before changing scenes
+                Stage currentStage = (Stage) emailField.getScene().getWindow();
+
+                // Load verification screen
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/Verification.fxml"));
+                Parent root = loader.load();
+
+                // Create new scene with proper dimensions
+                Scene newScene = new Scene(root, currentStage.getWidth(), currentStage.getHeight());
+                currentStage.setScene(newScene);
+
+                // Maintain window position and state
+                currentStage.centerOnScreen();
+                if (currentStage.isMaximized()) {
+                    currentStage.setMaximized(true);
+                }
+
+            } catch (Exception emailException) {
+                SessionManager.clearPendingUser();
+                showAlert("Erreur", "Erreur d'envoi d'email", emailException.getMessage());
+            }
 
         } catch (Exception e) {
             handleException(e);
         }
     }
+
 
     private boolean validateInputs() {
         String nom = nomField.getText();
@@ -146,13 +186,6 @@ public class Register {
 
     @FXML
     private void redirectToLogin(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/Login.fxml"));
-            Parent root = loader.load();
-            emailField.getScene().setRoot(root);
-        } catch (IOException e) {
-            showAlert("Erreur", "Navigation impossible",
-                    "Impossible de charger la page de login");
-        }
+        NavigationUtil.navigateTo("/FrontOffice/user/login.fxml", rootPane);
     }
 }

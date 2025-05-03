@@ -11,10 +11,14 @@ public class MainFX extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         AccountStatusChecker.startChecking();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+//    FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/login.fxml"));
+        AccountStatusChecker.startChecking();
         //FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
         //FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/Offre/indexOffreBack.fxml"));
         //FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/Employe/indexEmployeBack.fxml"));
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
        //  FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
 
 

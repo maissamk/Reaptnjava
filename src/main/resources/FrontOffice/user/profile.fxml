@@ -10,14 +10,22 @@
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.User.ProfileController"
             style="-fx-background-color: #f5f9f4;">
 
-
     <center>
-        <VBox alignment="CENTER" spacing="20">
-            <!-- Profile Information Grid -->
-            <GridPane hgap="20" vgap="20" alignment="CENTER" style="-fx-padding: 30;">
+        <VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;">
+            <!-- Camera Preview Section -->
+            <VBox alignment="CENTER" spacing="10">
+                <Label text="Face Registration" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                <ImageView fx:id="cameraPreview" fitHeight="200" fitWidth="200" preserveRatio="true"/>
+                <Button fx:id="registerFaceButton" text="Register Face"
+                        style="-fx-background-color: #34A853; -fx-text-fill: white; -fx-font-weight: bold;"
+                        onAction="#handleRegisterFace"/>
+            </VBox>
+
+            <!-- Profile Information Section -->
+            <GridPane hgap="20" vgap="15" alignment="CENTER">
                 <columnConstraints>
-                    <ColumnConstraints prefWidth="200" halignment="RIGHT"/>
-                    <ColumnConstraints prefWidth="300" halignment="LEFT"/>
+                    <ColumnConstraints prefWidth="150" halignment="RIGHT"/>
+                    <ColumnConstraints prefWidth="250" halignment="LEFT"/>
                 </columnConstraints>
 
                 <!-- Avatar Section -->
@@ -30,7 +38,9 @@
                 </ImageView>
 
                 <!-- Profile Information -->
-                <Label fx:id="welcomeLabel" GridPane.columnSpan="2" GridPane.halignment="CENTER"/>
+                <Label fx:id="welcomeLabel" style="-fx-font-size: 18; -fx-font-weight: bold;"
+                       GridPane.columnSpan="2" GridPane.halignment="CENTER"/>
+
                 <Label text="Full Name:" style="-fx-font-weight: BOLD;" GridPane.rowIndex="1"/>
                 <Label fx:id="fullNameLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
@@ -48,7 +58,7 @@
             </GridPane>
 
             <!-- Action Buttons -->
-            <HBox alignment="CENTER" spacing="20" style="-fx-padding: 20;">
+            <HBox alignment="CENTER" spacing="20">
                 <Button text="User List" style="-fx-background-color: #4285F4; -fx-text-fill: white; -fx-font-weight: BOLD;"
                         onAction="#handleUserList"/>
                 <Button text="Edit Profile" style="-fx-background-color: #4285F4; -fx-text-fill: white; -fx-font-weight: BOLD;"
