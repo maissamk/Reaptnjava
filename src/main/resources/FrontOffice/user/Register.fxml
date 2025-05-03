@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.User.Register">
+
+    <!-- Background Image -->
+    <ImageView fitHeight="600.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="false">
+        <image>
+            <Image url="@../../images/backgroundlog.jpg" />
+        </image>
+    </ImageView>
+
+    <!-- Semi-transparent card -->
+    <Pane layoutX="150.0" layoutY="100.0" prefHeight="450.0" prefWidth="624.0" style="-fx-background-color: rgba(255,255,255,0.8); -fx-background-radius: 20;">
+
+        <!-- Right side with form -->
+        <Pane layoutX="300.0" prefHeight="450.0" prefWidth="300.0">
+            <!-- Title -->
+            <Label layoutX="50.0" layoutY="30.0" text="Créer un compte" textFill="#4a934a">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+            </Label>
+
+            <!-- Name Field -->
+            <ImageView fitHeight="25.0" fitWidth="27.0" layoutX="16.0" layoutY="80.0" opacity="0.61" pickOnBounds="true" preserveRatio="true">
+                <image>
+                    <Image url="@../../images/nomicon.png" />
+                </image>
+            </ImageView>
+            <TextField fx:id="nomField" layoutX="50.0" layoutY="80.0" prefWidth="200.0" promptText="Nom" />
+
+            <!-- First Name Field -->
+            <ImageView fitHeight="25.0" fitWidth="27.0" layoutX="16.0" layoutY="130.0" opacity="0.61" pickOnBounds="true" preserveRatio="true">
+                <image>
+                    <Image url="@../../images/prenomicon.png" />
+                </image>
+            </ImageView>
+            <TextField fx:id="prenomField" layoutX="50.0" layoutY="130.0" prefWidth="200.0" promptText="Prénom" />
+
+            <!-- Phone Field -->
+            <ImageView fitHeight="25.0" fitWidth="27.0" layoutX="16.0" layoutY="180.0" opacity="0.61" pickOnBounds="true" preserveRatio="true">
+                <image>
+                    <Image url="@../../images/phoneicon.png" />
+                </image>
+            </ImageView>
+            <TextField fx:id="telephoneField" layoutX="50.0" layoutY="180.0" prefWidth="200.0" promptText="Téléphone" />
+
+            <!-- Email Field -->
+            <ImageView fitHeight="25.0" fitWidth="27.0" layoutX="16.0" layoutY="230.0" opacity="0.61" pickOnBounds="true" preserveRatio="true">
+                <image>
+                    <Image url="@../../images/emailicon.png" />
+                </image>
+            </ImageView>
+            <TextField fx:id="emailField" layoutX="50.0" layoutY="230.0" prefWidth="200.0" promptText="Email" />
+
+            <!-- Password Field -->
+            <ImageView fitHeight="25.0" fitWidth="27.0" layoutX="16.0" layoutY="280.0" opacity="0.61" pickOnBounds="true" preserveRatio="true">
+                <image>
+                    <Image url="@../../images/lock1.png" />
+                </image>
+            </ImageView>
+            <PasswordField fx:id="passwordField" layoutX="50.0" layoutY="280.0" prefWidth="200.0" promptText="Mot de passe" />
+
+            <!-- Role Selection -->
+            <Label layoutX="50.0" layoutY="320.0" text="Je suis:" />
+            <RadioButton fx:id="clientRadio" layoutX="50.0" layoutY="340.0" selected="true" text="Client" />
+            <RadioButton fx:id="agriculteurRadio" layoutX="120.0" layoutY="340.0" text="Agriculteur" />
+
+
+            <!-- Register Button -->
+            <Button layoutX="59.0" layoutY="380.0" onAction="#save" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #4a934a; -fx-text-fill: white;" text="S'inscrire" />
+
+            <!-- Login Link -->
+            <HBox alignment="CENTER" layoutX="25.0" layoutY="430.0" spacing="5.0">
+                <Label text="Déjà un compte?" />
+                <Button style="-fx-background-color: transparent; -fx-text-fill: #4a934a;" text="Se connecter" onAction="#redirectToLogin" />
+            </HBox>
+        </Pane>
+
+        <!-- Left side with logo -->
+        <ImageView fitHeight="154.0" fitWidth="213.0" layoutX="56.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../../images/logoapp.png" />
+            </image>
+        </ImageView>
+
+        <!-- Vertical separator -->
+        <Separator layoutX="301.0" layoutY="50.0" orientation="VERTICAL" prefHeight="350.0" prefWidth="2.0" style="-fx-background-color: #4a934a;" />
+    </Pane>
+</AnchorPane>
