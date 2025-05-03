@@ -1,6 +1,7 @@
 package controllers.FrontOffice.User;
 
 import Models.user;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,10 +12,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import services.GoogleAuthGIS;
 import services.UserServices;
 import utils.SessionManager;
 
 import java.io.IOException;
+
+import static utils.NavigationUtil.showErrorAlert;
 
 public class Login {
     @FXML private TextField emailField;
@@ -31,24 +35,70 @@ public class Login {
             String password = passwordField.getText().trim();
 
             if (email.isEmpty() || password.isEmpty()) {
-                showAlert("Error", "Missing Fields", "Please fill all fields");
+                showErrorAlert("Error", "Missing Fields", "Please fill all fields");
                 return;
             }
 
-            user authenticatedUser = userService.authenticateSymfonyUser(email, password);
+            try {
+                user authenticatedUser = userService.authenticateSymfonyUser(email, password);
 
-            if (authenticatedUser != null) {
-                SessionManager.getInstance().startSession(authenticatedUser);
-                redirectToHome();
-            } else {
-                showAlert("Error", "Login Failed", "Invalid credentials");
+                if (authenticatedUser != null) {
+                    SessionManager.getInstance().startSession(authenticatedUser);
+                    redirectToHome();
+                }
+            } catch (SecurityException e) {
+                if (e.getMessage().contains("blocked")) {
+                    showErrorAlert("Account Blocked", "Access Denied", e.getMessage());
+                } else {
+                    showErrorAlert("Error", "Login Failed", e.getMessage());
+                }
             }
         } catch (Exception e) {
-            showAlert("Error", "System Error", e.getMessage());
+            showErrorAlert("Error", "System Error", e.getMessage());
             e.printStackTrace();
         }
     }
+    @FXML
+    private void handleGoogleLogin(ActionEvent event) {
+        Button googleBtn = (Button) event.getSource();
+        googleBtn.setDisable(true);
 
+        try {
+            GoogleAuthGIS googleAuth = new GoogleAuthGIS();
+            Task<user> authTask = googleAuth.authenticate();
+
+            authTask.setOnSucceeded(e -> {
+                try {
+                    user googleUser = authTask.getValue();
+                    SessionManager.getInstance().startSession(googleUser);
+                    navigateToHome();
+                } catch (Exception ex) {
+                    showErrorAlert("Session Error", "Failed to start session", ex.getMessage());
+                } finally {
+                    googleBtn.setDisable(false);
+                }
+            });
+
+            authTask.setOnFailed(e -> {
+                Throwable ex = authTask.getException();
+                String errorMsg = "Authentication failed. Please try again.";
+
+                if (ex instanceof java.net.BindException) {
+                    errorMsg = "Port 8888 is in use. Please close conflicting applications and try again.";
+                } else if (ex.getCause() != null) {
+                    errorMsg = ex.getCause().getMessage();
+                }
+
+                showErrorAlert("Google Login Failed", errorMsg, "");
+                googleBtn.setDisable(false);
+            });
+
+            new Thread(authTask).start();
+        } catch (Exception e) {
+            showErrorAlert("Error", "System Error", e.getMessage());
+            googleBtn.setDisable(false);
+        }
+    }
     private void redirectToHome() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
         Parent root = loader.load();
@@ -57,7 +107,14 @@ public class Login {
         stage.setScene(new Scene(root));
         stage.show();
     }
-
+    private void navigateToHome() {
+        try {
+            redirectToHome(); // Reuse your existing method
+        } catch (IOException e) {
+            showErrorAlert("Error", "Navigation Error", "Failed to navigate to home");
+            e.printStackTrace();
+        }
+    }
     private void showAlert(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);

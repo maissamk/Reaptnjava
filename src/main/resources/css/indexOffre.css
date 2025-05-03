@@ -1,0 +1,93 @@
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.cards-container {
+    -fx-padding: 10;
+}
+
+.offre-card {
+    -fx-background-color: #f9f9f9;
+    -fx-background-radius: 12;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);
+    -fx-cursor: hand;
+}
+
+.offre-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.offre-sub {
+    -fx-font-size: 14px;
+    -fx-text-fill: #777;
+}
+
+.offre-desc {
+    -fx-font-size: 13px;
+    -fx-text-fill: #444;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 10;
+}
+
+/* Styling for the HBox container holding cards */
+.cards-container {
+    -fx-spacing: 20px;
+    -fx-padding: 10px;
+}
+
+/* Card Styling */
+.card {
+    -fx-background-color: #f0f0f0;
+    -fx-border-radius: 10px;
+    -fx-padding: 15px;
+    -fx-min-width: 150px;
+    -fx-max-width: 200px;
+    -fx-pref-width: 180px;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 2);
+    -fx-cursor: hand;
+    -fx-transition: scale 0.3s ease-in-out;
+}
+
+/* Card hover effect (scaling and glow) */
+.card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 12, 0, 0, 4);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* Button Styling */
+.button {
+    -fx-background-color: #007BFF;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 5;
+}
+
+.list-cell:filled {
+    -fx-background-color: #e0e0e0;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-padding: 12;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ff9900;
+}
+
+.list-cell:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 2);
+    -fx-cursor: hand;
+}

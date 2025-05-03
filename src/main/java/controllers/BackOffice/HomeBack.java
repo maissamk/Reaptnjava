@@ -102,7 +102,7 @@ public class HomeBack implements Initializable {
     private void setupEventHandlers() {
         // Main Navigation
         dashboardBtn.setOnAction(e -> loadDashboardContent());
-        usersBtn.setOnAction(e -> loadContent("/views/BackOffice/Users.fxml"));
+        usersBtn.setOnAction(e -> loadContent("/BackOffice/user/UserList.fxml"));
         productsBtn.setOnAction(e -> loadContent("/views/BackOffice/Products.fxml"));
         ordersBtn.setOnAction(e -> loadContent("/views/BackOffice/Orders.fxml"));
         reportsBtn.setOnAction(e -> loadContent("/views/BackOffice/Reports.fxml"));

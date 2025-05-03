@@ -1,6 +1,6 @@
 package services.gestionCommande;
 
-import interfaces.IService;
+import interfaces.IServiceCommande;
 import Models.gestionCommande.Commande;
 import Models.gestionCommande.CommandeDetails;
 import Models.gestionCommande.Livraison;
@@ -11,7 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandeService implements IService<Commande> {
+public class CommandeService implements IServiceCommande<Commande> {
     Connection cnx = MaConnexion.getInstance().getConn();
 
     @Override

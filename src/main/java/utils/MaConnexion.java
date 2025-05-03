@@ -1,6 +1,7 @@
 package utils;
 
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
@@ -14,10 +15,8 @@ public class MaConnexion {
 
     Connection connection;
 
-
-    public static MaConnexion getInstance()
-    {
-        if (instance==null){
+    public static MaConnexion getInstance(){
+        if(instance==null){
             instance=new MaConnexion();
         }
         return instance;
@@ -26,15 +25,24 @@ public class MaConnexion {
     public Connection getConn(){
         return connection;
     }
+    public Connection getConnection() {
+        return connection;
+    }
 
     private MaConnexion(){
         try {
             connection = DriverManager.getConnection(url, username, password);
             System.out.println("Connexion etablie avec succés");
-        }catch (SQLException e){
+        }
+
+
+
+        catch (SQLException e){
             System.out.println(e.getMessage());
         }
     }
 
-
 }
+
+
+

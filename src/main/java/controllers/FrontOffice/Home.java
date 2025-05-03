@@ -6,7 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.image.ImageView;
 import javafx.fxml.Initializable;
- import controllers.FrontOffice.material.client.ShowMaterielLocationController;
+import controllers.FrontOffice.material.client.ShowMaterielLocationController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,29 +30,49 @@ import java.util.ResourceBundle;
 
 public class Home implements Initializable {
 
-    @FXML    public Button material;
+    @FXML
+    public Button material;
     // Navigation elements
-    @FXML private HBox topNavigationBar;
-    @FXML private ImageView logoImageView;
-    @FXML private Button accueilButton;
-    @FXML private Button produitsButton;
-    @FXML private Button produitsDetailButton;
-    @FXML private Button parcelleButton;
-    @FXML private Button offersButton;
-    @FXML private Button masterfulButton;
-    @FXML private Button loginButton;
-    @FXML private Button profileButton;
-    @FXML private Button commandeButton;
+    @FXML
+    private HBox topNavigationBar;
+    @FXML
+    private ImageView logoImageView;
+
+
+
+    @FXML
+    private Button accueilButton;
+    @FXML
+    private Button produitsButton;
+    @FXML
+    private Button produitsDetailButton;
+    @FXML
+    private Button parcelleButton;
+    @FXML
+    private Button offersButton;
+    @FXML
+    private Button masterfulButton;
+    @FXML
+    private Button loginButton;
+    @FXML
+    private Button profileButton;
+    @FXML
+    private Button commandeButton;
 
 
     // User info elements
-    @FXML private ImageView userAvatar;
-    @FXML private Label userNameLabel;
-    @FXML private Label userRoleLabel;
+    @FXML
+    private ImageView userAvatar;
+    @FXML
+    private Label userNameLabel;
+    @FXML
+    private Label userRoleLabel;
 
     // Main content
-    @FXML private StackPane mainContentPane;
-    @FXML private Label welcomeLabel;
+    @FXML
+    private StackPane mainContentPane;
+    @FXML
+    private Label welcomeLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -137,22 +157,23 @@ public class Home implements Initializable {
             Parent root = loader.load();
 
             // Get the stage from the event source
-          //  Node source = (Node) event.getSource();
-        //    Stage stage = (Stage) source.getScene().getWindow();
-        //stage.setFullScreen(true);
+            //  Node source = (Node) event.getSource();
+            //    Stage stage = (Stage) source.getScene().getWindow();
+            //stage.setFullScreen(true);
             // Set the new scene
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.sizeToScene(); // Optional: resize to fit new content
             stage.show();
         } catch (IOException e) {
-         }
+        }
     }
 
     // Usage in your button handler:
     @FXML
     private void handleProduits(ActionEvent event) {
     }
+
     @FXML
     private void handleCommande(ActionEvent event) {
         navigateTo("/BackOffice/GestionCommandeBack/CommandesAvecDetails.fxml", event);
@@ -171,18 +192,19 @@ public class Home implements Initializable {
     private void handleOffers() {
         System.out.println("Offers disponibles clicked");
         try {
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/Frontoffice/baseFront.fxml"));
             Parent baseRoot = baseLoader.load();
             BaseFrontController baseController = baseLoader.getController();
 
-            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/indexOffre.fxml"));
-            Parent content = contentLoader.load();
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/Frontoffice/Offre/indexOffre.fxml"));
+            Parent content = contentLoader.load(); // content with its own controller & methods
 
+            // Inject the page content into base layout
             baseController.getContentPane().getChildren().setAll(content);
 
+            // Now show the complete scene
             Scene scene = new Scene(baseRoot);
-       //     Stage stage = (Stage) offersButton.getScene().getWindow();
-            Stage stage = new Stage();
+            Stage stage = (Stage) offersButton.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
 
@@ -252,6 +274,4 @@ public class Home implements Initializable {
         stage.setScene(new Scene(root));
         stage.show();
     }
-
-
 }
