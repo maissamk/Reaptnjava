@@ -156,7 +156,7 @@
             <VBox alignment="CENTER" spacing="40" styleClass="welcome-container">
                 <StackPane>
                     <ImageView fitHeight="180" fitWidth="180" styleClass="welcome-logo">
-                        <Image url="@/images/logoapp.jpg" />
+                        <Image url="@/images/logoapp.png" />
                     </ImageView>
                     <Circle fill="radial-gradient(focus-angle 45deg, focus-distance 20%, center 50% 50%, radius 60%, #E8F5E966, #81C78400)" radius="90" />
                 </StackPane>
