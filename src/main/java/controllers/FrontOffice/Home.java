@@ -1,18 +1,18 @@
 package controllers.FrontOffice;
 
 import Models.user;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.scene.image.ImageView;
 import javafx.fxml.Initializable;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import utils.SessionManager;
@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
 public class Home implements Initializable {
 
     @FXML public Button material;
+    // Navigation elements
     @FXML private HBox topNavigationBar;
     @FXML private ImageView logoImageView;
     @FXML private Button accueilButton;
@@ -34,6 +35,9 @@ public class Home implements Initializable {
     @FXML private Button masterfulButton;
     @FXML private Button loginButton;
     @FXML private Button profileButton;
+    @FXML private Button commandeButton;
+
+    // User info elements
     @FXML private ImageView userAvatar;
     @FXML private Label userNameLabel;
     @FXML private Label userRoleLabel;
@@ -42,14 +46,17 @@ public class Home implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Check for existing session when initializing
         checkPersistentSession();
         updateUI();
         setupEventHandlers();
     }
 
     private void checkPersistentSession() {
+        // This will automatically load any existing session from file
         if (SessionManager.getInstance().isLoggedIn() &&
                 SessionManager.getInstance().getCurrentUser() == null) {
+            // If session exists but user object isn't loaded, refresh from database
             SessionManager.getInstance().loadSession();
         }
     }
@@ -58,6 +65,7 @@ public class Home implements Initializable {
         if (SessionManager.getInstance().isLoggedIn()) {
             user currentUser = SessionManager.getInstance().getCurrentUser();
             if (currentUser != null) {
+                // Update user profile section
                 userNameLabel.setText(currentUser.getNom());
                 userRoleLabel.setText(String.join(", ", currentUser.getRoles()));
 
@@ -88,13 +96,17 @@ public class Home implements Initializable {
     }
 
     private void setupEventHandlers() {
+        // Navigation buttons
         accueilButton.setOnAction(e -> handleAccueil());
+        commandeButton.setOnAction(this::handleCommande);
         material.setOnAction(this::handleMaterial);
         produitsButton.setOnAction(e -> handleProduitsDetail());
         produitsDetailButton.setOnAction(e -> handleProduitsDetail());
         parcelleButton.setOnAction(e -> handleParcelle());
         offersButton.setOnAction(e -> handleOffers());
         masterfulButton.setOnAction(e -> handleMasterful());
+
+        // Auth buttons
         loginButton.setOnAction(e -> handleLogin());
         profileButton.setOnAction(e -> handleProfile());
     }
@@ -116,29 +128,43 @@ public class Home implements Initializable {
         }
     }
 
-    // Other handler methods remain the same...
-    private void handleAccueil() {
-        System.out.println("Accueil clicked");
+    private void handleProduitsDetail() {
+        // Implementation
     }
 
-    private void handleMaterial(ActionEvent event) {
-        navigateTo("/FrontOffice/materials/client/IndexMateriel.fxml", event);
+    private void handleAccueil() {
+        System.out.println("Accueil clicked");
     }
 
     private void navigateTo(String fxmlPath, ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
+
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
+            stage.sizeToScene(); // Optional: resize to fit new content
             stage.show();
         } catch (IOException e) {
             showAlert("Error", "Failed to load page: " + fxmlPath, Alert.AlertType.ERROR);
+            System.out.println(e.getMessage());
         }
     }
 
-    private void handleProduitsDetail() {
+    @FXML
+    private void handleProduits(ActionEvent event) {
         // Implementation
+    }
+
+    @FXML
+    private void handleCommande(ActionEvent event) {
+        navigateTo("/BackOffice/GestionCommandeBack/CommandesAvecDetails.fxml", event);
+    }
+
+    private void handleMaterial(ActionEvent event) {
+        System.out.println("xxxxxxx");
+        navigateTo("/FrontOffice/materials/client/IndexMateriel.fxml", event);
+        System.out.println("xxxxxxx");
     }
 
     private void handleParcelle() {
@@ -147,14 +173,26 @@ public class Home implements Initializable {
 
     @FXML
     private void handleOffers() {
+        System.out.println("Offers disponibles clicked");
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/indexOffre.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/Frontoffice/baseFront.fxml"));
+            Parent baseRoot = baseLoader.load();
+            BaseFrontController baseController = baseLoader.getController();
+
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/Frontoffice/Offre/indexOffre.fxml"));
+            Parent content = contentLoader.load(); // content with its own controller & methods
+
+            // Inject the page content into base layout
+            baseController.getContentPane().getChildren().setAll(content);
+
+            // Now show the complete scene
+            Scene scene = new Scene(baseRoot);
+            Stage stage = (Stage) offersButton.getScene().getWindow();
+            stage.setScene(scene);
             stage.show();
+
         } catch (IOException e) {
-            showAlert("Error", "Failed to load offers page", Alert.AlertType.ERROR);
+            e.printStackTrace();
         }
     }
 
@@ -166,12 +204,16 @@ public class Home implements Initializable {
     private void handleLogin() {
         try {
             if (SessionManager.getInstance().isLoggedIn()) {
+                // Logout logic
                 SessionManager.getInstance().logout();
+
+                // Refresh the home page
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
                 Stage stage = (Stage) loginButton.getScene().getWindow();
                 stage.setScene(new Scene(loader.load()));
                 stage.show();
             } else {
+                // Login logic - redirect to login page
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/Login.fxml"));
                 Stage stage = (Stage) loginButton.getScene().getWindow();
                 stage.setScene(new Scene(loader.load()));

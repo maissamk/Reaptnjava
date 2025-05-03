@@ -2,15 +2,15 @@ package services;
 
 import Models.MaterielLocation;
 import Models.MaterielVente;
+import com.itextpdf.text.DocumentException;
 import interfaces.IMaterielService;
+import utils.EmailSender;
 import utils.MyDataBase;
+import utils.PDFGenerator;
 
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,7 +21,6 @@ public class MaterielService implements IMaterielService {
 
     private Connection cnx = MyDataBase.getInstance().getCnx();
 
-    // Méthodes pour MaterielLocation
 
 
 
@@ -70,16 +69,14 @@ public class MaterielService implements IMaterielService {
         String req = "INSERT INTO materiellocation(nom, prix, description, disponibilite, image, user_id_materiellocation_id) VALUES (?,?,?,?,?,?)";
 
         try {
-
-
             try (PreparedStatement pstmt = cnx.prepareStatement(req, Statement.RETURN_GENERATED_KEYS)) {
-                pstmt.setString(1, materiel.getNom());
-                pstmt.setDouble(2, materiel.getPrix());
-                pstmt.setString(3, materiel.getDescription());
-                pstmt.setBoolean(4, materiel.isDisponibilite());
-                pstmt.setString(5, materiel.getImage() != null ? materiel.getImage() : "");
-                pstmt.setObject(6, materiel.getUserIdMaterielLocationId());
-                pstmt.executeUpdate();
+                     pstmt.setString(1, materiel.getNom());
+                    pstmt.setDouble(2, materiel.getPrix());
+                    pstmt.setString(3, materiel.getDescription());
+                    pstmt.setBoolean(4, materiel.isDisponibilite());
+                    pstmt.setString(5, materiel.getImage() != null ? materiel.getImage() : "");
+                    pstmt.setObject(6, materiel.getUserIdMaterielLocationId());
+                    pstmt.executeUpdate();
 
                 try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
@@ -87,7 +84,13 @@ public class MaterielService implements IMaterielService {
                     }
                 }
             }
-        } catch ( SQLException e) {
+
+            // Send email notification with PDF
+            File pdfFile = PDFGenerator.generateMaterialLocationPDF(materiel);
+            String adminEmail = "maissakhemiri01@gmail.com"; // or get from config
+            EmailSender.sendMaterialAddedEmail(adminEmail, "Location", pdfFile, materiel.getNom());
+
+        } catch (SQLException | IOException | DocumentException e) {
             e.printStackTrace();
         }
     }
@@ -166,10 +169,6 @@ public class MaterielService implements IMaterielService {
         String req = "INSERT INTO materielvente(nom, prix, description, disponibilite, image, user_id_materielvente_id, commande_id, categorie_id, slug, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
-
-
-
-
             try (PreparedStatement pstmt = cnx.prepareStatement(req, Statement.RETURN_GENERATED_KEYS)) {
                 pstmt.setString(1, materiel.getNom());
                 pstmt.setDouble(2, materiel.getPrix());
@@ -191,18 +190,24 @@ public class MaterielService implements IMaterielService {
 
                 pstmt.executeUpdate();
 
+
                 try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         materiel.setId(generatedKeys.getInt(1));
                     }
                 }
             }
-        } catch ( SQLException e) {
+
+            // Send email notification with PDF
+            File pdfFile = PDFGenerator.generateMaterialVentePDF(materiel);
+            String adminEmail = "maissakhemiri01@gmail.com"; // or get from config
+            EmailSender.sendMaterialAddedEmail(adminEmail, "Vente", pdfFile, materiel.getNom());
+
+        } catch (SQLException | IOException | DocumentException e) {
             System.out.println("❌ Erreur lors de l'ajout de la vente : " + e.getMessage());
             e.printStackTrace();
         }
     }
-
     @Override
     public void modifierVente(MaterielVente materiel) {
         String req = "UPDATE materielvente SET " +

@@ -8,19 +8,23 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import services.MaterielService;
 import utils.SessionManager;
 
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class IndexMaterielController {
 
@@ -45,11 +49,38 @@ public class IndexMaterielController {
     @FXML private GridPane locationGridContainer;
     @FXML private Pagination locationPagination;
     @FXML private TextField searchLocationField;
+    public void applyRandomColorsToBars(BarChart<String, Number> barChart) {
+        Random random = new Random();
 
+        for (XYChart.Series<String, Number> series : barChart.getData()) {
+            for (XYChart.Data<String, Number> data : series.getData()) {
+                // Generate a random color
+                Color color = Color.rgb(
+                        random.nextInt(256),
+                        random.nextInt(256),
+                        random.nextInt(256)
+                );
+
+                // Apply the color to the bar
+                String rgb = String.format(
+                        "rgb(%d, %d, %d)",
+                        (int)(color.getRed() * 255),
+                        (int)(color.getGreen() * 255),
+                        (int)(color.getBlue() * 255)
+                );
+
+                data.getNode().setStyle(
+                        "-fx-bar-fill: " + rgb + ";"
+                );
+            }
+        }
+    }
     @FXML
     public void initialize() {
         loadVenteData();
         loadLocationData();
+        searchVenteField.textProperty().addListener((observable, oldValue, newValue) -> handleSearchVente());
+        searchLocationField.textProperty().addListener((observable, oldValue, newValue) -> handleSearchLocation());
 
         setupPaginationListeners();
     }
@@ -277,6 +308,7 @@ public class IndexMaterielController {
 
             Stage stage = new Stage();
             stage.setTitle("Détails du Matériel à Vendre");
+            stage.setFullScreen(true);
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
@@ -299,10 +331,19 @@ public class IndexMaterielController {
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'afficher les détails", Alert.AlertType.ERROR);
         }
-    } @FXML
+    }
+
+    @FXML
     private void handleSearchVente() {
-        String query = searchVenteField.getText().trim();
-        List<MaterielVente> filtered = materielService.searchVente(query);
+        String query = searchVenteField.getText().trim().toLowerCase();
+
+        // Recherche avec Stream
+        List<MaterielVente> filtered = materielService.findAllVente().stream()
+                .filter(m -> m.getNom().toLowerCase().contains(query) ||
+                        m.getDescription().toLowerCase().contains(query) ||
+                        String.valueOf(m.getPrix()).contains(query))
+                .collect(Collectors.toList());
+
         venteList.clear();
         venteList.addAll(filtered);
         currentVentePage = 0;
@@ -311,8 +352,15 @@ public class IndexMaterielController {
 
     @FXML
     private void handleSearchLocation() {
-        String query = searchLocationField.getText().trim();
-        List<MaterielLocation> filtered = materielService.searchLocation(query);
+        String query = searchLocationField.getText().trim().toLowerCase();
+
+        // Recherche avec Stream
+        List<MaterielLocation> filtered = materielService.findAllLocation().stream()
+                .filter(m -> m.getNom().toLowerCase().contains(query) ||
+                        m.getDescription().toLowerCase().contains(query) ||
+                        String.valueOf(m.getPrix()).contains(query))
+                .collect(Collectors.toList());
+
         locationList.clear();
         locationList.addAll(filtered);
         currentLocationPage = 0;
@@ -338,5 +386,36 @@ public class IndexMaterielController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    public Map<String, List<Integer>> generateMaterialIndex() {
+        Map<String, List<Integer>> index = new HashMap<>();
+
+        // Index pour les matériels de vente
+        for (int i = 0; i < venteList.size(); i++) {
+            MaterielVente m = venteList.get(i);
+            indexWord(index, m.getNom(), i);
+            indexWord(index, m.getDescription(), i);
+        }
+
+
+        // Index pour les matériels de location
+        for (int i = 0; i < locationList.size(); i++) {
+            MaterielLocation m = locationList.get(i);
+            indexWord(index, m.getNom(), i);
+            indexWord(index, m.getDescription(), i);
+        }
+
+        return index;
+    }
+    private void indexWord(Map<String, List<Integer>> index, String text, int materialId) {
+        if (text == null) return;
+
+        String[] words = text.split("\\s+");
+        for (String word : words) {
+            word = word.toLowerCase().replaceAll("[^a-z0-9]", "");
+            if (word.length() > 2) { // On ignore les mots trop courts
+                index.computeIfAbsent(word, k -> new ArrayList<>()).add(materialId);
+            }
+        }
     }
 }

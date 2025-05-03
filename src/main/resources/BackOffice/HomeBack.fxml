@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<BorderPane  prefHeight="800" prefWidth="1200" stylesheets="/css/homeback.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BackOffice.HomeBack">
+<BorderPane prefHeight="800" prefWidth="1200" stylesheets="/css/homeback.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BackOffice.HomeBack">
 
     <!-- Top Navigation Bar - Modern Glassmorphism Effect -->
     <top>
@@ -66,13 +66,14 @@
         <VBox prefWidth="220" spacing="10" styleClass="sidebar">
             <Label styleClass="menu-title" text="MAIN MENU" />
 
-            <Button fx:id="statisticsBtn" styleClass="side-btn" text="Statistics" >
+            <Button fx:id="statisticsBtn" styleClass="side-btn" text="Statistics">
                 <graphic>
                     <ImageView fitHeight="22" fitWidth="22">
                         <Image url="@/images/icons/stats.png" />
                     </ImageView>
                 </graphic>
             </Button>
+
             <Button fx:id="statisticsBtnUser" styleClass="side-btn" text="Statistics" >
                 <graphic>
                     <ImageView fitHeight="22" fitWidth="22">
@@ -162,7 +163,7 @@
             <VBox alignment="CENTER" spacing="40" styleClass="welcome-container">
                 <StackPane>
                     <ImageView fitHeight="180" fitWidth="180" styleClass="welcome-logo">
-                        <Image url="@/images/logoapp.png" />
+                        <Image url="@/images/logoapp.jpg" />
                     </ImageView>
                     <Circle fill="radial-gradient(focus-angle 45deg, focus-distance 20%, center 50% 50%, radius 60%, #E8F5E966, #81C78400)" radius="90" />
                 </StackPane>

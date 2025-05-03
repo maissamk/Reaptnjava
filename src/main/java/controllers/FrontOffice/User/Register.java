@@ -10,9 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import services.UserServices;
-import utils.EmailSender;
+import utils.EmailSenderUser;
 import utils.NavigationUtil;
-import utils.PasswordUtils;
 import utils.SessionManager;
 
 import java.io.IOException;
@@ -74,7 +73,7 @@ public class Register {
             SessionManager.setPendingUser(newUser);
 
             try {
-                EmailSender.sendVerificationEmail(newUser.getEmail(), verificationCode);
+                EmailSenderUser.sendVerificationEmail(newUser.getEmail(), verificationCode);
 
                 // Get current stage before changing scenes
                 Stage currentStage = (Stage) emailField.getScene().getWindow();

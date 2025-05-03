@@ -3,12 +3,10 @@ package controllers.FrontOffice.User;
 import Models.user;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import services.UserServices;
-import utils.EmailSender;
+import utils.EmailSenderUser;
 import utils.NavigationUtil;
 
 import java.time.LocalDateTime;
@@ -38,7 +36,7 @@ public class ForgotPasswordController {
             if (userService.setPasswordResetToken(email, verificationCode, expiryTime)) {
                 try {
                     // Send email with verification code
-                    EmailSender.sendPasswordResetEmail(email, verificationCode);
+                    EmailSenderUser.sendPasswordResetEmail(email, verificationCode);
 
                     // Navigate to verification screen with email context
                     NavigationUtil.navigateToWithData(

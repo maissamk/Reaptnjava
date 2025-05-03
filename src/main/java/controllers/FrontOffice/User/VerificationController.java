@@ -10,7 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 //import javafx.util.Duration;
 import services.UserServices;
-import utils.EmailSender;
+import utils.EmailSenderUser;
 import utils.NavigationUtil;
 import utils.PasswordUtils;
 import utils.SessionManager;
@@ -106,7 +106,7 @@ public class VerificationController {
         pendingUser.setVerificationSentAt(LocalDateTime.now());
 
         try {
-            EmailSender.sendVerificationEmail(pendingUser.getEmail(), newCode);
+            EmailSenderUser.sendVerificationEmail(pendingUser.getEmail(), newCode);
             NavigationUtil.showAlert("Succès", "Nouveau code envoyé", "Vérifiez votre email à nouveau.");
             startCountdown();
         } catch (Exception e) {

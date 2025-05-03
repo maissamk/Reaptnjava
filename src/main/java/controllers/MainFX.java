@@ -14,6 +14,15 @@ public class MainFX extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
 //    FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
 //        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/login.fxml"));
+        AccountStatusChecker.startChecking();
+        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/Offre/indexOffreBack.fxml"));
+        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/Employe/indexEmployeBack.fxml"));
+        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+       //  FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
+
+
+
         Parent root = loader.load();
         Scene scene = new Scene(root);
         primaryStage.setFullScreen(true);

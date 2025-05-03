@@ -11,6 +11,8 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -44,7 +46,11 @@ public class IndexMaterielController {
     @FXML private Pagination ventePagination;
     @FXML private TextField searchVenteField;
     @FXML private Button addVenteBtn;
-
+    @FXML private BarChart<String, Number> availabilityChart;
+    @FXML private BarChart<String, Number> priceChart;
+    @FXML private Label totalMaterialsLabel;
+    @FXML private Label availableMaterialsLabel;
+    @FXML private Label averagePriceLabel;
     // Composants FXML pour la location
     @FXML private GridPane locationGridContainer;
     @FXML private Pagination locationPagination;
@@ -127,6 +133,108 @@ public class IndexMaterielController {
                 col = 0;
                 row++;
             }
+        }
+    }
+    @FXML
+    public void loadStatistics() {
+        if (availabilityChart == null) return;
+
+        availabilityChart.getData().clear();
+        priceChart.getData().clear();
+
+        List<MaterielVente> venteItems = materielService.findAllVente();
+        List<MaterielLocation> locationItems = materielService.findAllLocation();
+
+        int totalVente = venteItems.size();
+        int totalLocation = locationItems.size();
+        int availableVente = (int) venteItems.stream().filter(MaterielVente::isDisponibilite).count();
+        int availableLocation = (int) locationItems.stream().filter(MaterielLocation::isDisponibilite).count();
+
+        // Update summary cards
+        totalMaterialsLabel.setText(String.valueOf(totalVente + totalLocation));
+        availableMaterialsLabel.setText(String.valueOf(availableVente + availableLocation));
+
+        double avgPriceVente = venteItems.stream().mapToDouble(MaterielVente::getPrix).average().orElse(0);
+        double avgPriceLocation = locationItems.stream().mapToDouble(MaterielLocation::getPrix).average().orElse(0);
+        averagePriceLabel.setText(String.format("%.2f TND", (avgPriceVente + avgPriceLocation)/2));
+
+        // Availability Chart Data
+        XYChart.Series<String, Number> availabilitySeries = new XYChart.Series<>();
+        availabilitySeries.getData().add(new XYChart.Data<>("Vente - Disponible", availableVente));
+        availabilitySeries.getData().add(new XYChart.Data<>("Vente - Indisponible", totalVente - availableVente));
+        availabilitySeries.getData().add(new XYChart.Data<>("Location - Disponible", availableLocation));
+        availabilitySeries.getData().add(new XYChart.Data<>("Location - Indisponible", totalLocation - availableLocation));
+        availabilityChart.getData().add(availabilitySeries);
+
+        // Price Distribution Chart Data
+        XYChart.Series<String, Number> priceSeries = new XYChart.Series<>();
+        priceSeries.setName("Répartition des Prix");
+
+        priceSeries.getData().add(new XYChart.Data<>("0-100 TND",
+                venteItems.stream().filter(m -> m.getPrix() <= 100).count() +
+                        locationItems.stream().filter(m -> m.getPrix() <= 100).count()
+        ));
+        priceSeries.getData().add(new XYChart.Data<>("100-500 TND",
+                venteItems.stream().filter(m -> m.getPrix() > 100 && m.getPrix() <= 500).count() +
+                        locationItems.stream().filter(m -> m.getPrix() > 100 && m.getPrix() <= 500).count()
+        ));
+        priceSeries.getData().add(new XYChart.Data<>("500+ TND",
+                venteItems.stream().filter(m -> m.getPrix() > 500).count() +
+                        locationItems.stream().filter(m -> m.getPrix() > 500).count()
+        ));
+
+        priceChart.getData().add(priceSeries);
+
+        styleCharts();
+    }
+
+    private void styleCharts() {
+        // Style availability chart
+        availabilityChart.setStyle("-fx-font-family: 'Segoe UI';");
+        availabilityChart.getXAxis().setStyle("-fx-font-size: 12;");
+        availabilityChart.getYAxis().setStyle("-fx-font-size: 12;");
+
+        // Style price chart
+        priceChart.setStyle("-fx-font-family: 'Segoe UI';");
+        priceChart.getXAxis().setStyle("-fx-font-size: 12;");
+        priceChart.getYAxis().setStyle("-fx-font-size: 12;");
+
+
+
+        int colorIndex = 0;
+        for (XYChart.Series<String, Number> series : availabilityChart.getData()) {
+            for (XYChart.Data<String, Number> data : series.getData()) {
+                Node node = data.getNode();
+                if (node != null) {
+                 }
+                colorIndex++;
+            }
+        }
+
+
+
+        colorIndex = 0;
+        for (XYChart.Series<String, Number> series : priceChart.getData()) {
+            for (XYChart.Data<String, Number> data : series.getData()) {
+                Node node = data.getNode();
+                if (node != null) {
+                 }
+                colorIndex++;
+            }
+        }
+    }
+    @FXML
+    private void showStatistics() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Backoffice/materials/StatisticsView.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Statistiques des Matériels");
+            stage.setScene(new Scene(root, 800, 600));
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Impossible d'ouvrir les statistiques", Alert.AlertType.ERROR);
         }
     }
     private void handleEditVente(MaterielVente materiel) {
@@ -266,7 +374,7 @@ public class IndexMaterielController {
 
     private void handleShowVente(MaterielVente materiel) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Backoffice/ShowMaterielVente.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Backoffice/materials/ShowMaterielVente.fxml"));
             Parent root = loader.load();
 
             ShowMaterielVenteController controller = loader.getController();
