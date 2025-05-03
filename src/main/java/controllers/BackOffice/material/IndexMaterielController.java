@@ -1,7 +1,7 @@
 package controllers.BackOffice.material;
 
-import models.MaterielLocation;
-import models.MaterielVente;
+import Models.MaterielLocation;
+import Models.MaterielVente;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

@@ -1,6 +1,6 @@
 package controllers.BackOffice.material;
 
-import models.MaterielLocation;
+import Models.MaterielLocation;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;

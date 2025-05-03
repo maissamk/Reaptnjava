@@ -1,6 +1,6 @@
 package controllers.BackOffice.category;
 
-import models.Categorie;
+import Models.Categorie;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;

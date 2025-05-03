@@ -7,26 +7,21 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import models.Offre;
-import models.user;
+import Models.Offre;
+import Models.user;
 import javafx.event.ActionEvent;
 import services.OffreService;
-import models.Employe;
+import Models.Employe;
 import services.EmployeService;
-import services.UserServices;
 import utils.LanguageManager;
 import utils.SessionManager;
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.PrintWriter;
 
-import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
@@ -34,7 +29,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 import utils.GeminiService;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -47,10 +41,6 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.scene.Parent;
 
 import java.sql.SQLException;
-import utils.LanguageManager;
-import java.util.ResourceBundle;
-import java.net.URL;
-import java.util.Locale;
 
 
 public class detailOffreController {

@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -70,7 +71,7 @@ public class HomeBack implements Initializable {
 
     private void loadUserData() {
         if (SessionManager.getInstance().isLoggedIn()) {
-            models.user currentUser = SessionManager.getInstance().getCurrentUser();
+            Models.user currentUser = SessionManager.getInstance().getCurrentUser();
             adminNameLabel.setText(currentUser.getNom());
             adminRoleLabel.setText(String.join(", ", currentUser.getRoles()));
 

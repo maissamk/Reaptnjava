@@ -1,6 +1,6 @@
 package interfaces;
 
- import models.Categorie;
+ import Models.Categorie;
 
  import java.util.List;
 

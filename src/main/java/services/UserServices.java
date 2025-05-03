@@ -1,6 +1,6 @@
 package services;
 
-import models.user;
+import Models.user;
 import interfaces.UserCrud;
 import utils.MaConnexion;
 import utils.PasswordUtils;

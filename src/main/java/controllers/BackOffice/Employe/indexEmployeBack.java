@@ -4,7 +4,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import models.Employe;
+import Models.Employe;
 import services.EmployeService;
 import java.time.LocalDateTime;
 import javafx.scene.control.cell.PropertyValueFactory;

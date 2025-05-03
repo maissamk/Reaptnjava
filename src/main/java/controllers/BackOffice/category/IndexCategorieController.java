@@ -1,6 +1,6 @@
 package controllers.BackOffice.category;
 
-import models.Categorie;
+import Models.Categorie;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

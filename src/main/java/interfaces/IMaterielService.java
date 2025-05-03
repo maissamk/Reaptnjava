@@ -1,8 +1,8 @@
 package interfaces;
 
 
-import models.MaterielLocation;
-import models.MaterielVente;
+import Models.MaterielLocation;
+import Models.MaterielVente;
 
 import java.util.List;
 

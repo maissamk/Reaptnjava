@@ -1,6 +1,6 @@
 package controllers.BackOffice.material;
 
-import models.MaterielLocation;
+import Models.MaterielLocation;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;

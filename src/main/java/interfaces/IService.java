@@ -9,6 +9,7 @@ import java.util.List;
         public void update (T t) throws SQLException;
         public void delete (int id) throws SQLException;
         public List<T> select()throws SQLException;
+
     }
 
 

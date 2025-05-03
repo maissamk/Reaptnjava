@@ -1,7 +1,7 @@
 package services;
 
 
-import models.Categorie;
+import Models.Categorie;
 import interfaces.ICategorieService;
 import utils.MyDataBase;
 

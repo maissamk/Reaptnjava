@@ -1,6 +1,6 @@
 package controllers.FrontOffice.User;
 
-import models.user;
+import Models.user;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

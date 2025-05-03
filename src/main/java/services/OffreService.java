@@ -1,16 +1,14 @@
 package services;
 
 
-import models.Offre;
-import models.Employe;
+import Models.Offre;
+import Models.Employe;
 import utils.MaConnexion;
 import interfaces.IService;
 
 import java.sql.*;
 import java.util.Map;
 import java.io.PrintWriter;
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;

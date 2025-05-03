@@ -1,6 +1,6 @@
 package controllers.FrontOffice.User;
 
-import models.user;
+import Models.user;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -65,6 +65,6 @@ public class ProfileController {
     }
 
     public void handleUserList(ActionEvent actionEvent) {
-        NavigationUtil.navigateTo("/BackOffice/user/UserList.fxml", welcomeLabel);
+        NavigationUtil.navigateTo("/BackOffice/UserList.fxml", welcomeLabel);
     }
 }

@@ -1,6 +1,6 @@
 package utils;
 
-import models.user;
+import Models.user;
 import javafx.animation.Timeline;
 import services.UserServices;
 import java.io.*;

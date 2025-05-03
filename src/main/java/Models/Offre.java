@@ -1,6 +1,4 @@
-package models;
-
-import java.time.LocalDateTime;
+package Models;
 
 public class Offre {
     private int id;

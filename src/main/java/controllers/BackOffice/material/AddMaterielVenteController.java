@@ -1,7 +1,7 @@
 package controllers.BackOffice.material;
 
-import models.Categorie;
-import models.MaterielVente;
+import Models.Categorie;
+import Models.MaterielVente;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;

@@ -8,7 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import services.OffreService;
-import models.Offre;
+import Models.Offre;
 
 import java.io.IOException;
 import java.sql.SQLException;

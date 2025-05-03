@@ -1,6 +1,6 @@
 package controllers.FrontOffice.User;
 
-import models.user;
+import Models.user;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

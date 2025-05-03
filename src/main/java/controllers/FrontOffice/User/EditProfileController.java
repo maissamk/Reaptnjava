@@ -1,6 +1,6 @@
 package controllers.FrontOffice.User;
 
-import models.user;
+import Models.user;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;

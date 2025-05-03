@@ -1,10 +1,8 @@
 
-package models;
+package Models;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import models.Offre;
-
 
 
 public class Employe {

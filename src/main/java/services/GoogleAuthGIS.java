@@ -16,7 +16,7 @@ import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfo;
 
 import javafx.concurrent.Task;
-import models.user;
+import Models.user;
 
 import java.io.File;
 import java.io.FileNotFoundException;

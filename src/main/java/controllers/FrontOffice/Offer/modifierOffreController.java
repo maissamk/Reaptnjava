@@ -10,7 +10,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.event.ActionEvent;
-import models.Offre;
+import Models.Offre;
 import services.OffreService;
 import java.io.IOException;
 import java.sql.SQLException;

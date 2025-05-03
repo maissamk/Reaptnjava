@@ -1,11 +1,11 @@
 package services;
 
-import models.Employe;
+import Models.Employe;
 import utils.GeminiService;
-import models.Offre;
+import Models.Offre;
 import utils.MaConnexion;
 import interfaces.IService;
-import java.util.Arrays;
+
 import java.util.Map;
 import java.util.HashMap;
 
