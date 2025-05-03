@@ -1,4 +1,4 @@
-package controllers;
+package controllers.FrontOffice;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -6,8 +6,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
-import models.Product;
-import models.ProductType;
+import Models.Product;
+import Models.ProductType;
 import service.ProductService;
 import service.ProductTypeService;
 import utils.QRCodeGenerator;
@@ -23,14 +23,9 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import javafx.embed.swing.SwingFXUtils;
-import java.io.ByteArrayInputStream;
+
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import utils.ImageUtils;
-import javafx.geometry.Insets;
-import javafx.scene.control.Separator;
+
 import components.WeatherWidget;
 
 public class FrontOfficeController implements Initializable {

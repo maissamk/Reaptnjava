@@ -1,4 +1,4 @@
-package controllers;
+package controllers.BackOffice;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,9 +9,9 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import models.Product;
-import models.ProductType;
-import models.Stock;
+import Models.Product;
+import Models.ProductType;
+import Models.Stock;
 import service.ProductService;
 import service.ProductTypeService;
 import service.StockService;

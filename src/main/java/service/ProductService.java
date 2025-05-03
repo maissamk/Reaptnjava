@@ -1,7 +1,7 @@
 package service;
 
-import models.Product;
-import models.ProductType;
+import Models.Product;
+import Models.ProductType;
 import utils.MyDataBase;
 
 import java.sql.*;

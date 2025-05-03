@@ -1,6 +1,6 @@
 package utils;
 
-import models.Stock;
+import Models.Stock;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;

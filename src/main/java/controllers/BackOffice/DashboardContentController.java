@@ -1,8 +1,8 @@
-package controllers;
+package controllers.BackOffice;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import models.Stock;
+import Models.Stock;
 import service.ProductService;
 import service.ProductTypeService;
 import service.StockService;

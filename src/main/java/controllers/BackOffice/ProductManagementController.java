@@ -1,4 +1,4 @@
-package controllers;
+package controllers.BackOffice;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,14 +8,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
-import models.Product;
-import models.ProductType;
+import Models.Product;
+import Models.ProductType;
 import service.ProductService;
 import service.ProductTypeService;
 import utils.ImageUtils;
 
 import java.io.File;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

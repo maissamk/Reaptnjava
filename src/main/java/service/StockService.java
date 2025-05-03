@@ -1,11 +1,10 @@
 package service;
 
-import models.Product;
-import models.Stock;
+import Models.Product;
+import Models.Stock;
 import utils.MyDataBase;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -2,7 +2,7 @@ package utils;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import models.Stock;
+import Models.Stock;
 import service.StockService;
 
 import java.util.List;

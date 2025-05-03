@@ -1,4 +1,4 @@
-package controllers;
+package controllers.BackOffice;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import models.Stock;
+import Models.Stock;
 import service.ProductService;
 import service.ProductTypeService;
 import service.StockService;
@@ -40,7 +40,7 @@ public class DashboardController {
         stockService = new StockService();
         
         // Load the dashboard content view initially
-        loadView("/fxml/DashboardContent.fxml");
+        loadView("/Produits/DashboardContent.fxml");
     }
     
     public void updateDashboardStats() {
@@ -63,27 +63,27 @@ public class DashboardController {
     @FXML
     private void loadDashboard() {
         // Load the Dashboard content view instead of Dashboard.fxml
-        loadView("/fxml/DashboardContent.fxml");
+        loadView("/Produits/DashboardContent.fxml");
     }
     
     @FXML
     private void loadProductManagement() {
-        loadView("/fxml/ProductManagement.fxml");
+        loadView("/Produits/ProductManagement.fxml");
     }
     
     @FXML
     private void loadProductTypeManagement() {
-        loadView("/fxml/ProductTypeManagement.fxml");
+        loadView("/Produits/ProductTypeManagement.fxml");
     }
     
     @FXML
     private void loadStockManagement() {
-        loadView("/fxml/StockManagement.fxml");
+        loadView("/Produits/StockManagement.fxml");
     }
     
     @FXML
     private void loadReports() {
-        loadView("/fxml/Reports.fxml");
+        loadView("/Produits/Reports.fxml");
     }
     
     private void loadView(String fxmlPath) {

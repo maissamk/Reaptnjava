@@ -11,7 +11,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.FrontOfficeController"
+            fx:controller="controllers.FrontOffice.FrontOfficeController"
             stylesheets="@../styles/style.css"
             prefHeight="900.0" prefWidth="1400.0">
 

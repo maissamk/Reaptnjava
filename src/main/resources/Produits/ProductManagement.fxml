@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ProductManagementController">
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BackOffice.ProductManagementController">
    <children>
       <VBox layoutX="25.0" layoutY="20.0" prefHeight="750.0" prefWidth="1150.0" spacing="20.0" styleClass="management-content" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="20.0">
          <children>
