@@ -1,7 +1,7 @@
 package services;
 
-import models.ParcelleRegressionModel;
-import models.ParcelleRegressionModel.EstimationResultat;
+import Models.ParcelleRegressionModel;
+import Models.ParcelleRegressionModel.EstimationResultat;
 
 import java.io.File;
 import java.util.*;

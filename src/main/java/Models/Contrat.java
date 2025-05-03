@@ -1,4 +1,4 @@
-package models;
+package Models;
 
 import java.util.Date;
 
@@ -15,6 +15,10 @@ public class Contrat {
     private String signature_id;
     private String document_id;
     private String signer_id;
+    private String status;
+
+    // Nouvelle relation avec ParcelleProprietes
+    private ParcelleProprietes parcelleProprietes;
 
     // Constructeur par défaut
     public Contrat() {
@@ -38,7 +42,7 @@ public class Contrat {
         this.signer_id = signer_id;
     }
 
-    // Constructeur sans id (pour l’ajout)
+    // Constructeur sans id (pour l'ajout)
     public Contrat(Integer parcelle_id, Date date_debut_contrat, Date datefin_contrat, String nom_acheteur,
                    String nom_vendeur, String information_contrat, Date datecreation_contrat, Integer user_id_contrat_id,
                    String signature_id, String document_id, String signer_id) {
@@ -70,6 +74,7 @@ public class Contrat {
                 ", signature_id='" + signature_id + '\'' +
                 ", document_id='" + document_id + '\'' +
                 ", signer_id='" + signer_id + '\'' +
+                ", status='" + status + '\'' +
                 '}';
     }
 
@@ -169,10 +174,6 @@ public class Contrat {
         this.signer_id = signer_id;
     }
 
-    //new
-
-    private String status;
-
     public String getStatus() {
         return status;
     }
@@ -181,4 +182,12 @@ public class Contrat {
         this.status = status;
     }
 
+    // Nouveaux getters et setters pour la relation
+    public ParcelleProprietes getParcelleProprietes() {
+        return parcelleProprietes;
+    }
+
+    public void setParcelleProprietes(ParcelleProprietes parcelleProprietes) {
+        this.parcelleProprietes = parcelleProprietes;
+    }
 }

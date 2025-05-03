@@ -12,7 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import models.ParcelleProprietes;
+import Models.ParcelleProprietes;
 
 import java.io.IOException;
 
@@ -26,6 +26,7 @@ public class ParcelleCard {
     @FXML public ImageView imageView;
     @FXML public Button btnModifier;
     @FXML public Button btnSupprimer;
+    @FXML public Button btnHistorique; // Nouveau bouton pour l'historique
 
     private ParcelleProprietes currentParcelle;
 
@@ -121,5 +122,9 @@ public class ParcelleCard {
 
     public Button getBtnSupprimer() {
         return btnSupprimer;
+    }
+
+    public Button getBtnHistorique() {
+        return btnHistorique;
     }
 }

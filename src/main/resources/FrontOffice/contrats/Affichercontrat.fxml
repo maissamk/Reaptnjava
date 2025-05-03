@@ -34,13 +34,15 @@
             </HBox>
         </HBox>
 
-        <ListView fx:id="listView"
-                  VBox.vgrow="ALWAYS"
-                  style="-fx-background-color: transparent; -fx-border-width: 0;">
-            <placeholder>
-                <Label text="Aucun contrat disponible"
-                       style="-fx-font-size: 16px; -fx-text-fill: #7f8c8d;"/>
-            </placeholder>
-        </ListView>
+        <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <ListView fx:id="listView"
+                      VBox.vgrow="ALWAYS"
+                      style="-fx-background-color: transparent; -fx-border-width: 0;">
+                <placeholder>
+                    <Label text="Aucun contrat disponible"
+                           style="-fx-font-size: 16px; -fx-text-fill: #7f8c8d;"/>
+                </placeholder>
+            </ListView>
+        </ScrollPane>
     </VBox>
 </AnchorPane>

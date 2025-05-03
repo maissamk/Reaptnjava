@@ -5,7 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import models.Contrat;
+import Models.Contrat;
 import services.ContratService;
 
 import java.sql.Date;

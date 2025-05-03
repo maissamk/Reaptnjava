@@ -12,7 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import models.ParcelleProprietes;
+import Models.ParcelleProprietes;
 import services.ParcelleProprietesService;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class Afficherparcelles {
 
     // Eléments pour la recherche
     @FXML private ComboBox<String> cbType;
-    @FXML private TextField tfTitre; // Nouveau champ pour recherche par titre
+    @FXML private TextField tfTitre;
     @FXML private TextField tfEmplacement;
     @FXML private TextField tfPrixMin;
     @FXML private TextField tfPrixMax;
@@ -71,11 +71,6 @@ public class Afficherparcelles {
         }
     }
 
-
-
-
-
-
     private void initFiltres() {
         cbType.getItems().addAll("Agricole", "Résidentiel", "Commercial", "Mixte");
 
@@ -113,7 +108,7 @@ public class Afficherparcelles {
     private void handleDynamicFilter() {
         List<ParcelleProprietes> filtered = allParcelles.stream()
                 .filter(this::filtreType)
-                .filter(this::filtreTitre)  // Ajout du filtre par titre
+                .filter(this::filtreTitre)
                 .filter(this::filtreEmplacement)
                 .filter(this::filtrePrix)
                 .collect(Collectors.toList());
@@ -155,6 +150,9 @@ public class Afficherparcelles {
 
                 controller.getBtnModifier().setOnAction(e -> openModificationWindow(parcelle));
 
+                // Ajout de l'action pour le bouton d'historique
+                controller.getBtnHistorique().setOnAction(e -> openHistoriqueWindow(parcelle));
+
                 gridPane.add(card, column, row);
                 GridPane.setMargin(card, new Insets(10));
 
@@ -163,6 +161,24 @@ public class Afficherparcelles {
             } catch (IOException e) {
                 showAlert("Erreur", "Erreur lors du chargement des cartes : " + e.getMessage());
             }
+        }
+    }
+
+    // Nouvelle méthode pour ouvrir la fenêtre d'historique
+    private void openHistoriqueWindow(ParcelleProprietes parcelle) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/parcelles/AfficherHistoriqueParcelle.fxml"));
+            Parent root = loader.load();
+
+            AfficherHistoriqueParcelleController controller = loader.getController();
+            controller.setParcelle(parcelle);
+
+            Stage stage = new Stage();
+            stage.setTitle("Historique de location - " + parcelle.getTitre());
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Impossible d'ouvrir l'historique de location : " + e.getMessage());
         }
     }
 
@@ -184,6 +200,9 @@ public class Afficherparcelles {
                 });
 
                 controller.getBtnModifier().setOnAction(e -> openModificationWindow(parcelle));
+
+                // Ajout de l'action pour le bouton d'historique dans les résultats filtrés
+                controller.getBtnHistorique().setOnAction(e -> openHistoriqueWindow(parcelle));
 
                 gridPane.add(card, column, row);
                 GridPane.setMargin(card, new Insets(10));
@@ -226,7 +245,7 @@ public class Afficherparcelles {
     private void handleFiltrer() {
         List<ParcelleProprietes> filtered = allParcelles.stream()
                 .filter(this::filtreType)
-                .filter(this::filtreTitre)  // Ajout du filtre par titre
+                .filter(this::filtreTitre)
                 .filter(this::filtreEmplacement)
                 .filter(this::filtrePrix)
                 .collect(Collectors.toList());
@@ -237,7 +256,7 @@ public class Afficherparcelles {
     @FXML
     private void handleReinitialiser() {
         cbType.getSelectionModel().clearSelection();
-        tfTitre.clear();  // Réinitialisation du champ titre
+        tfTitre.clear();
         tfEmplacement.clear();
         tfPrixMin.clear();
         tfPrixMax.clear();
@@ -250,7 +269,6 @@ public class Afficherparcelles {
         return type == null || type.isEmpty() || p.getType_terrain().equalsIgnoreCase(type);
     }
 
-    // Nouveau filtre par titre
     private boolean filtreTitre(ParcelleProprietes p) {
         String titre = tfTitre.getText().toLowerCase();
         return titre.isEmpty() || p.getTitre().toLowerCase().contains(titre);

@@ -12,7 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import models.ParcelleProprietes;
+import Models.ParcelleProprietes;
 import services.ParcelleProprietesService;
 
 import java.io.File;

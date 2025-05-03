@@ -4,7 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
-import models.ParcelleProprietes;
+import Models.ParcelleProprietes;
 import services.ParcelleProprietesService;
 
 import java.io.File;

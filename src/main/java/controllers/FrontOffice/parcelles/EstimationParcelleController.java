@@ -14,7 +14,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import models.ParcelleRegressionModel.EstimationResultat;
+import Models.ParcelleRegressionModel.EstimationResultat;
 import services.ParcelleEstimationService;
 
 import java.io.IOException;

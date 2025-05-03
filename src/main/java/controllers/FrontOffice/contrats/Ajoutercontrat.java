@@ -9,8 +9,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import models.Contrat;
+import Models.Contrat;
 import services.ContratService;
 
 
@@ -36,13 +37,46 @@ public class Ajoutercontrat {
     @FXML
     private Button addContratButton;
 
+    // Nouveaux champs pour les informations de parcelle
+    @FXML
+    private Label parcelleInfoLabel;
+    @FXML
+    private TextField parcelleTitreField;
+
+    private Integer parcelleId = null;
+    private String parcelleTitle = null;
+
     private final ContratService contratService = new ContratService();
 
     @FXML
     public void initialize() {
         addContratButton.setOnAction(event -> addContrat());
+
+        // Initialiser le label d'info parcelle comme invisible par défaut
+        if (parcelleInfoLabel != null) {
+            parcelleInfoLabel.setVisible(false);
+        }
     }
 
+    /**
+     * Initialise le formulaire avec les informations de la parcelle
+     * @param parcelleId ID de la parcelle
+     * @param parcelleTitle Titre de la parcelle
+     */
+    public void initWithParcelleInfo(int parcelleId, String parcelleTitle) {
+        this.parcelleId = parcelleId;
+        this.parcelleTitle = parcelleTitle;
+
+        // Mettre à jour l'interface utilisateur
+        if (parcelleTitreField != null) {
+            parcelleTitreField.setText(parcelleTitle);
+        }
+
+        if (parcelleInfoLabel != null) {
+            parcelleInfoLabel.setText("Contrat associé à la parcelle: " + parcelleTitle + " (ID: " + parcelleId + ")");
+            parcelleInfoLabel.setVisible(true);
+        }
+    }
 
     private void addContrat() {
         try {
@@ -53,9 +87,14 @@ public class Ajoutercontrat {
             String infoContrat = infoContratField.getText();
             String signature = signatureField.getText();
 
+            // Mettre à jour le titre de la parcelle si le champ a été modifié
+            if (parcelleTitreField != null && !parcelleTitreField.getText().isEmpty()) {
+                parcelleTitle = parcelleTitreField.getText();
+            }
+
             // Créer le contrat avec les données saisies
             Contrat contrat = new Contrat(
-                    null,  // Parcelle ID à mettre si nécessaire
+                    parcelleId,  // Utiliser l'ID de la parcelle si disponible
                     dateDebut,
                     dateFin,
                     nomAcheteur,
@@ -73,22 +112,14 @@ public class Ajoutercontrat {
 
             goToAfficherContrats(null);
         } catch (Exception e) {
-           // showAlert("Erreur", "Erreur d'ajout : " + e.getMessage());
+            // TODO: Ajouter un gestionnaire d'erreur approprié
+            System.err.println("Erreur lors de l'ajout du contrat: " + e.getMessage());
+            e.printStackTrace();
         }
-
     }
+
     @FXML
     private void goToAfficherContrats(ActionEvent event) {
-//        try {
-//            Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/contrats/Affichercontrat.fxml"));
-//            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-//            stage.setScene(new Scene(root));
-//            stage.show();
-//        } catch (IOException e) {
-//            //showAlert("Erreur", e.getMessage());
-//        }
-
-        /// /new code
         try {
             // 1. Charger le layout de base
             FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
@@ -102,18 +133,17 @@ public class Ajoutercontrat {
             baseController.getContentPane().getChildren().setAll(content);
 
             // 4. Récupérer la fenêtre actuelle
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Stage stage;
+            if (event != null) {
+                stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            } else {
+                stage = (Stage) addContratButton.getScene().getWindow();
+            }
             stage.setScene(new Scene(baseRoot));
 
         } catch (IOException e) {
-//            showAlert("Erreur Navigation",
-//                    "Impossible de charger les contrats :\n"
-//                            + "Vérifiez que les fichiers existent :\n"
-//                            + "- /FrontOffice/baseFront.fxml\n"
-//                            + "- /FrontOffice/contrats/Affichercontrat.fxml\n"
-//                            + "Erreur : " + e.getMessage());
+            System.err.println("Erreur de navigation: " + e.getMessage());
+            e.printStackTrace();
         }
-
-
     }
 }

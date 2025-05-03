@@ -1,6 +1,7 @@
 package controllers.FrontOffice.parcelles;
 
 import controllers.FrontOffice.BaseFrontController;
+import controllers.FrontOffice.contrats.Ajoutercontrat;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +12,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import models.ParcelleProprietes;
+import Models.ParcelleProprietes;
 import services.ParcelleProprietesService;
 import netscape.javascript.JSObject;
 
@@ -478,12 +479,93 @@ public class Ajouterparcelles {
 
         // Save the parcelle
         ParcelleProprietesService service = new ParcelleProprietesService();
-        service.add(parcelle);
+        int parcelleId = service.addWithId(parcelle);
 
-        showSuccess("Parcelle ajoutée avec succès !");
-        clearFields();
-        // Auto-refresh the list
-        handleAfficherListe();
+        if (parcelleId > 0) {
+            showSuccess("Parcelle ajoutée avec succès !");
+
+            // Demander si l'utilisateur veut créer un contrat associé
+            boolean createContract = showConfirmationDialog(
+                    "Création de contrat",
+                    "Voulez-vous créer un contrat associé à cette parcelle ?");
+
+            if (createContract) {
+                // Ouvrir l'interface de création de contrat avec les informations de la parcelle
+                openContractFormWithParcelInfo(parcelleId, titre);
+            } else {
+                // Auto-refresh the list if no contract is created
+                clearFields();
+                handleAfficherListe();
+            }
+        } else {
+            showAlert("Erreur", "Erreur lors de l'ajout de la parcelle");
+        }
+    }
+
+
+
+
+    /**
+     * Affiche une boîte de dialogue de confirmation
+     * @param title Titre de la boîte de dialogue
+     * @param message Message à afficher
+     * @return true si l'utilisateur a cliqué sur OK, false sinon
+     */
+    private boolean showConfirmationDialog(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        // Personnaliser les boutons
+        ButtonType buttonTypeYes = new ButtonType("Oui");
+        ButtonType buttonTypeNo = new ButtonType("Non");
+
+        alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+
+        // Afficher et attendre la réponse
+        return alert.showAndWait().orElse(buttonTypeNo) == buttonTypeYes;
+    }
+
+    /**
+     * Ouvre le formulaire de contrat avec les informations de la parcelle préchargées
+     * @param parcelleId ID de la parcelle
+     * @param parcelleTitle Titre de la parcelle
+     */
+    private void openContractFormWithParcelInfo(int parcelleId, String parcelleTitle) {
+        try {
+            // Charger le layout de base
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
+            Parent baseRoot = baseLoader.load();
+            BaseFrontController baseController = baseLoader.getController();
+
+            // Charger le formulaire de contrat
+            FXMLLoader contractLoader = new FXMLLoader(getClass().getResource("/FrontOffice/contrats/Ajoutercontrat.fxml"));
+            Parent contractContent = contractLoader.load();
+
+            // Récupérer le contrôleur du formulaire de contrat
+            Ajoutercontrat contractController = contractLoader.getController();
+
+            // Définir les informations de la parcelle dans le formulaire de contrat
+            contractController.initWithParcelleInfo(parcelleId, parcelleTitle);
+
+            // Injecter dans le panneau de contenu
+            baseController.getContentPane().getChildren().setAll(contractContent);
+
+            // Mettre à jour la fenêtre actuelle
+            Stage stage = (Stage) ajouterContratButton.getScene().getWindow();
+            stage.setScene(new Scene(baseRoot));
+
+        } catch (IOException e) {
+            showAlert("Erreur Navigation",
+                    "Impossible d'ouvrir l'interface de contrat :\n"
+                            + e.getMessage());
+            e.printStackTrace();
+
+            // En cas d'erreur, retourner à la liste des parcelles
+            clearFields();
+            handleAfficherListe();
+        }
     }
 
     /**
@@ -649,4 +731,6 @@ public class Ajouterparcelles {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+
 }

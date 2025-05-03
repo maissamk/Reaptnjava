@@ -1,11 +1,10 @@
 package org.example;
 
-import models.ParcelleProprietes;
+import Models.ParcelleProprietes;
 import org.example.utils.MaConnexion;
 import services.ParcelleProprietesService;
 import java.util.Date;
 import java.sql.Connection;
-import java.sql.Timestamp;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.

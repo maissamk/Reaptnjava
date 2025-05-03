@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.contrats.DetailContrat">
+    <top>
+        <HBox alignment="CENTER" prefHeight="80.0" prefWidth="800.0" style="-fx-background-color: #3498db;" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="Détails du Contrat" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+            </children>
+        </HBox>
+    </top>
+    <center>
+        <VBox fx:id="detailsContainer" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label fx:id="labelId" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Contrat N°XXX">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </Label>
+                <Separator prefWidth="200.0" />
+                <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="detail-section" stylesheets="@Detaillecontrat.css">
+                    <children>
+                        <Label styleClass="section-title" stylesheets="@Detaillecontrat.css" text="Période du contrat">
+                            <font>
+                                <Font name="System Bold" size="16.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="labelDateDebutFin" styleClass="detail-value" stylesheets="@Detaillecontrat.css" text="Du 01/01/2025 au 01/12/2025" />
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </padding>
+                </VBox>
+                <Separator prefWidth="200.0" />
+                <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="detail-section" stylesheets="@Detaillecontrat.css">
+                    <children>
+                        <Label styleClass="section-title" stylesheets="@Detaillecontrat.css" text="Parties contractantes">
+                            <font>
+                                <Font name="System Bold" size="16.0" />
+                            </font>
+                        </Label>
+                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+                            <children>
+                                <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label styleClass="label-title" stylesheets="@Detaillecontrat.css" text="ACHETEUR">
+                                            <font>
+                                                <Font name="System Bold" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="labelAcheteur" styleClass="detail-value" stylesheets="@Detaillecontrat.css" text="Jean Dupont" />
+                                    </children>
+                                </VBox>
+                                <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label styleClass="label-title" stylesheets="@Detaillecontrat.css" text="VENDEUR">
+                                            <font>
+                                                <Font name="System Bold" size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <Label fx:id="labelVendeur" styleClass="detail-value" stylesheets="@Detaillecontrat.css" text="Marie Martin" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </padding>
+                </VBox>
+                <Separator prefWidth="200.0" />
+                <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="detail-section" stylesheets="@Detaillecontrat.css">
+                    <children>
+                        <Label styleClass="section-title" stylesheets="@Detaillecontrat.css" text="Informations complémentaires">
+                            <font>
+                                <Font name="System Bold" size="16.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="labelInformation" alignment="TOP_LEFT" prefHeight="80.0" prefWidth="760.0" styleClass="detail-value" stylesheets="@Detaillecontrat.css" text="Informations du contrat..." wrapText="true" />
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </padding>
+                </VBox>
+                <Separator prefWidth="200.0" />
+                <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="200.0" spacing="30.0">
+                    <children>
+                        <Label fx:id="labelCreation" styleClass="detail-metadata" stylesheets="@Detaillecontrat.css" text="Créé le: 01/01/2025 10:30" />
+                        <Label fx:id="labelStatus" styleClass="status-label" stylesheets="@Detaillecontrat.css" text="Statut: En attente" />
+                    </children>
+                    <padding>
+                        <Insets left="10.0" />
+                    </padding>
+                </HBox>
+            </children>
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
+            </padding>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" prefHeight="80.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="btnRetour" mnemonicParsing="false" onAction="#handleRetour" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #7f8c8d;" text="Retour" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </Button>
+                <Button fx:id="btnVoirParcelle" mnemonicParsing="false" onAction="#handleVoirParcelle" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #27ae60;" text="Voir la parcelle associée" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </Button>
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>

@@ -1,188 +1,80 @@
-/* Palette de couleurs
-   Vert: #2E7D32 (vert forêt foncé)
-   Vert clair: #81C784 (vert pastel)
-   Vert très clair: #E8F5E9 (presque blanc-vert)
-   Orange: #FF9800
-   Jaune: #FFC107
-   Blanc: #FFFFFF
-*/
-
-/* Styles de base */
-.main-background {
-    -fx-background-color: #E8F5E9;
-    -fx-background-radius: 8px;
+.page-container {
+    -fx-background-color: linear-gradient(to bottom right, #f5f9ff, #e8f0fe);
+    -fx-padding: 20;
+    -fx-font-family: "Segoe UI", sans-serif;
 }
 
-/* Style des en-têtes et titres */
-.main-title {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #2E7D32;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 0, 0, 1);
-}
-
-.title-section {
-    -fx-padding: 5px 10px;
-    -fx-background-color: linear-gradient(to right, #FFFFFF, #E8F5E9);
-    -fx-background-radius: 5px;
-    -fx-border-color: #81C784;
-    -fx-border-radius: 5px;
-    -fx-border-width: 0 0 2px 0;
-}
-
-/* Section de recherche */
-.search-section {
-    -fx-background-color: rgba(255, 255, 255, 0.8);
-    -fx-background-radius: 8px;
-    -fx-border-color: #81C784;
-    -fx-border-radius: 8px;
-    -fx-border-width: 1px;
-    -fx-padding: 15px;
-    -fx-effect: dropshadow(gaussian, rgba(46, 125, 50, 0.2), 5, 0, 0, 3);
-}
-
-/* Labels du formulaire */
-.form-label {
-    -fx-text-fill: #2E7D32;
-    -fx-font-weight: bold;
+.field-label {
+    -fx-text-fill: #34495e;
     -fx-font-size: 14px;
-}
-
-/* Champs de formulaire */
-.form-field {
-    -fx-background-color: #FFFFFF;
-    -fx-border-color: #81C784;
-    -fx-border-radius: 4px;
-    -fx-background-radius: 4px;
-    -fx-padding: 8px;
-    -fx-prompt-text-fill: #BDBDBD;
-}
-
-.form-field:focused {
-    -fx-border-color: #FFC107;
-    -fx-effect: dropshadow(gaussian, rgba(255, 193, 7, 0.3), 2, 0, 0, 0);
-}
-
-/* Séparateur */
-.separator-label {
     -fx-font-weight: bold;
-    -fx-text-fill: #2E7D32;
 }
 
-/* Barre de boutons */
-.button-bar {
-    -fx-padding: 10px 0;
-    -fx-background-color: transparent;
+.input-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ced6e0;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 6 8;
 }
 
-/* Conteneur pour les parcelles */
-.parcelles-container {
-    -fx-background-color: transparent;
-    -fx-padding: 5px;
+.price-separator {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 16px;
 }
 
-.parcelles-container .viewport {
-    -fx-background-color: transparent;
+.section-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
 }
 
-.parcelles-grid {
-    -fx-background-color: transparent;
+.search-grid {
+    -fx-background-color: #ffffff;
+    -fx-padding: 20;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);
 }
 
-/* Style pour les éléments de parcelle (à appliquer dynamiquement dans le code) */
-.parcelle-card {
-    -fx-background-color: white;
-    -fx-background-radius: 8px;
-    -fx-border-color: #81C784;
-    -fx-border-radius: 8px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0, 0, 1);
-    -fx-padding: 10px;
+.results-grid {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #dcdde1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 15;
 }
 
-.parcelle-card:hover {
-    -fx-border-color: #FF9800;
-    -fx-effect: dropshadow(gaussian, rgba(255, 152, 0, 0.3), 8, 0, 0, 2);
-}
-
-/* Style pour les ScrollPane */
-.scroll-pane {
-    -fx-background-color: transparent;
-}
-
-.scroll-pane > .viewport {
-    -fx-background-color: transparent;
-}
-
-.scroll-bar:vertical {
-    -fx-background-color: #E8F5E9;
-}
-
-.scroll-bar:vertical .thumb {
-    -fx-background-color: #81C784;
-    -fx-background-radius: 5px;
-}
-
-.scroll-bar:vertical .thumb:hover {
-    -fx-background-color: #2E7D32;
-}
-
-/* Style pour ComboBox */
-.combo-box {
-    -fx-background-color: white;
-    -fx-border-color: #81C784;
-    -fx-border-radius: 4px;
-    -fx-background-radius: 4px;
-}
-
-.combo-box:hover {
-    -fx-border-color: #FF9800;
-}
-
-.combo-box .list-cell {
-    -fx-padding: 8px;
-    -fx-text-fill: #2E7D32;
-}
-
-.combo-box-popup .list-view {
-    -fx-border-color: #81C784;
-    -fx-background-color: white;
-}
-
-.combo-box-popup .list-view .list-cell:filled:selected,
-.combo-box-popup .list-view .list-cell:filled:selected:hover {
-    -fx-background-color: #81C784;
+.button-green {
+    -fx-background-color: #2ecc71;
     -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
 }
 
-.combo-box-popup .list-view .list-cell:filled:hover {
-    -fx-background-color: #E8F5E9;
-    -fx-text-fill: #2E7D32;
-}
-
-/* Animation des boutons (pour les boutons avec les styles appliqués via CSS) */
-.custom-button {
-    -fx-cursor: hand;
-    -fx-transition: all 0.2s ease;
-}
-
-.custom-button:hover {
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
-}
-
-/* Style pour ListView suggestions */
-.list-view {
-    -fx-background-color: white;
-    -fx-border-color: #81C784;
-    -fx-border-radius: 4px;
-}
-
-.list-view .list-cell:filled:selected {
-    -fx-background-color: #81C784;
+.button-red {
+    -fx-background-color: #e74c3c;
     -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
 }
 
-.list-view .list-cell:filled:hover {
-    -fx-background-color: #E8F5E9;
-    -fx-text-fill: #2E7D32;
+.button-blue {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+}
+
+.button-lime {
+    -fx-background-color: #8bc34a;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+}
+
+.button-grey {
+    -fx-background-color: #7f8c8d;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
 }

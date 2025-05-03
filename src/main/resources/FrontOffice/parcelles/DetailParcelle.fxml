@@ -3,20 +3,20 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-
-
-
 <VBox spacing="20" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.FrontOffice.parcelles.DetailParcelle"
+      stylesheets="@detailParcelle.css"
       styleClass="detail-container">
 
     <ImageView fx:id="imageView" styleClass="detail-image" preserveRatio="true" fitWidth="500"/>
 
-    <VBox spacing="10">
+    <VBox spacing="10" alignment="CENTER_LEFT" styleClass="info-section">
         <Label fx:id="titleLabel" styleClass="detail-title"/>
         <Label fx:id="priceLabel" styleClass="detail-price"/>
         <Label fx:id="detailsLabel" styleClass="detail-info" wrapText="true"/>
     </VBox>
 
+    <Button fx:id="createContractButton" text="Créer un contrat pour cette parcelle"
+            styleClass="action-button" onAction="#handleCreateContract"/>
 </VBox>

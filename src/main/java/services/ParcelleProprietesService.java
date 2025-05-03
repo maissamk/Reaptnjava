@@ -1,7 +1,7 @@
 package services;
 
 import interfaces.IService;
-import models.ParcelleProprietes;
+import Models.ParcelleProprietes;
 import org.example.utils.MaConnexion;
 
 import java.sql.*;
@@ -176,6 +176,58 @@ public class ParcelleProprietesService implements IService<ParcelleProprietes> {
         return getAll().stream()
                 .filter(p -> p.getEmplacement().toLowerCase().contains(location.toLowerCase()))
                 .collect(Collectors.toList());
+    }
+
+
+    public int addWithId(ParcelleProprietes p) {
+        String SQL ="INSERT INTO parcelle_proprietes ("
+                + "titre, description, prix, status, emplacement, taille, "
+                + "date_creation_annonce, date_misajour_annonce, est_disponible, "
+                + "nom_proprietaire, contact_proprietaire, image,  "
+                + "type_terrain, latitude, longitude, email"
+                + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try {
+            // Utiliser RETURN_GENERATED_KEYS pour récupérer l'ID généré
+            PreparedStatement st = cnx.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+            st.setString(1, p.getTitre());
+            st.setString(2, p.getDescription());
+            st.setDouble(3, p.getPrix());
+            st.setString(4, p.getStatus());
+            st.setString(5, p.getEmplacement());
+            st.setDouble(6, p.getTaille());
+            st.setTimestamp(7, p.getDate_creation_annonce());
+            st.setTimestamp(8, p.getDate_misajour_annonce());
+            st.setBoolean(9, p.isEst_disponible());
+            st.setString(10, p.getNom_proprietaire());
+            st.setString(11, p.getContact_proprietaire());
+            st.setString(12, p.getImage()); // image ici
+            st.setString(13, p.getType_terrain());
+            st.setString(14, p.getLatitude());
+            st.setString(15, p.getLongitude());
+            st.setString(16, p.getEmail());
+
+            int affectedRows = st.executeUpdate();
+
+            if (affectedRows == 0) {
+                return -1;
+            }
+
+            // Récupérer l'ID généré
+            try (ResultSet generatedKeys = st.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int id = generatedKeys.getInt(1);
+                    System.out.println("Parcelle insérée avec succès, ID = " + id);
+                    return id;
+                } else {
+                    System.out.println("Parcelle insérée mais impossible de récupérer l'ID");
+                    return -1;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de l'insertion : " + e.getMessage());
+            return -1;
+        }
     }
 
 }
