@@ -30,49 +30,30 @@ import java.util.ResourceBundle;
 
 public class Home implements Initializable {
 
-    @FXML
-    public Button material;
+    @FXML    public Button material;
     // Navigation elements
-    @FXML
-    private HBox topNavigationBar;
-    @FXML
-    private ImageView logoImageView;
-
-
-
-    @FXML
-    private Button accueilButton;
-    @FXML
-    private Button produitsButton;
-    @FXML
-    private Button produitsDetailButton;
-    @FXML
-    private Button parcelleButton;
-    @FXML
-    private Button offersButton;
-    @FXML
-    private Button masterfulButton;
-    @FXML
-    private Button loginButton;
-    @FXML
-    private Button profileButton;
+    @FXML private HBox topNavigationBar;
+    @FXML private ImageView logoImageView;
+    @FXML private Button accueilButton;
+    @FXML private Button produitsButton;
+    @FXML private Button produitsDetailButton;
+    @FXML private Button parcelleButton;
+    @FXML private Button offersButton;
+    @FXML private Button masterfulButton;
+    @FXML private Button loginButton;
+    @FXML private Button profileButton;
     @FXML
     private Button commandeButton;
 
-
     // User info elements
-    @FXML
-    private ImageView userAvatar;
-    @FXML
-    private Label userNameLabel;
-    @FXML
-    private Label userRoleLabel;
+    @FXML private ImageView userAvatar;
+    @FXML private Label userNameLabel;
+    @FXML private Label userRoleLabel;
 
     // Main content
-    @FXML
-    private StackPane mainContentPane;
-    @FXML
-    private Label welcomeLabel;
+    @FXML private StackPane mainContentPane;
+    @FXML private Label welcomeLabel;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -166,7 +147,8 @@ public class Home implements Initializable {
             stage.sizeToScene(); // Optional: resize to fit new content
             stage.show();
         } catch (IOException e) {
-        }
+            System.out.println(e.getMessage());
+         }
     }
 
     // Usage in your button handler:
@@ -180,7 +162,10 @@ public class Home implements Initializable {
     }
 
     private void handleMaterial(ActionEvent event) {
+        System.out.println("xxxxxxx");
         navigateTo("/FrontOffice/materials/client/IndexMateriel.fxml", event);
+        System.out.println("xxxxxxx");
+
     }
 
 

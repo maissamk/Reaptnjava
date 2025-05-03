@@ -108,7 +108,7 @@ public class HomeBack implements Initializable {
         reportsBtn.setOnAction(e -> loadContent("/views/BackOffice/Reports.fxml"));
 
         // Sidebar Navigation
-        statisticsBtn.setOnAction(e -> loadContent("/views/BackOffice/Statistics.fxml"));
+        statisticsBtn.setOnAction(e -> loadContent("/BackOffice/Offre/statistiques.fxml"));
         farmersBtn.setOnAction(e -> loadContent("/views/BackOffice/Farmers.fxml"));
         parcelsBtn.setOnAction(e -> loadContent("/views/BackOffice/Parcels.fxml"));
         harvestBtn.setOnAction(e -> loadContent("/views/BackOffice/Harvest.fxml"));
