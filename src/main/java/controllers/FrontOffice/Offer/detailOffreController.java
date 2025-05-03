@@ -21,7 +21,10 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -80,8 +83,12 @@ public class detailOffreController {
 
     public void initialize() {
 
+
+
         // ⚡️ Add LanguageManager loading
         LanguageManager.selectedLanguage = "default";  // Default to English
+
+
 
         LanguageManager.loadLanguage();
         updateUIText(); // <- You already have this function to refresh your labels/buttons etc.
@@ -476,6 +483,60 @@ public class detailOffreController {
             showAlert("Erreur", "Une erreur est survenue lors de la suppression.");
         }
     }
+
+
+    @FXML
+    private void downloadDetails(ActionEvent event) {
+        try {
+            int offreId = currentOffre.getId();  // Use the current offer's ID
+            OffreService offreService = new OffreService();
+            EmployeService employeService = new EmployeService();
+
+            // Fetch the offer by ID
+            Offre offre = offreService.getOffreById(offreId);
+
+            // Maps to hold employee details
+            Map<Integer, String> nomMap = new HashMap<>();
+            Map<Integer, String> prenomMap = new HashMap<>();
+            Map<Integer, String> emailMap = new HashMap<>();
+
+            // Get employees linked to the offer
+            List<Employe> employes = employeService.getEmployesByOffreId(offreId, nomMap, prenomMap, emailMap);
+
+            // Generate the .txt file
+            File txtFile = new File("offre_" + offreId + "_details.txt");
+            try (PrintWriter writer = new PrintWriter(txtFile)) {
+                writer.println("=== Détails de l'Offre ===");
+                writer.println("ID: " + offre.getId());
+                writer.println("Titre: " + offre.getTitre());
+                writer.println("Description: " + offre.getDescr());
+                writer.println();
+                writer.println("=== Employés liés ===");
+
+                for (Employe e : employes) {
+                    int id = e.getId();
+                    writer.println("Nom: " + nomMap.get(id));
+                    writer.println("Prénom: " + prenomMap.get(id));
+                    writer.println("Email: " + emailMap.get(id));
+                    writer.println("-----");
+                }
+            }
+
+            // Call the service method to generate the PDF
+            OffreService.generateTxtForOffre(offre, employes, nomMap, prenomMap, emailMap);
+
+            // Optional: Show success alert
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Export Réussi");
+            alert.setHeaderText(null);
+            alert.setContentText("Les détails ont été enregistrés dans " + txtFile.getAbsolutePath() + " et un PDF a été généré.");
+            alert.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // Method to switch to Deutsch
     @FXML

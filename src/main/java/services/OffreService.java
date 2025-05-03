@@ -2,10 +2,17 @@ package services;
 
 
 import models.Offre;
+import models.Employe;
 import utils.MaConnexion;
 import interfaces.IService;
 
 import java.sql.*;
+import java.util.Map;
+import java.io.PrintWriter;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,7 +117,7 @@ public class OffreService implements IService<Offre> {
                 offre.setId(rs.getInt("id")); // Ensure id is fetched correctly
                 offre.setTitre(rs.getString("titre"));
                 offre.setDescr(rs.getString("descr"));
-                offre.setComp(rs.getString("competence"));
+                offre.setComp(rs.getString("comp"));
                 offre.setStatut(rs.getBoolean("statut"));
                 return offre;
             }
@@ -197,4 +204,36 @@ public class OffreService implements IService<Offre> {
         }
         return null;
     }
+
+    public static void generateTxtForOffre(Offre offre, List<Employe> employes, Map<Integer, String> nomMap, Map<Integer, String> prenomMap, Map<Integer, String> emailMap) {
+        // Define the txt file path
+        String filePath = "offre_" + offre.getId() + "_details.txt";
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
+            // Writing the offer details
+            writer.println("=== Détails de l'Offre ===");
+            writer.println("ID: " + offre.getId());
+            writer.println("Titre: " + offre.getTitre());
+            writer.println("Description: " + offre.getDescr());
+            writer.println();  // Add a blank line
+
+            // Writing employee details
+            writer.println("=== Employés liés ===");
+            for (Employe e : employes) {
+                int id = e.getId();
+                writer.println("Nom: " + nomMap.get(id));
+                writer.println("Prénom: " + prenomMap.get(id));
+                writer.println("Email: " + emailMap.get(id));
+                writer.println("-----");  // Separator between employee records
+            }
+
+            // Optionally notify where the file is saved
+            System.out.println("The details have been saved to: " + filePath);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

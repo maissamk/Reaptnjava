@@ -260,4 +260,25 @@ public class EmployeService implements IService<Employe> {
     }
 
 
+    public Map<Integer, Integer> getEmployeCountPerOffre() {
+        Map<Integer, Integer> result = new HashMap<>();
+        String query = "SELECT offre_id, COUNT(*) as count FROM employe GROUP BY offre_id";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                int offreId = rs.getInt("offre_id");
+                int count = rs.getInt("count");
+                result.put(offreId, count);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+
 }

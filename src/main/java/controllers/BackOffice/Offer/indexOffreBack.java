@@ -1,12 +1,18 @@
 package controllers.BackOffice.Offer;
 
+import controllers.FrontOffice.BaseFrontController;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import models.Offre;
 import services.OffreService;
 import javafx.scene.control.CheckBox;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -15,12 +21,7 @@ public class indexOffreBack {
     @FXML
     private TableView<Offre> offreTable;
 
-    @FXML
-    private TableColumn<Offre, Integer> idColumn;
-    @FXML
-    private TableColumn<Offre, Integer> idaColumn;
-    @FXML
-    private TableColumn<Offre, Integer> ideColumn;
+
     @FXML
     private TableColumn<Offre, String> titreColumn;
     @FXML
@@ -43,6 +44,11 @@ public class indexOffreBack {
     @FXML
     private CheckBox statutCheckBox;
 
+
+    @FXML
+    private Button statisticsBtn;
+
+
     @FXML
     private Button addButton;
     @FXML
@@ -59,9 +65,7 @@ public class indexOffreBack {
 
     @FXML
     public void initialize() {
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        idaColumn.setCellValueFactory(new PropertyValueFactory<>("ida"));
-        ideColumn.setCellValueFactory(new PropertyValueFactory<>("ide"));
+
         titreColumn.setCellValueFactory(new PropertyValueFactory<>("titre"));
         descrColumn.setCellValueFactory(new PropertyValueFactory<>("descr"));
         compColumn.setCellValueFactory(new PropertyValueFactory<>("comp"));
@@ -128,6 +132,25 @@ public class indexOffreBack {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @FXML
+    private void statisticsNav() {
+        System.out.println("vers statistics clicked");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Backoffice/Offre/statistiques.fxml"));
+            Parent root = loader.load();
+
+
+            // Now show the complete scene
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) statisticsBtn.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

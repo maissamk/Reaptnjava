@@ -13,9 +13,9 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.layout.AnchorPane?>
 
-
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="789.0" spacing="20" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controllers.FrontOffice.Offer.detailOffreController" stylesheets="/css/home.css">
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="1000.0" spacing="20" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="controllers.FrontOffice.Offer.detailOffreController" stylesheets="/css/home.css">
     <VBox prefHeight="181.0" prefWidth="222.0">
 
         <children>
@@ -60,21 +60,25 @@
             <HBox spacing="10" alignment="CENTER">
                 <Button fx:id="editButton" text="Edit" onAction="#handleEditOffre" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
                 <Button fx:id="deleteButton" text="Delete" onAction="#handleDeleteOffre" style="-fx-background-color: #ff0000; -fx-text-fill: white;"/>
+                <Button text="Download Details" onAction="#downloadDetails" layoutX="20" layoutY="20" />
+
             </HBox>
         </children>
     </VBox>
 
     <!-- EMPLOYE TABLE -->
-    <TableView fx:id="employeTable" prefHeight="200.0" prefWidth="1300.0">
-        <columns>
-            <TableColumn fx:id="prenomColumn" text="Prénom" prefWidth="150.0" />
-            <TableColumn fx:id="nomColumn" text="Nom" prefWidth="150.0" />
-            <TableColumn fx:id="emailColumn" text="Email" prefWidth="250.0" />
-            <TableColumn fx:id="compColumn" text="Compétence" prefWidth="450.0" />
-            <TableColumn fx:id="dispoColumn" text="Disponibilité" prefWidth="200.0" />
-            <TableColumn fx:id="suggestedColumn" text="Suggested" prefWidth="100.0" />
-        </columns>
-    </TableView>
+    <AnchorPane prefHeight="600.0" prefWidth="1000.0">
+        <TableView fx:id="employeTable" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+            <columns>
+                <TableColumn fx:id="prenomColumn" text="Prénom" prefWidth="150.0" />
+                <TableColumn fx:id="nomColumn" text="Nom" prefWidth="150.0" />
+                <TableColumn fx:id="emailColumn" text="Email" prefWidth="250.0" />
+                <TableColumn fx:id="compColumn" text="Compétence" prefWidth="300.0" />
+                <TableColumn fx:id="dispoColumn" text="Disponibilité" prefWidth="200.0" />
+                <TableColumn fx:id="suggestedColumn" text="Recommandé" prefWidth="100.0" />
+            </columns>
+        </TableView>
+    </AnchorPane>
 
     <!-- EMPLOYE INSCRIPTION -->
 
@@ -82,10 +86,7 @@
 
     <Label fx:id="PostulerLabel" text="Postuler à cette offre" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
 
-    <HBox spacing="10">
-        <Label text="ID Utilisateur:" />
-        <TextField fx:id="userIdField" promptText="Entrez votre identifiant..." />
-    </HBox>
+
 
     <HBox spacing="10">
         <Label text="Compétence:" />

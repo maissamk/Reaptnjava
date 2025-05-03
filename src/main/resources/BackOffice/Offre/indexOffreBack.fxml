@@ -10,15 +10,68 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Separator?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.BackOffice.Offer.indexOffreBack">
+<BorderPane xmlns="http://javafx.com/javafx/18"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.BackOffice.Offer.indexOffreBack"
+            prefWidth="1200" prefHeight="800"
+            stylesheets="/css/homeback.css">
+
+
+    <!-- Left Sidebar - Modern Collapsible Style -->
+    <left>
+        <VBox styleClass="sidebar" spacing="10" prefWidth="220">
+            <Label text="MAIN MENU" styleClass="menu-title"/>
+
+            <Button fx:id="statisticsBtn" text="Statistics" styleClass="side-btn" onAction="#statisticsNav">
+
+            </Button>
+
+            <Button fx:id="farmersBtn" text="Farmers" styleClass="side-btn">
+
+            </Button>
+
+            <Button fx:id="parcelsBtn" text="Parcels" styleClass="side-btn">
+
+            </Button>
+
+            <Button fx:id="harvestBtn" text="Harvest" styleClass="side-btn">
+
+            </Button>
+
+            <Separator styleClass="menu-separator"/>
+
+            <Label text="SYSTEM" styleClass="menu-title"/>
+
+            <Button fx:id="settingsBtn" text="Settings" styleClass="side-btn">
+
+            </Button>
+
+            <Button fx:id="logsBtn" text="System Logs" styleClass="side-btn">
+
+            </Button>
+
+            <!-- Bottom Spacer to push content up -->
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Sidebar Footer -->
+            <VBox styleClass="sidebar-footer" spacing="5">
+                <Label text="v2.4.1" styleClass="version-label"/>
+                <Label text="© 2023 AgriSoft" styleClass="copyright-label"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
     <VBox spacing="20.0" alignment="CENTER" layoutX="20" layoutY="20" prefWidth="800">
+        <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Available Offers" />
 
         <TableView fx:id="offreTable" prefHeight="300.0" prefWidth="760.0">
             <columns>
-                <TableColumn fx:id="idColumn" text="ID" />
-                <TableColumn fx:id="idaColumn" text="Admin ID" />
-                <TableColumn fx:id="ideColumn" text="Employee ID" />
+
                 <TableColumn fx:id="statutColumn" text="Statut" />
                 <TableColumn fx:id="descrColumn" text="Description" />
                 <TableColumn fx:id="titreColumn" text="Titre" />
@@ -52,5 +105,22 @@
             <Button fx:id="deleteButton" text="Supprimer" onAction="#deleteOffre" />
         </HBox>
 
+        <!-- Footer -->
+        <HBox style="-fx-background-color: #ecf0f1;" prefHeight="30" alignment="CENTER">
+            <!-- Footer -->
+
+            <HBox alignment="CENTER" style="-fx-background-color: #2d572c; -fx-padding: 10 20;">
+                <Label style="-fx-text-fill: white; -fx-font-size: 12;" text="AgronianofExample.com" />
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox spacing="15">
+                    <Label style="-fx-text-fill: white; -fx-font-size: 12; -fx-underline: true;" text="Privacy Policy" />
+                    <Label style="-fx-text-fill: white; -fx-font-size: 12; -fx-underline: true;" text="Terms of Use" />
+                    <Label style="-fx-text-fill: white; -fx-font-size: 12; -fx-underline: true;" text="Sales and Refunds" />
+                </HBox>
+            </HBox>
+        </HBox>
+
     </VBox>
-</AnchorPane>
+    </center>
+</BorderPane>
+
