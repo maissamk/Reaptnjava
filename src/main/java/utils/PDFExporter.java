@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Utility class for exporting data to PDF files
@@ -43,31 +44,31 @@ public class PDFExporter {
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
             
             // Add header and footer
-            writer.setPageEvent(new HeaderFooterPageEvent("Fruitables - Inventory Report"));
+            writer.setPageEvent(new HeaderFooterPageEvent("Fruitables - Comprehensive Inventory Report"));
             
             document.open();
             
             // Add logo and title section
-            addLogoAndTitle(document, "Fruitables Inventory Report");
+            addLogoAndTitle(document, "Fruitables Comprehensive Inventory Report");
             
             // Add report timestamp with icon
             addReportTimestamp(document);
             
-            // Add summary information with improved styling
-            addSummaryInfo(document, products);
+            // Add comprehensive summary information
+            addComprehensiveSummary(document, products);
             
-            // Add table with inventory data
-            PdfPTable table = new PdfPTable(5);
+            // Add detailed inventory table
+            PdfPTable table = new PdfPTable(6);
             table.setWidthPercentage(100);
             table.setSpacingBefore(15f);
             table.setSpacingAfter(15f);
             
             // Set column widths
-            float[] columnWidths = {1.2f, 3f, 1.5f, 1.5f, 1.5f};
+            float[] columnWidths = {1.2f, 2.5f, 1.5f, 1.5f, 1.5f, 1.5f};
             table.setWidths(columnWidths);
             
             // Add table headers
-            addTableHeader(table, new String[]{"ID", "Product", "Price ($)", "Weight (kg)", "Quantity"});
+            addTableHeader(table, new String[]{"ID", "Product", "Category", "Price ($)", "Weight (kg)", "Quantity"});
             
             // Add table data with alternating row colors
             double totalValue = 0.0;
@@ -75,6 +76,7 @@ public class PDFExporter {
             for (Product product : products) {
                 addTableRow(table, alternateRow,
                     String.valueOf(product.getId()),
+                    product.getCategory(),
                     product.getCategory(),
                     String.format("%.2f", product.getPrice()),
                     String.format("%.2f", product.getWeight()),
@@ -85,6 +87,15 @@ public class PDFExporter {
             }
             
             document.add(table);
+            
+            // Add price analysis section
+            addPriceAnalysis(document, products);
+            
+            // Add stock analysis section
+            addStockAnalysis(document, products);
+            
+            // Add category analysis section
+            addCategoryAnalysis(document, products);
             
             // Add total value with enhanced styling
             addTotalSection(document, "Total Inventory Value:", totalValue);
@@ -269,13 +280,21 @@ public class PDFExporter {
     }
     
     /**
-     * Add summary information to the document with enhanced styling
+     * Add comprehensive summary information to the document
      */
-    private static void addSummaryInfo(Document document, List<Product> products) throws DocumentException {
+    private static void addComprehensiveSummary(Document document, List<Product> products) throws DocumentException {
         int totalProducts = products.size();
         int totalStock = products.stream().mapToInt(Product::getQuantity).sum();
         double totalWeight = products.stream().mapToDouble(p -> p.getWeight() * p.getQuantity()).sum();
+        double totalValue = products.stream().mapToDouble(p -> p.getPrice() * p.getQuantity()).sum();
+        
+        // Calculate additional statistics
+        double minPrice = products.stream().mapToDouble(Product::getPrice).min().orElse(0);
+        double maxPrice = products.stream().mapToDouble(Product::getPrice).max().orElse(0);
         double avgPrice = products.stream().mapToDouble(Product::getPrice).average().orElse(0);
+        double avgWeight = products.stream().mapToDouble(Product::getWeight).average().orElse(0);
+        int lowStockItems = (int) products.stream().filter(p -> p.getQuantity() < 10).count();
+        int outOfStockItems = (int) products.stream().filter(p -> p.getQuantity() == 0).count();
         
         PdfPTable summaryTable = new PdfPTable(2);
         summaryTable.setWidthPercentage(80);
@@ -283,15 +302,15 @@ public class PDFExporter {
         summaryTable.setSpacingBefore(15f);
         summaryTable.setSpacingAfter(15f);
         
-        // Summary table title
-        Paragraph summaryTitle = new Paragraph("Summary Dashboard", 
-                                 new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, PRIMARY_COLOR));
+        // Summary table title with enhanced styling
+        Paragraph summaryTitle = new Paragraph("Comprehensive Inventory Summary", 
+                                 new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD, PRIMARY_COLOR));
         summaryTitle.setAlignment(Element.ALIGN_CENTER);
         summaryTitle.setSpacingAfter(10f);
         document.add(summaryTitle);
         
         // Style for summary table header
-        PdfPCell headerCell = new PdfPCell(new Phrase("Key Metrics", HEADER_FONT));
+        PdfPCell headerCell = new PdfPCell(new Phrase("Key Performance Indicators", HEADER_FONT));
         headerCell.setBackgroundColor(PRIMARY_COLOR);
         headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         headerCell.setPadding(8f);
@@ -302,9 +321,145 @@ public class PDFExporter {
         addSummaryRow(summaryTable, "Total Products", String.valueOf(totalProducts));
         addSummaryRow(summaryTable, "Total Items in Stock", String.valueOf(totalStock));
         addSummaryRow(summaryTable, "Total Weight (kg)", String.format("%.2f", totalWeight));
+        addSummaryRow(summaryTable, "Total Inventory Value ($)", String.format("%.2f", totalValue));
         addSummaryRow(summaryTable, "Average Price ($)", String.format("%.2f", avgPrice));
+        addSummaryRow(summaryTable, "Price Range ($)", String.format("%.2f - %.2f", minPrice, maxPrice));
+        addSummaryRow(summaryTable, "Average Weight (kg)", String.format("%.2f", avgWeight));
+        addSummaryRow(summaryTable, "Low Stock Items (<10)", String.valueOf(lowStockItems));
+        addSummaryRow(summaryTable, "Out of Stock Items", String.valueOf(outOfStockItems));
         
         document.add(summaryTable);
+    }
+    
+    private static void addPriceAnalysis(Document document, List<Product> products) throws DocumentException {
+        // Price analysis title
+        Paragraph priceTitle = new Paragraph("Price Analysis", 
+                                 new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, SECONDARY_COLOR));
+        priceTitle.setAlignment(Element.ALIGN_CENTER);
+        priceTitle.setSpacingBefore(20f);
+        priceTitle.setSpacingAfter(10f);
+        document.add(priceTitle);
+        
+        // Create price analysis table
+        PdfPTable priceTable = new PdfPTable(2);
+        priceTable.setWidthPercentage(60);
+        priceTable.setHorizontalAlignment(Element.ALIGN_CENTER);
+        priceTable.setSpacingBefore(10f);
+        priceTable.setSpacingAfter(15f);
+        
+        // Add table header
+        PdfPCell headerCell = new PdfPCell(new Phrase("Price Statistics", HEADER_FONT));
+        headerCell.setBackgroundColor(SECONDARY_COLOR);
+        headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        headerCell.setPadding(8f);
+        headerCell.setColspan(2);
+        priceTable.addCell(headerCell);
+        
+        // Calculate price statistics
+        double minPrice = products.stream().mapToDouble(Product::getPrice).min().orElse(0);
+        double maxPrice = products.stream().mapToDouble(Product::getPrice).max().orElse(0);
+        double avgPrice = products.stream().mapToDouble(Product::getPrice).average().orElse(0);
+        double medianPrice = products.stream()
+            .mapToDouble(Product::getPrice)
+            .sorted()
+            .skip(products.size() / 2)
+            .findFirst()
+            .orElse(0);
+        
+        // Add price statistics
+        addSummaryRow(priceTable, "Minimum Price ($)", String.format("%.2f", minPrice));
+        addSummaryRow(priceTable, "Maximum Price ($)", String.format("%.2f", maxPrice));
+        addSummaryRow(priceTable, "Average Price ($)", String.format("%.2f", avgPrice));
+        addSummaryRow(priceTable, "Median Price ($)", String.format("%.2f", medianPrice));
+        
+        document.add(priceTable);
+    }
+    
+    private static void addStockAnalysis(Document document, List<Product> products) throws DocumentException {
+        // Stock analysis title
+        Paragraph stockTitle = new Paragraph("Stock Level Analysis", 
+                                 new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, SECONDARY_COLOR));
+        stockTitle.setAlignment(Element.ALIGN_CENTER);
+        stockTitle.setSpacingBefore(20f);
+        stockTitle.setSpacingAfter(10f);
+        document.add(stockTitle);
+        
+        // Create stock analysis table
+        PdfPTable stockTable = new PdfPTable(2);
+        stockTable.setWidthPercentage(60);
+        stockTable.setHorizontalAlignment(Element.ALIGN_CENTER);
+        stockTable.setSpacingBefore(10f);
+        stockTable.setSpacingAfter(15f);
+        
+        // Add table header
+        PdfPCell headerCell = new PdfPCell(new Phrase("Stock Statistics", HEADER_FONT));
+        headerCell.setBackgroundColor(SECONDARY_COLOR);
+        headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        headerCell.setPadding(8f);
+        headerCell.setColspan(2);
+        stockTable.addCell(headerCell);
+        
+        // Calculate stock statistics
+        int totalStock = products.stream().mapToInt(Product::getQuantity).sum();
+        int lowStockItems = (int) products.stream().filter(p -> p.getQuantity() < 10).count();
+        int outOfStockItems = (int) products.stream().filter(p -> p.getQuantity() == 0).count();
+        double avgStock = products.stream().mapToInt(Product::getQuantity).average().orElse(0);
+        
+        // Add stock statistics
+        addSummaryRow(stockTable, "Total Items in Stock", String.valueOf(totalStock));
+        addSummaryRow(stockTable, "Average Stock per Item", String.format("%.2f", avgStock));
+        addSummaryRow(stockTable, "Low Stock Items (<10)", String.valueOf(lowStockItems));
+        addSummaryRow(stockTable, "Out of Stock Items", String.valueOf(outOfStockItems));
+        
+        document.add(stockTable);
+    }
+    
+    private static void addCategoryAnalysis(Document document, List<Product> products) throws DocumentException {
+        // Category analysis title
+        Paragraph categoryTitle = new Paragraph("Category Analysis", 
+                                 new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, SECONDARY_COLOR));
+        categoryTitle.setAlignment(Element.ALIGN_CENTER);
+        categoryTitle.setSpacingBefore(20f);
+        categoryTitle.setSpacingAfter(10f);
+        document.add(categoryTitle);
+        
+        // Create category analysis table
+        PdfPTable categoryTable = new PdfPTable(3);
+        categoryTable.setWidthPercentage(80);
+        categoryTable.setHorizontalAlignment(Element.ALIGN_CENTER);
+        categoryTable.setSpacingBefore(10f);
+        categoryTable.setSpacingAfter(15f);
+        
+        // Add table header
+        PdfPCell headerCell = new PdfPCell(new Phrase("Category Statistics", HEADER_FONT));
+        headerCell.setBackgroundColor(SECONDARY_COLOR);
+        headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        headerCell.setPadding(8f);
+        headerCell.setColspan(3);
+        categoryTable.addCell(headerCell);
+        
+        // Add column headers
+        addTableHeader(categoryTable, new String[]{"Category", "Number of Products", "Total Value ($)"});
+        
+        // Group by category and calculate statistics
+        Map<String, List<Product>> productsByCategory = products.stream()
+            .collect(java.util.stream.Collectors.groupingBy(Product::getCategory));
+        
+        for (Map.Entry<String, List<Product>> entry : productsByCategory.entrySet()) {
+            String category = entry.getKey();
+            List<Product> categoryProducts = entry.getValue();
+            int count = categoryProducts.size();
+            double totalValue = categoryProducts.stream()
+                .mapToDouble(p -> p.getPrice() * p.getQuantity())
+                .sum();
+            
+            addTableRow(categoryTable, false,
+                category,
+                String.valueOf(count),
+                String.format("%.2f", totalValue));
+        }
+        
+        document.add(categoryTable);
     }
     
     /**

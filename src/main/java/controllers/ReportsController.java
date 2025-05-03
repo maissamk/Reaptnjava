@@ -18,21 +18,14 @@ import service.StockService;
 import javafx.stage.FileChooser;
 import java.io.File;
 import java.io.FileOutputStream;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
@@ -283,41 +276,40 @@ public class ReportsController {
             
             if (file != null) {
                 // Create PDF document
-                Document document = new Document();
-                PdfWriter.getInstance(document, new FileOutputStream(file));
+                Document document = new Document(PageSize.A4, 36, 36, 60, 36);
+                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
+                
+                // Add header and footer
+                writer.setPageEvent(new HeaderFooterPageEvent("Fruitables - Comprehensive Statistics Report"));
+                
                 document.open();
                 
                 // Add title
-                Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
-                Paragraph title = new Paragraph("Farm Management Report", titleFont);
+                Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 22);
+                Paragraph title = new Paragraph("Fruitables Comprehensive Statistics Report", titleFont);
                 title.setAlignment(Element.ALIGN_CENTER);
+                title.setSpacingAfter(20f);
                 document.add(title);
-                document.add(new Paragraph("\n"));
-                
-                // Add report type
-                Font subtitleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14);
-                Paragraph reportType = new Paragraph("Report Type: " + 
-                        reportTypeComboBox.getSelectionModel().getSelectedItem(), subtitleFont);
-                document.add(reportType);
-                document.add(new Paragraph("\n"));
                 
                 // Add timestamp
-                document.add(new Paragraph("Generated on: " + 
-                        java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
-                document.add(new Paragraph("\n"));
+                Font subtitleFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
+                Paragraph timestamp = new Paragraph("Generated on: " + 
+                        java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), subtitleFont);
+                timestamp.setAlignment(Element.ALIGN_CENTER);
+                timestamp.setSpacingAfter(20f);
+                document.add(timestamp);
                 
-                // Take snapshot of the charts and add to PDF
-                if (reportTypeComboBox.getValue().equals("Product Type Distribution")) {
-                    // Add pie chart
-                    document.add(new Paragraph("Product Type Distribution:", subtitleFont));
-                    document.add(new Paragraph("\n"));
-                    addChartToPdf(document, productTypeChart);
-                } else if (reportTypeComboBox.getValue().equals("Stock Level Report")) {
-                    // Add bar chart
-                    document.add(new Paragraph("Stock Level Analysis:", subtitleFont));
-                    document.add(new Paragraph("\n"));
-                    addChartToPdf(document, stockLevelChart);
-                }
+                // Add all charts
+                document.add(new Paragraph("Product Type Distribution", subtitleFont));
+                document.add(new Paragraph("\n"));
+                addChartToPdf(document, productTypeChart);
+                
+                document.add(new Paragraph("\n\nStock Level Analysis", subtitleFont));
+                document.add(new Paragraph("\n"));
+                addChartToPdf(document, stockLevelChart);
+                
+                // Add detailed statistics
+                addDetailedStatistics(document);
                 
                 document.close();
                 
@@ -325,7 +317,7 @@ public class ReportsController {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Export Successful");
                 alert.setHeaderText("PDF Export Complete");
-                alert.setContentText("The report has been successfully exported to:\n" + file.getAbsolutePath());
+                alert.setContentText("The comprehensive report has been successfully exported to:\n" + file.getAbsolutePath());
                 alert.showAndWait();
             }
         } catch (Exception e) {
@@ -336,6 +328,219 @@ public class ReportsController {
             alert.setHeaderText("PDF Export Error");
             alert.setContentText("Failed to export the report: " + e.getMessage());
             alert.showAndWait();
+        }
+    }
+    
+    private void addDetailedStatistics(Document document) throws DocumentException {
+        try {
+            // Get all products for statistics
+            List<Product> products = productService.getAll();
+            
+            // Add comprehensive statistics section
+            Font sectionFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
+            Paragraph statsTitle = new Paragraph("Detailed Statistics Analysis", sectionFont);
+            statsTitle.setAlignment(Element.ALIGN_CENTER);
+            statsTitle.setSpacingBefore(30f);
+            statsTitle.setSpacingAfter(20f);
+            document.add(statsTitle);
+            
+            // Create statistics table
+            PdfPTable statsTable = new PdfPTable(2);
+            statsTable.setWidthPercentage(80);
+            statsTable.setHorizontalAlignment(Element.ALIGN_CENTER);
+            statsTable.setSpacingBefore(15f);
+            statsTable.setSpacingAfter(15f);
+            
+            // Calculate statistics
+            int totalProducts = products.size();
+            int totalStock = products.stream().mapToInt(Product::getQuantity).sum();
+            double totalWeight = products.stream().mapToDouble(p -> p.getWeight() * p.getQuantity()).sum();
+            double totalValue = products.stream().mapToDouble(p -> p.getPrice() * p.getQuantity()).sum();
+            double avgPrice = products.stream().mapToDouble(Product::getPrice).average().orElse(0);
+            double minPrice = products.stream().mapToDouble(Product::getPrice).min().orElse(0);
+            double maxPrice = products.stream().mapToDouble(Product::getPrice).max().orElse(0);
+            double avgWeight = products.stream().mapToDouble(Product::getWeight).average().orElse(0);
+            int lowStockItems = (int) products.stream().filter(p -> p.getQuantity() < 10).count();
+            int outOfStockItems = (int) products.stream().filter(p -> p.getQuantity() == 0).count();
+            
+            // Add statistics rows
+            addStatRow(statsTable, "Total Products", String.valueOf(totalProducts));
+            addStatRow(statsTable, "Total Items in Stock", String.valueOf(totalStock));
+            addStatRow(statsTable, "Total Weight (kg)", String.format("%.2f", totalWeight));
+            addStatRow(statsTable, "Total Inventory Value ($)", String.format("%.2f", totalValue));
+            addStatRow(statsTable, "Average Price ($)", String.format("%.2f", avgPrice));
+            addStatRow(statsTable, "Price Range ($)", String.format("%.2f - %.2f", minPrice, maxPrice));
+            addStatRow(statsTable, "Average Weight (kg)", String.format("%.2f", avgWeight));
+            addStatRow(statsTable, "Low Stock Items (<10)", String.valueOf(lowStockItems));
+            addStatRow(statsTable, "Out of Stock Items", String.valueOf(outOfStockItems));
+            
+            document.add(statsTable);
+            
+            // Add category analysis
+            addCategoryAnalysis(document, products);
+            
+            // Add seasonal analysis
+            addSeasonalAnalysis(document, products);
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void addStatRow(PdfPTable table, String label, String value) {
+        Font labelFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
+        Font valueFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
+        
+        PdfPCell labelCell = new PdfPCell(new Phrase(label, labelFont));
+        labelCell.setPadding(8f);
+        labelCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table.addCell(labelCell);
+        
+        PdfPCell valueCell = new PdfPCell(new Phrase(value, valueFont));
+        valueCell.setPadding(8f);
+        valueCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        table.addCell(valueCell);
+    }
+    
+    private void addCategoryAnalysis(Document document, List<Product> products) throws DocumentException {
+        // Category analysis title
+        Font sectionFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14);
+        Paragraph categoryTitle = new Paragraph("Category Analysis", sectionFont);
+        categoryTitle.setAlignment(Element.ALIGN_CENTER);
+        categoryTitle.setSpacingBefore(30f);
+        categoryTitle.setSpacingAfter(20f);
+        document.add(categoryTitle);
+        
+        // Create category analysis table
+        PdfPTable categoryTable = new PdfPTable(3);
+        categoryTable.setWidthPercentage(80);
+        categoryTable.setHorizontalAlignment(Element.ALIGN_CENTER);
+        categoryTable.setSpacingBefore(15f);
+        categoryTable.setSpacingAfter(15f);
+        
+        // Add table headers
+        Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
+        addTableHeader(categoryTable, new String[]{"Category", "Number of Products", "Total Value ($)"});
+        
+        // Group by category and calculate statistics
+        Map<String, List<Product>> productsByCategory = products.stream()
+            .collect(java.util.stream.Collectors.groupingBy(Product::getCategory));
+        
+        for (Map.Entry<String, List<Product>> entry : productsByCategory.entrySet()) {
+            String category = entry.getKey();
+            List<Product> categoryProducts = entry.getValue();
+            int count = categoryProducts.size();
+            double totalValue = categoryProducts.stream()
+                .mapToDouble(p -> p.getPrice() * p.getQuantity())
+                .sum();
+            
+            addTableRow(categoryTable, false,
+                category,
+                String.valueOf(count),
+                String.format("%.2f", totalValue));
+        }
+        
+        document.add(categoryTable);
+    }
+    
+    private void addSeasonalAnalysis(Document document, List<Product> products) throws DocumentException {
+        // Seasonal analysis title
+        Font sectionFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14);
+        Paragraph seasonalTitle = new Paragraph("Seasonal Analysis", sectionFont);
+        seasonalTitle.setAlignment(Element.ALIGN_CENTER);
+        seasonalTitle.setSpacingBefore(30f);
+        seasonalTitle.setSpacingAfter(20f);
+        document.add(seasonalTitle);
+        
+        // Create seasonal analysis table
+        PdfPTable seasonalTable = new PdfPTable(3);
+        seasonalTable.setWidthPercentage(80);
+        seasonalTable.setHorizontalAlignment(Element.ALIGN_CENTER);
+        seasonalTable.setSpacingBefore(15f);
+        seasonalTable.setSpacingAfter(15f);
+        
+        // Add table headers
+        addTableHeader(seasonalTable, new String[]{"Season", "Number of Products", "Total Value ($)"});
+        
+        // Group by season and calculate statistics
+        Map<String, List<Product>> productsBySeason = products.stream()
+            .collect(java.util.stream.Collectors.groupingBy(p -> p.getType().getSeason()));
+        
+        for (Map.Entry<String, List<Product>> entry : productsBySeason.entrySet()) {
+            String season = entry.getKey();
+            List<Product> seasonProducts = entry.getValue();
+            int count = seasonProducts.size();
+            double totalValue = seasonProducts.stream()
+                .mapToDouble(p -> p.getPrice() * p.getQuantity())
+                .sum();
+            
+            addTableRow(seasonalTable, false,
+                season,
+                String.valueOf(count),
+                String.format("%.2f", totalValue));
+        }
+        
+        document.add(seasonalTable);
+    }
+    
+    private void addTableHeader(PdfPTable table, String[] headers) {
+        Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
+        for (String header : headers) {
+            PdfPCell cell = new PdfPCell(new Phrase(header, headerFont));
+            cell.setBackgroundColor(new BaseColor(220, 220, 220));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setPadding(8f);
+            table.addCell(cell);
+        }
+    }
+    
+    private void addTableRow(PdfPTable table, boolean alternateRow, String... values) {
+        Font valueFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
+        BaseColor rowColor = alternateRow ? new BaseColor(245, 245, 245) : BaseColor.WHITE;
+        
+        for (String value : values) {
+            PdfPCell cell = new PdfPCell(new Phrase(value, valueFont));
+            cell.setBackgroundColor(rowColor);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setPadding(8f);
+            table.addCell(cell);
+        }
+    }
+    
+    private class HeaderFooterPageEvent extends PdfPageEventHelper {
+        private String title;
+        
+        public HeaderFooterPageEvent(String title) {
+            this.title = title;
+        }
+        
+        @Override
+        public void onEndPage(PdfWriter writer, Document document) {
+            // Add header
+            PdfPTable header = new PdfPTable(1);
+            header.setTotalWidth(document.getPageSize().getWidth() - document.leftMargin() - document.rightMargin());
+            header.setLockedWidth(true);
+            
+            Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
+            PdfPCell cell = new PdfPCell(new Phrase(title, headerFont));
+            cell.setBorder(Rectangle.NO_BORDER);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            header.addCell(cell);
+            
+            header.writeSelectedRows(0, -1, document.leftMargin(), document.getPageSize().getHeight() - 20, writer.getDirectContent());
+            
+            // Add footer
+            PdfPTable footer = new PdfPTable(1);
+            footer.setTotalWidth(document.getPageSize().getWidth() - document.leftMargin() - document.rightMargin());
+            footer.setLockedWidth(true);
+            
+            Font footerFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
+            cell = new PdfPCell(new Phrase("Page " + writer.getPageNumber(), footerFont));
+            cell.setBorder(Rectangle.NO_BORDER);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            footer.addCell(cell);
+            
+            footer.writeSelectedRows(0, -1, document.leftMargin(), document.bottomMargin(), writer.getDirectContent());
         }
     }
     

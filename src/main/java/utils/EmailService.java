@@ -19,8 +19,8 @@ public class EmailService {
     // Mailtrap credentials - Replace with your own Mailtrap credentials
     private static final String HOST = "sandbox.smtp.mailtrap.io";
     private static final int PORT = 2525;
-    private static final String USERNAME = "61e8ed3b4ab430"; // TODO: Replace with your Mailtrap username
-    private static final String PASSWORD = "86361a77cdfae5"; // TODO: Replace with your Mailtrap password
+    private static final String USERNAME = "58758cbf58c694"; // TODO: Replace with your Mailtrap username
+    private static final String PASSWORD = "310f4b9ed48247"; // TODO: Replace with your Mailtrap password
     
     private static final String FROM_EMAIL = "fruitables@example.com";
     private static final String FROM_NAME = "Fruitables Stock System";
