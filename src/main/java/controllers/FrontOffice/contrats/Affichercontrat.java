@@ -177,20 +177,37 @@ public class Affichercontrat {
         });
     }
 
+    //new nouton afficher parcelle
+    @FXML
+    private void handleAfficherParcelles() {
+        try {
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
+            Parent baseRoot = baseLoader.load();
+            BaseFrontController controller = baseLoader.getController();
+            Parent content = FXMLLoader.load(getClass().getResource("/FrontOffice/parcelles/Afficherparcelles.fxml"));
+            controller.getContentPane().getChildren().setAll(content);
+
+            Stage stage = (Stage) btnRetour.getScene().getWindow();
+            stage.setScene(new Scene(baseRoot));
+        } catch (IOException e) {
+            showAlert("Erreur", "Navigation impossible : " + e.getMessage());
+        }
+    }
+
+
+
     private void openDetailView(Contrat contrat) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/contrats/DetailContrat.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/contrats/DetailleContrat.fxml"));
             Parent root = loader.load();
 
             DetailContrat controller = loader.getController();
-            controller.initData(contrat);
+            controller.initData(contrat); // Passage du contrat sélectionné
 
             Stage stage = (Stage) btnRetour.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Détails du Contrat");
         } catch (IOException e) {
-            showAlert("Erreur", "Impossible d'ouvrir la vue détaillée : " + e.getMessage());
-            e.printStackTrace();
+            showAlert("Erreur", e.getMessage());
         }
     }
 

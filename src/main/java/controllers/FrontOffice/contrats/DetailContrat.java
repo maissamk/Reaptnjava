@@ -14,6 +14,7 @@ import Models.Contrat;
 import services.ContratService;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 public class DetailContrat {
@@ -33,16 +34,13 @@ public class DetailContrat {
     private Contrat contratCourant;
 
     public void initData(Contrat contrat) {
-        this.contratCourant = contrat;
+        Contrat contratComplet = contratService.getByIdWithParcelle(contrat.getId());
+        this.contratCourant = contratComplet;
 
-        // Charger les détails complets du contrat avec la parcelle
-        Contrat contratAvecParcelle = contratService.getByIdWithParcelle(contrat.getId());
-        if (contratAvecParcelle != null) {
-            this.contratCourant = contratAvecParcelle;
-            populateContratDetails();
-        } else {
-            showAlert("Erreur", "Impossible de charger les détails complets du contrat.");
-        }
+        // Ajoutez cette ligne pour peupler les labels
+        populateContratDetails();
+
+        btnVoirParcelle.setDisable(contratComplet.getParcelleProprietes() == null);
     }
 
     private void populateContratDetails() {
@@ -83,29 +81,18 @@ public class DetailContrat {
 
     @FXML
     private void handleVoirParcelle() {
-        if (contratCourant.getParcelleProprietes() == null) {
-            showAlert("Information", "Aucune parcelle n'est associée à ce contrat.");
-            return;
-        }
-
         try {
-            // Modifier le chemin pour qu'il corresponde au fichier FXML réel de DetailParcelle
-            // (Assurez-vous que ce chemin est correct dans votre projet)
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/parcelles/DetailParcelle.fxml"));
             Parent root = loader.load();
 
             DetailParcelle controller = loader.getController();
             controller.initData(contratCourant.getParcelleProprietes());
 
-            // Créer une nouvelle scène dans une nouvelle fenêtre pour afficher les détails de la parcelle
             Stage stage = new Stage();
-            stage.setTitle("Détails de la Parcelle");
             stage.setScene(new Scene(root));
             stage.show();
-
         } catch (IOException e) {
-            showAlert("Erreur", "Impossible d'afficher les détails de la parcelle : " + e.getMessage());
-            e.printStackTrace();
+            showAlert("Erreur", e.getMessage());
         }
     }
 

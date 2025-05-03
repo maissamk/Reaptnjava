@@ -1,6 +1,6 @@
 package services;
 
-import interfaces.IService;
+import interfaces.IServiceparcelle;
 import Models.ParcelleProprietes;
 import org.example.utils.MaConnexion;
 
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ParcelleProprietesService implements IService<ParcelleProprietes> {
+public class ParcelleProprietesService implements IServiceparcelle<ParcelleProprietes> {
 
     Connection cnx= MaConnexion.getInstance().getConn();
 

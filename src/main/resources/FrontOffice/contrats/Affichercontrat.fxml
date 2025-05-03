@@ -31,6 +31,13 @@
                         fx:id="btnRetour"
                         onAction="#handleRetour"
                         style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 8 15;"/>
+
+<!--                //ajouter mtn-->
+                <Button text="Afficher liste des parcelles"
+                        fx:id="btnParcelles"
+                        onAction="#handleAfficherParcelles"
+                        style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-padding: 8 15;"/>
+
             </HBox>
         </HBox>
 

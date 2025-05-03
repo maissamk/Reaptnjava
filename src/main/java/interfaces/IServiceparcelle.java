@@ -2,7 +2,7 @@ package interfaces;
 
 import java.util.List;
 
-public interface IService<T> {
+public interface IServiceparcelle<T> {
 
     void add(T t);
     void update(T t);

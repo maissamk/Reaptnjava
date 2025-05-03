@@ -1,6 +1,6 @@
 package services;
 
-import interfaces.IService;
+import interfaces.IServiceparcelle;
 import Models.Contrat;
 import Models.HistoriqueLocation;
 import org.example.utils.MaConnexion;
@@ -9,7 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoriqueLocationService implements IService<HistoriqueLocation> {
+public class HistoriqueLocationService implements IServiceparcelle<HistoriqueLocation> {
 
     Connection cnx = MaConnexion.getInstance().getConn();
 

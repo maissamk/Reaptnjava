@@ -1,6 +1,6 @@
 package services;
 
-import interfaces.IService;
+import interfaces.IServiceparcelle;
 import Models.Contrat;
 import Models.ParcelleProprietes;
 import org.example.utils.MaConnexion;
@@ -9,7 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContratService implements IService<Contrat> {
+public class ContratService implements IServiceparcelle<Contrat> {
     Connection cnx = MaConnexion.getInstance().getConn();
 
     // Instance du service ParcelleProprietes pour la jointure
