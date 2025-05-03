@@ -111,6 +111,29 @@ public class Home implements Initializable {
         profileButton.setOnAction(e -> handleProfile());
     }
 
+
+    private void handleParcelle() {
+        try {
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
+            Parent baseRoot = baseLoader.load();
+            BaseFrontController baseController = baseLoader.getController();
+
+            // Charger Afficherparcelles dans le contentPane
+            Parent content = FXMLLoader.load(getClass().getResource("/FrontOffice/parcelles/Afficherparcelles.fxml"));
+            baseController.getContentPane().getChildren().setAll(content);
+
+            // Mettre à jour la scène
+            Stage stage = (Stage) parcelleButton.getScene().getWindow();
+            stage.setScene(new Scene(baseRoot));
+        } catch (IOException e) {
+            e.printStackTrace();
+            //showAlert("Erreur", "Échec du chargement : " + e.getMessage());
+        }
+    }
+
+
+
+
     @FXML
     private void handleProfile() {
         try {
@@ -167,9 +190,7 @@ public class Home implements Initializable {
         System.out.println("xxxxxxx");
     }
 
-    private void handleParcelle() {
-        System.out.println("Parcelle clicked");
-    }
+
 
     @FXML
     private void handleOffers() {

@@ -8,8 +8,12 @@ import javafx.stage.Stage;
 import utils.AccountStatusChecker;
 
 public class MainFX extends Application {
+
     @Override
     public void start(Stage primaryStage) throws Exception {
+//        Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/Home.fxml")); // Mets ici le bon chemin
+//        primaryStage.setTitle("Ajouter une parcelle");
+//        primaryStage.setScene(new Scene(root));
         AccountStatusChecker.startChecking();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
 //    FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));

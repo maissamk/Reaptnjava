@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox spacing="15" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.FrontOffice.parcelles.AfficherHistoriqueParcelleController"
+      prefWidth="900" prefHeight="700"
+      style="-fx-background-color: white;">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text="Historique de location -" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+        <Label fx:id="labelTitreParcelle" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #3498db;"/>
+    </HBox>
+
+    <Label fx:id="labelEmplacement" style="-fx-font-size: 14px;"/>
+
+    <Separator/>
+
+    <Label fx:id="labelStatistiques" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+    <VBox fx:id="chartContainer" VBox.vgrow="ALWAYS" minHeight="200" style="-fx-border-color: #e0e0e0; -fx-border-radius: 5;">
+        <!-- Le graphique sera ajouté ici dynamiquement -->
+    </VBox>
+
+    <TableView fx:id="tableHistorique" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colLocataire" text="Locataire" prefWidth="200"/>
+            <TableColumn fx:id="colDateDebut" text="Date début" prefWidth="150"/>
+            <TableColumn fx:id="colDateFin" text="Date fin" prefWidth="150"/>
+            <TableColumn fx:id="colPrix" text="Prix de location" prefWidth="150"/>
+            <TableColumn fx:id="colStatut" text="Statut" prefWidth="150"/>
+        </columns>
+    </TableView>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button fx:id="btnFermer" text="Fermer" style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
+    </HBox>
+</VBox>

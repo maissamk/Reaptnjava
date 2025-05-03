@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.FrontOffice.contrats.Affichercontrat"
+            prefWidth="1200"
+            prefHeight="800"
+            style="-fx-background-color: #f5f6fa;">
+
+    <VBox spacing="20"
+          AnchorPane.topAnchor="20"
+          AnchorPane.leftAnchor="20"
+          AnchorPane.rightAnchor="20"
+          AnchorPane.bottomAnchor="20">
+
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <Label text="liste Des Contrat"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+            <HBox spacing="10" HBox.hgrow="NEVER">
+                <Button text="Actualiser"
+                        fx:id="btnActualiser"
+                        onAction="#handleActualiser"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 8 15;"/>
+
+                <Button text="Ajouter"
+                        fx:id="btnRetour"
+                        onAction="#handleRetour"
+                        style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 8 15;"/>
+
+<!--                //ajouter mtn-->
+                <Button text="Afficher liste des parcelles"
+                        fx:id="btnParcelles"
+                        onAction="#handleAfficherParcelles"
+                        style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-padding: 8 15;"/>
+
+            </HBox>
+        </HBox>
+
+        <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <ListView fx:id="listView"
+                      VBox.vgrow="ALWAYS"
+                      style="-fx-background-color: transparent; -fx-border-width: 0;">
+                <placeholder>
+                    <Label text="Aucun contrat disponible"
+                           style="-fx-font-size: 16px; -fx-text-fill: #7f8c8d;"/>
+                </placeholder>
+            </ListView>
+        </ScrollPane>
+    </VBox>
+</AnchorPane>

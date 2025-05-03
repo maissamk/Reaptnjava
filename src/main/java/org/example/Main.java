@@ -1,31 +1,48 @@
 package org.example;
 
-import Models.gestionCommande.Commande;
-import services.gestionCommande.CommandeService;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import Models.ParcelleProprietes;
+import org.example.utils.MaConnexion;
+import services.ParcelleProprietesService;
 import java.util.Date;
+import java.sql.Connection;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        CommandeService cm = new CommandeService();
 
-        try {
-            // Conversion de la date String vers java.util.Date
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-            Date date = sdf.parse("12-04-2025");
+    Connection conn;
+    conn=MaConnexion.getInstance().getConn();
+    System.out.println(conn);
+        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
+        // to see how IntelliJ IDEA suggests fixing it.
+        ParcelleProprietesService ps = new ParcelleProprietesService();
 
-            // Création et ajout de la commande
-            cm.add(new Commande(4, date, 958));
+        ParcelleProprietes parcelle = new ParcelleProprietes(
+                "Ferme bio",                              // titre
+                "Terrain agricole de 2 hectares",         // description
+                200000.0,                                  // prix
+                "disponible",                              // status
+                "Tunis",                                   // emplacement
+                2.0,                                       // taille
+                new Date(),                                // date_creation_annonce
+                new Date(),                                // date_misajour_annonce
+                true,                                      // est_disponible
+                "Ali Ferjani",                             // nom_proprietaire
+                "22 333 444",                              // contact_proprietaire
+                "image.png",                               // image
+                1,                                         // user_id_parcelle_id
+                "résidentiel",                             // type_terrain
+                "36.8065",                                 // latitude
+                "10.1815",                                 // longitude
+                "ali.ferjani@example.com"                  // email
+        );
 
-        } catch (ParseException e) {
-            System.out.println("Erreur de parsing de la date : " + e.getMessage());
+        ps.add(parcelle);
+        for (ParcelleProprietes p : ps.getAll()) {
+            System.out.println(p);
         }
 
 
-        System.out.println(cm.getAll());
     }
 }
