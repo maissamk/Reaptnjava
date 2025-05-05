@@ -28,7 +28,7 @@
                 <HBox alignment="CENTER_LEFT" spacing="15">
                     <ImageView fitHeight="50.0" fitWidth="150.0" preserveRatio="true">
                         <image>
-                            <Image url="@../images/reap-tn-logo.png" />
+                            <Image url="@../images/logoapp.png" />
                         </image>
                     </ImageView>
                     <Label text="Agricultural Management" styleClass="brand-subtitle"/>
@@ -66,22 +66,22 @@
                     <Insets top="30" right="40" bottom="40" left="40"/>
                 </padding>
 
-                <!-- Hero Banner Section -->
-                <StackPane styleClass="hero-banner" minHeight="300">
+                <!-- Hero Banner Section avec le style Reap.tn - Fond vert foncé comme la barre de navigation -->
+                <StackPane styleClass="hero-banner" minHeight="300" style="-fx-background-color: #386e40; -fx-background-radius: 0;">
                     <VBox alignment="CENTER_LEFT" spacing="15">
                         <padding>
                             <Insets left="80"/>
                         </padding>
-                        <Label text="Fresh &amp; Organic" styleClass="hero-subtitle"/>
-                        <Label text="Healthy Products for Your Daily Life" styleClass="hero-title"/>
+                        <Label text="Fresh &amp; Organic" styleClass="hero-subtitle" style="-fx-text-fill: #ffb006; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                        <Label text="Healthy Products for Your Daily Life" styleClass="hero-title" style="-fx-text-fill: white; -fx-font-size: 36px; -fx-font-weight: bold;"/>
                         <Label text="Get the best quality fruits and vegetables delivered to your doorstep" 
-                               styleClass="hero-description" wrapText="true" maxWidth="500"/>
+                               styleClass="hero-description" wrapText="true" maxWidth="500" style="-fx-text-fill: white; -fx-font-size: 16px;"/>
                         <HBox spacing="15" alignment="CENTER_LEFT">
                             <padding>
                                 <Insets top="20"/>
                             </padding>
-                            <Button text="Shop Now" styleClass="hero-button"/>
-                            <Button text="Learn More" styleClass="hero-secondary-button"/>
+                            <Button text="Shop Now" styleClass="hero-button" style="-fx-background-color: #ffb006; -fx-text-fill: black; -fx-font-weight: bold;"/>
+                            <Button text="Learn More" styleClass="hero-secondary-button" style="-fx-background-color: transparent; -fx-border-color: white; -fx-text-fill: white;"/>
                         </HBox>
                     </VBox>
                 </StackPane>
@@ -89,10 +89,10 @@
                 <!-- Featured Section - Improved with title description -->
                 <VBox styleClass="section-container">
                     <HBox alignment="BASELINE_LEFT" spacing="20">
-                        <Label text="Featured Products" styleClass="section-header"/>
-                        <Label text="Our best selling items this week" styleClass="section-subheader"/>
+                        <Label text="Featured Products" styleClass="section-header" style="-fx-text-fill: #386e40; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+                        <Label text="Our best selling items this week" styleClass="section-subheader" style="-fx-text-fill: #488251;"/>
                     </HBox>
-                    <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" styleClass="featured-scroll" VBox.vgrow="NEVER">
+                    <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" styleClass="featured-scroll" VBox.vgrow="NEVER" style="-fx-background-color: transparent; -fx-border-color: transparent;">
                         <HBox fx:id="featuredProducts" spacing="30" styleClass="featured-container">
                             <padding>
                                 <Insets top="20" right="20" bottom="20" left="20"/>
@@ -104,64 +104,64 @@
                 <!-- Main Products Grid with Weather Widget -->
                 <HBox spacing="40">
                     <!-- Filters Sidebar - Enhanced with better organization -->
-                    <VBox spacing="25" styleClass="filters-sidebar">
+                    <VBox spacing="25" styleClass="filters-sidebar" prefWidth="370" minWidth="370" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: #e2efe2; -fx-border-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 0);">
                         <padding>
                             <Insets top="30" right="30" bottom="30" left="30"/>
                         </padding>
                         
                         <HBox styleClass="filter-title-container" alignment="CENTER_LEFT" spacing="10">
-                            <Label text="Filters" styleClass="filter-header"/>
-                            <Button text="Reset" styleClass="filter-reset-button"/>
+                            <Label text="Filters" styleClass="filter-header" style="-fx-text-fill: #386e40; -fx-font-weight: bold; -fx-font-size: 20px;"/>
+                            <Button text="Reset" styleClass="filter-reset-button" style="-fx-background-color: transparent; -fx-text-fill: #488251;"/>
                         </HBox>
                         
                         <!-- Category Filter -->
                         <VBox spacing="15" styleClass="filter-section">
-                            <Label text="Categories" styleClass="filter-section-header"/>
+                            <Label text="Categories" styleClass="filter-section-header" style="-fx-text-fill: #386e40; -fx-font-weight: bold;"/>
                             <VBox fx:id="categoryFilters" spacing="10"/>
                         </VBox>
                         
                         <!-- Price Range Filter -->
                         <VBox spacing="15" styleClass="filter-section">
-                            <Label text="Price Range" styleClass="filter-section-header"/>
-                            <Slider fx:id="priceSlider"/>
+                            <Label text="Price Range" styleClass="filter-section-header" style="-fx-text-fill: #386e40; -fx-font-weight: bold;"/>
+                            <Slider fx:id="priceSlider" style="-fx-accent: #488251;"/>
                             <HBox spacing="10">
-                                <Label fx:id="minPrice" styleClass="price-label"/>
+                                <Label fx:id="minPrice" styleClass="price-label" style="-fx-text-fill: #488251;"/>
                                 <Region HBox.hgrow="ALWAYS"/>
-                                <Label fx:id="maxPrice" styleClass="price-label"/>
+                                <Label fx:id="maxPrice" styleClass="price-label" style="-fx-text-fill: #488251;"/>
                             </HBox>
                         </VBox>
                         
                         <!-- Sort Options -->
                         <VBox spacing="15" styleClass="filter-section">
-                            <Label text="Sort By" styleClass="filter-section-header"/>
+                            <Label text="Sort By" styleClass="filter-section-header" style="-fx-text-fill: #386e40; -fx-font-weight: bold;"/>
                             <ComboBox fx:id="sortComboBox" styleClass="sort-combo"/>
                         </VBox>
                         
                         <!-- Weather Widget Section -->
-                        <VBox spacing="15" styleClass="filter-section">
-                            <Label text="Local Weather" styleClass="filter-section-header"/>
-                            <WeatherWidget fx:id="weatherWidget"/>
+                        <VBox spacing="5" styleClass="filter-section" style="-fx-padding: 0;">
+                            <Label text="Local Weather" styleClass="filter-section-header" style="-fx-text-fill: #386e40; -fx-font-weight: bold; -fx-padding: 0 0 5 0;"/>
+                            <WeatherWidget fx:id="weatherWidget" maxWidth="290" prefWidth="290"/>
                         </VBox>
                         
                         <!-- QR Code Section -->
                         <VBox spacing="15" styleClass="qr-code-section">
-                            <Label text="Product QR Code" styleClass="filter-section-header"/>
-                            <StackPane fx:id="qrCodeContainer" styleClass="qr-code-container" prefHeight="200" prefWidth="200">
+                            <Label text="Product QR Code" styleClass="filter-section-header" style="-fx-text-fill: #386e40; -fx-font-weight: bold;"/>
+                            <StackPane fx:id="qrCodeContainer" styleClass="qr-code-container" prefHeight="200" prefWidth="310" maxWidth="310">
                                 <ImageView fx:id="qrCodeImageView" fitHeight="180" fitWidth="180" preserveRatio="true"/>
                             </StackPane>
-                            <Label fx:id="qrCodeLabel" text="Select a product to view QR code" wrapText="true" styleClass="qr-code-label"/>
-                            <Button fx:id="saveQrCodeButton" text="Save QR Code" styleClass="save-qr-button"/>
+                            <Label fx:id="qrCodeLabel" text="Select a product to view QR code" wrapText="true" styleClass="qr-code-label" style="-fx-text-fill: #488251;"/>
+                            <Button fx:id="saveQrCodeButton" text="Save QR Code" styleClass="save-qr-button" style="-fx-background-color: #386e40; -fx-text-fill: white;"/>
                         </VBox>
                     </VBox>
 
                     <!-- Products Grid - Enhanced with title -->
                     <VBox HBox.hgrow="ALWAYS" spacing="30">
                         <HBox alignment="BASELINE_LEFT" spacing="20">
-                            <Label text="All Products" styleClass="section-header"/>
-                            <Label fx:id="productCount" text="Showing 0 products" styleClass="section-subheader"/>
+                            <Label text="All Products" styleClass="section-header" style="-fx-text-fill: #386e40; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+                            <Label fx:id="productCount" text="Showing 0 products" styleClass="section-subheader" style="-fx-text-fill: #488251;"/>
                         </HBox>
                         
-                        <FlowPane fx:id="productsGrid" hgap="30" vgap="30" styleClass="products-grid">
+                        <FlowPane fx:id="productsGrid" hgap="30" vgap="30" styleClass="products-grid" prefWrapLength="800">
                             <padding>
                                 <Insets top="20" right="20" bottom="20" left="20"/>
                             </padding>

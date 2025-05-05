@@ -44,6 +44,7 @@ public class HomeBack implements Initializable {
     @FXML private Button logoutBtn;
     @FXML private Button categoriebtn;
     @FXML private Button location;
+    @FXML private Button returnToFrontBtn;
 
     // Sidebar Buttons
     @FXML private Button statisticsBtn;
@@ -104,7 +105,32 @@ public class HomeBack implements Initializable {
         // Main Navigation
         dashboardBtn.setOnAction(e -> loadDashboardContent());
         usersBtn.setOnAction(e -> loadContent("/BackOffice/user/UserList.fxml"));
-        productsBtn.setOnAction(e -> loadContent("/views/BackOffice/Products.fxml"));
+        
+        // Créer un menu déroulant pour le bouton Products
+        javafx.scene.control.ContextMenu productsMenu = new javafx.scene.control.ContextMenu();
+        
+        // Créer les 5 options du menu
+        javafx.scene.control.MenuItem dashboardItem = new javafx.scene.control.MenuItem("Dashboard");
+        dashboardItem.setOnAction(e -> loadContent("/Produits/Dashboard.fxml"));
+        
+        javafx.scene.control.MenuItem productsItem = new javafx.scene.control.MenuItem("Products");
+        productsItem.setOnAction(e -> loadContent("/Produits/ProductManagement.fxml"));
+        
+        javafx.scene.control.MenuItem productTypesItem = new javafx.scene.control.MenuItem("Product Types");
+        productTypesItem.setOnAction(e -> loadContent("/Produits/ProductTypeManagement.fxml"));
+        
+        javafx.scene.control.MenuItem stockItem = new javafx.scene.control.MenuItem("Stock Management");
+        stockItem.setOnAction(e -> loadContent("/Produits/StockManagement.fxml"));
+        
+        javafx.scene.control.MenuItem reportsItem = new javafx.scene.control.MenuItem("Reports & Analytics");
+        reportsItem.setOnAction(e -> loadContent("/Produits/Reports.fxml"));
+        
+        // Ajouter les options au menu
+        productsMenu.getItems().addAll(dashboardItem, productsItem, productTypesItem, stockItem, reportsItem);
+        
+        // Configurer le bouton Products pour afficher le menu au clic
+        productsBtn.setOnAction(e -> productsMenu.show(productsBtn, javafx.geometry.Side.BOTTOM, 0, 0));
+        
         ordersBtn.setOnAction(e -> loadContent("/views/BackOffice/Orders.fxml"));
         reportsBtn.setOnAction(e -> loadContent("/views/BackOffice/Reports.fxml"));
 
@@ -122,22 +148,34 @@ public class HomeBack implements Initializable {
 
         // Logout
         logoutBtn.setOnAction(e -> handleLogout());
+
+        // Return to Front
+        returnToFrontBtn.setOnAction(e -> handleReturnToFront());
     }
     private void navigateTo(String fxmlPath, ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
 
-            // Get the stage from the event source
-        //    Node source = (Node) event.getSource();
-      //      Stage stage = (Stage) source.getScene().getWindow();
-                Stage stage = new Stage();
-         //   stage.setFullScreen(true);
-            // Set the new scene
-            stage.setScene(new Scene(root));
-            stage.sizeToScene(); // Optional: resize to fit new content
+            // Obtenir les dimensions de l'écran pour une interface responsive
+            javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
+            
+            // Définir la taille de la fenêtre à 80% de l'écran
+            double width = screenBounds.getWidth() * 0.8;
+            double height = screenBounds.getHeight() * 0.8;
+            
+            Scene scene = new Scene(root, width, height);
+            
+            // Créer et configurer le stage
+            Stage stage = new Stage();
+            stage.setResizable(true);
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+            stage.setScene(scene);
+            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
     private void IndexMateriels(ActionEvent event) {
@@ -214,9 +252,24 @@ public class HomeBack implements Initializable {
     private void handleLogout() {
         SessionManager.getInstance().logout();
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/user/Login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/Login.fxml"));
+            Parent root = loader.load();
+            
+            // Obtenir les dimensions de l'écran
+            javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
+            
+            // Définir une taille initiale relative à l'écran
+            double width = screenBounds.getWidth() * 0.8;
+            double height = screenBounds.getHeight() * 0.8;
+            
+            Scene scene = new Scene(root, width, height);
+            
             Stage stage = (Stage) logoutBtn.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.setResizable(true);
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+            stage.setScene(scene);
+            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -228,6 +281,32 @@ public class HomeBack implements Initializable {
         try {
             loadContent("/BackOffice/HomeBack.fxml");
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleReturnToFront() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent root = loader.load();
+            
+            // Obtenir les dimensions de l'écran
+            javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
+            
+            // Définir une taille initiale relative à l'écran
+            double width = screenBounds.getWidth() * 0.8;
+            double height = screenBounds.getHeight() * 0.8;
+            
+            Scene scene = new Scene(root, width, height);
+            
+            Stage stage = (Stage) returnToFrontBtn.getScene().getWindow();
+            stage.setResizable(true);
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+            stage.setScene(scene);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
