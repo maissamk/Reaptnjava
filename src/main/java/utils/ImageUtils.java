@@ -15,7 +15,6 @@ import java.nio.file.Paths;
  */
 public class ImageUtils {
 
-    private static final String PROJECT_ROOT = "workshopjdbc3a";
     private static final String IMAGES_DIR = "src/main/resources/images";
     private static final String PRODUCTS_DIR = "products";
 
@@ -57,30 +56,27 @@ public class ImageUtils {
             
             // 3. Try with absolute project path
             Path currentPath = Paths.get(System.getProperty("user.dir"));
-            Path projectRoot = findProjectRoot(currentPath, PROJECT_ROOT);
             
-            if (projectRoot != null) {
-                // Try full path with products directory
-                Path imageDirPath = projectRoot.resolve(IMAGES_DIR);
-                Path fullImagePath = imageDirPath.resolve(imagePath);
+            // Try full path with products directory
+            Path imageDirPath = currentPath.resolve(IMAGES_DIR);
+            Path fullImagePath = imageDirPath.resolve(imagePath);
+            
+            if (Files.exists(fullImagePath)) {
+                resourcePath = fullImagePath.toUri().toString();
+                System.out.println("Found with absolute path: " + resourcePath);
+                return new Image(resourcePath, width, height, true, true);
+            }
+            
+            // Try separate lookup in products directory
+            Path productsPath = imageDirPath.resolve(PRODUCTS_DIR);
+            if (imagePath.contains("/")) {
+                String fileName = imagePath.substring(imagePath.lastIndexOf('/') + 1);
+                Path productImagePath = productsPath.resolve(fileName);
                 
-                if (Files.exists(fullImagePath)) {
-                    resourcePath = fullImagePath.toUri().toString();
-                    System.out.println("Found with absolute path: " + resourcePath);
+                if (Files.exists(productImagePath)) {
+                    resourcePath = productImagePath.toUri().toString();
+                    System.out.println("Found in products directory: " + resourcePath);
                     return new Image(resourcePath, width, height, true, true);
-                }
-                
-                // Try separate lookup in products directory
-                Path productsPath = imageDirPath.resolve(PRODUCTS_DIR);
-                if (imagePath.contains("/")) {
-                    String fileName = imagePath.substring(imagePath.lastIndexOf('/') + 1);
-                    Path productImagePath = productsPath.resolve(fileName);
-                    
-                    if (Files.exists(productImagePath)) {
-                        resourcePath = productImagePath.toUri().toString();
-                        System.out.println("Found in products directory: " + resourcePath);
-                        return new Image(resourcePath, width, height, true, true);
-                    }
                 }
             }
             
@@ -106,30 +102,6 @@ public class ImageUtils {
             e.printStackTrace();
             return null;
         }
-    }
-    
-    /**
-     * Walks up directory tree to find project root
-     */
-    private static Path findProjectRoot(Path current, String projectDirName) {
-        if (current == null) {
-            return null;
-        }
-        
-        // Check if current path contains the project directory
-        if (current.getFileName() != null && 
-            current.getFileName().toString().equals(projectDirName)) {
-            return current;
-        }
-        
-        // Check if project directory is a child of current path
-        Path potential = current.resolve(projectDirName);
-        if (Files.exists(potential)) {
-            return potential;
-        }
-        
-        // Go up one level
-        return findProjectRoot(current.getParent(), projectDirName);
     }
     
     /**

@@ -1,6 +1,7 @@
 package controllers.FrontOffice.Offer;
 import controllers.FrontOffice.BaseFrontController;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -178,6 +179,10 @@ public class detailOffreController {
     @FXML private TableColumn<Employe, String> compColumn;
 
     @FXML private TableColumn<Employe, String> dispoColumn;
+    @FXML
+    private TableColumn<Employe, Void> actionColumn;
+    @FXML
+    private TableColumn<Employe, String> confColumn;
 
     @FXML
     private TextField userIdField;
@@ -311,6 +316,13 @@ public class detailOffreController {
             return new ReadOnlyStringWrapper(formattedDays);
         });
 
+        confColumn.setCellValueFactory(cellData -> {
+            boolean conf = cellData.getValue().isConf(); // primitive boolean
+            String status = conf ? "Accepté" : "En attente"; // false = 0 or null → "En attente"
+            return new SimpleStringProperty(status);
+        });
+
+
         // Set the CellValueFactory for the "Suggested" column
         suggestedColumn.setCellValueFactory(cellData -> {
             Employe emp = cellData.getValue();
@@ -351,12 +363,54 @@ public class detailOffreController {
             }
         });
 
+
+
+        //set the confirmer and reject buttons
+        actionColumn.setCellFactory(col -> new TableCell<>() {
+            private final Button confirmButton = new Button("Confirmer");
+            private final Button rejectButton = new Button("Rejeter");
+            private final HBox actionButtons = new HBox(10, confirmButton, rejectButton);
+
+            {
+                confirmButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+                rejectButton.setStyle("-fx-background-color: #F44336; -fx-text-fill: white;");
+
+                confirmButton.setOnAction(event -> {
+                    Employe emp = getTableView().getItems().get(getIndex());
+                    handleConfirm(emp);
+                });
+
+                rejectButton.setOnAction(event -> {
+                    Employe emp = getTableView().getItems().get(getIndex());
+                    handleReject(emp);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(actionButtons);
+                }
+            }
+        });
+
+
+
+
+
         // Set the items in the table
         ObservableList<Employe> employes = FXCollections.observableArrayList(
                 employeService.getEmployesByOffreId(offreId, tempNomMap, tempPrenomMap, tempEmailMap)
         );
 
         employeTable.setItems(employes);
+
+
+
+
     }
 
 
@@ -591,6 +645,26 @@ public class detailOffreController {
         // Buttons for switching language
         langButton.setText(LanguageManager.getString("german"));
         englishButton.setText(LanguageManager.getString("english"));
+    }
+
+
+    private void handleConfirm(Employe emp) {
+        try {
+            emp.setConf(true); // Make sure your Employe class has this field
+            employeService.updateConfirmerField(emp.getId(), true);
+            employeTable.refresh();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleReject(Employe emp) {
+        try {
+            employeService.deleteEmploye(emp.getId());
+            employeTable.getItems().remove(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

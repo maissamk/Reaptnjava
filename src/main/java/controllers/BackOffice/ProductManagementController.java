@@ -325,7 +325,7 @@ public class ProductManagementController {
             try {
                 // Create directory if it doesn't exist
                 Path rootDir = Paths.get(System.getProperty("user.dir"));
-                Path resourcesDir = rootDir.resolve("workshopjdbc3a/src/main/resources");
+                Path resourcesDir = rootDir.resolve("src/main/resources");
                 Path imagesDir = resourcesDir.resolve("images");
                 
                 // Create product images subdirectory if needed
@@ -351,7 +351,7 @@ public class ProductManagementController {
                 System.out.println("Path stored in database: " + currentImagePath);
                 
                 // Display the uploaded image
-                Image image = new Image(targetPath.toUri().toString());
+                Image image = ImageUtils.loadProductImage(currentImagePath, 160, 160);
                 productImageView.setImage(image);
                 productImageView.setFitWidth(160);
                 productImageView.setFitHeight(160);

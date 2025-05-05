@@ -52,7 +52,7 @@ public class QRCodeGenerator {
         
         info.append("Product: ").append(product.getCategory()).append("\n");
         info.append("ID: ").append(product.getId()).append("\n");
-        info.append("Price: $").append(String.format("%.2f", product.getPrice())).append("\n");
+        info.append("Price: ").append(String.format("%.2f DT", product.getPrice())).append("\n");
         info.append("Weight: ").append(product.getWeight()).append(" kg\n");
         info.append("Available: ").append(product.getQuantity()).append("\n");
         

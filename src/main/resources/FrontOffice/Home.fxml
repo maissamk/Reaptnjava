@@ -16,14 +16,14 @@
 
    <!-- Top Navigation Bar (unchanged) -->
    <top>
-      <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header">
+      <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header" minHeight="80.0">
          <!-- Logo -->
          <ImageView fitHeight="71.0" fitWidth="280.0" preserveRatio="true" styleClass="logo">
             <Image url="@/images/logoapp.jpg" />
          </ImageView>
 
          <!-- User Info -->
-         <HBox alignment="CENTER_LEFT" spacing="12">
+         <HBox alignment="CENTER_LEFT" spacing="12" minWidth="150.0">
             <ImageView fx:id="userAvatar" fitHeight="42.0" fitWidth="42.0" preserveRatio="true" styleClass="user-avatar">
                <clip>
                   <Circle centerX="21.0" centerY="21.0" radius="21.0" />
@@ -34,7 +34,14 @@
                   <Label fx:id="userNameLabel" styleClass="user-name" />
                   <Label fx:id="userRoleLabel" styleClass="user-role" />
                </VBox>
-               <Button fx:id="profileButton" styleClass="profile-button" text="Mon Profile" />
+
+               <Button fx:id="profileButton" styleClass="profile-button" text="Mon Profile" >
+                  <graphic>
+                     <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/icons/profile.png" />
+                     </ImageView>
+                  </graphic>
+               </Button>
             </VBox>
          </HBox>
 
@@ -46,8 +53,15 @@
          <Button fx:id="produitsDetailButton" styleClass="nav-button" text="Produits Detail" />
          <Button fx:id="parcelleButton" styleClass="nav-button" text="Parcelle" />
          <Button fx:id="offersButton" onAction="#handleOffers" styleClass="nav-button" text="Offers" />
-         <Button fx:id="commandeButton" onAction="#handleCommande" styleClass="featured-button" text="Commande" />
-         <!--Button fx:id="masterfulButton" styleClass="featured-button" text="Masterful Agricole" /-->
+         <Button fx:id="plantButton" styleClass="featured-button" text="Plante AI" />
+
+         <Button fx:id="commandeButton" onAction="#handleCommande" styleClass="featured-button" text="Panier" >
+            <graphic>
+               <ImageView fitHeight="16" fitWidth="16">
+                  <Image url="@/images/icons/panier.png" />
+               </ImageView>
+            </graphic>
+         </Button>
 
          <Region HBox.hgrow="ALWAYS" />
 
@@ -76,7 +90,7 @@
    <bottom>
       <VBox spacing="0">
          <Separator style="-fx-background-color: #c8e6c9;" />
-         <HBox alignment="CENTER" styleClass="footer">
+         <HBox alignment="CENTER" styleClass="footer" minHeight="40.0">
             <Label fx:id="welcomeLabel" styleClass="welcome-text" text="Welcome to Agricultural Management System" />
             <Label styleClass="footer-text" text="AgronianofExample.com © 2023" />
             <Region HBox.hgrow="ALWAYS" />

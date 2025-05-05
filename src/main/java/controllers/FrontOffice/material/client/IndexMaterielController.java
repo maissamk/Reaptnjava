@@ -2,6 +2,7 @@ package controllers.FrontOffice.material.client;
 
 import Models.MaterielLocation;
 import Models.MaterielVente;
+import controllers.FrontOffice.Home;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -300,38 +301,61 @@ public class IndexMaterielController {
 
     private void handleShowVente(MaterielVente materiel) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/materials/client/ShowMaterielVente.fxml"));
-            Parent root = loader.load();
+            // Load Home.fxml which contains the navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
-            ShowMaterielVenteController controller = loader.getController();
+            // Load the material detail content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/materials/client/ShowMaterielVente.fxml"));
+            Parent content = contentLoader.load();
+
+            // Get the detail controller and pass the material data
+            ShowMaterielVenteController controller = contentLoader.getController();
             controller.setMateriel(materiel);
 
-            Stage stage = new Stage();
-            stage.setTitle("Détails du Matériel à Vendre");
+            // Set the content in Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
+
+            // Update the stage
+            Stage stage = (Stage) venteGridContainer.getScene().getWindow();
+            stage.setScene(new Scene(homeRoot));
             stage.setFullScreen(true);
-            stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-
-            e.printStackTrace();        }
+            showAlert("Erreur", "Impossible d'afficher les détails", Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
     }
 
     private void handleShowLocation(MaterielLocation materiel) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/materials/client/ShowMaterielLocation.fxml"));
-            Parent root = loader.load();
+            // Load Home.fxml which contains the navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
-            ShowMaterielLocationController controller = loader.getController();
+            // Load the material detail content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/materials/client/ShowMaterielLocation.fxml"));
+            Parent content = contentLoader.load();
+
+            // Get the detail controller and pass the material data
+            ShowMaterielLocationController controller = contentLoader.getController();
             controller.setMateriel(materiel);
 
-            Stage stage = new Stage();
-            stage.setTitle("Détails du Matériel à Louer");
-            stage.setScene(new Scene(root));
+            // Set the content in Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
+
+            // Update the stage
+            Stage stage = (Stage) locationGridContainer.getScene().getWindow();
+            stage.setScene(new Scene(homeRoot));
             stage.show();
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'afficher les détails", Alert.AlertType.ERROR);
+            e.printStackTrace();
         }
     }
+
 
     @FXML
     private void handleSearchVente() {

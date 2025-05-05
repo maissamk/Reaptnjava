@@ -3,19 +3,17 @@ package controllers.FrontOffice.Offer;
 import controllers.FrontOffice.BaseFrontController;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
+import javafx.scene.control.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import Models.Offre;
+import javafx.scene.layout.StackPane;
 import services.OffreService;
 import java.sql.SQLException;
 import java.util.List;
 
 import javafx.scene.layout.VBox;
-import javafx.scene.control.Label;
 
 
 import javafx.fxml.FXMLLoader;
@@ -28,6 +26,8 @@ import java.io.IOException;
 
 import java.util.ResourceBundle;
 
+import static utils.NavigationUtil.showAlert;
+
 public class indexOffreController {
 
     @FXML
@@ -35,6 +35,7 @@ public class indexOffreController {
     @FXML private ListView<Offre> offersListView;
     @FXML private Button loadMoreButton;
     @FXML private Button addOffreButton;
+    @FXML private Button backHomeButton;
     private Offre selectedOffre;
     private ResourceBundle bundle;
 
@@ -124,51 +125,56 @@ public class indexOffreController {
     // Handle the "Ajouter Offre" button click to go to the offer creation page
     @FXML
     private void handleAjouterOffre(ActionEvent event) throws IOException {
-
-        FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
-        Parent baseRoot = baseLoader.load();
-        BaseFrontController baseController = baseLoader.getController();
-
-
-        FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/ajouterOffre.fxml"));
-        Parent content = contentLoader.load(); // content with its own controller & methods
-
-        // Inject the page content into base layout
-        baseController.getContentPane().getChildren().setAll(content);
-
-        //display
-        Scene scene = new Scene(baseRoot);
-        Stage stage = (Stage) addOffreButton.getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    private void openDetailOffrePage(Offre selectedOffre) {
         try {
-            // Load base layout
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
-            Parent baseRoot = baseLoader.load();
-            BaseFrontController baseController = baseLoader.getController();
-
-            // Load the detail content
-            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/detailOffre.fxml"));
+            // Load just the ajouterOffre content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/ajouterOffre.fxml"));
             Parent content = contentLoader.load();
 
-            // Inject detail page into the base layout
-            baseController.getContentPane().getChildren().setAll(content);
+            // Get the reference to the main content pane from the parent
+            StackPane mainContentPane = (StackPane) addOffreButton.getScene().lookup("#mainContentPane");
 
-            // Get the detail controller and pass the selected Offre
-            detailOffreController detailController = contentLoader.getController();
-            detailController.setOffre(selectedOffre);
-
-            // Display everything
-            Scene scene = new Scene(baseRoot);
-            Stage stage = (Stage) offersListView.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            // Clear existing content and add the new content
+            mainContentPane.getChildren().clear();
+            mainContentPane.getChildren().add(content);
 
         } catch (IOException e) {
             e.printStackTrace();
+            showAlert("Error", "Failed to load add offer page", "error" );
+        }
+    }
+    private void openDetailOffrePage(Offre selectedOffre) {
+        try {
+            // Get the current scene
+            Scene currentScene = offersListView.getScene();
+            if (currentScene == null) {
+                throw new IllegalStateException("Scene is not set");
+            }
+
+            // Look for the main content pane
+            StackPane mainContentPane = (StackPane) currentScene.lookup("#mainContentPane");
+            if (mainContentPane == null) {
+                // Try looking in the root first
+                Parent root = currentScene.getRoot();
+                mainContentPane = (StackPane) root.lookup("#mainContentPane");
+
+                if (mainContentPane == null) {
+                    throw new IllegalStateException("Could not find mainContentPane in scene");
+                }
+            }
+
+            // Load and display content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/detailOffre.fxml"));
+            Parent content = contentLoader.load();
+
+            mainContentPane.getChildren().clear();
+            mainContentPane.getChildren().add(content);
+
+            detailOffreController detailController = contentLoader.getController();
+            detailController.setOffre(selectedOffre);
+
+        } catch (IOException | IllegalStateException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load offer details: " + e.getMessage(), "error");
         }
     }
 
@@ -193,4 +199,16 @@ public class indexOffreController {
         addOffreButton.setText(LanguageManager.getString("addOffre"));
     }
 
+    public void handleReturnHome(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) backHomeButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

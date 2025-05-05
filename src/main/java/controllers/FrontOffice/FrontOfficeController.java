@@ -27,6 +27,12 @@ import javafx.embed.swing.SwingFXUtils;
 import java.io.File;
 
 import components.WeatherWidget;
+import utils.ImageUtils;
+import javafx.stage.Popup;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Window;
 
 public class FrontOfficeController implements Initializable {
     @FXML private TextField searchField;
@@ -73,6 +79,13 @@ public class FrontOfficeController implements Initializable {
         setupSortComboBox();
         setupQRCodeSection();
         setupPagination();
+        
+        // Initialize minPrice to 0
+        minPrice.setText("0.00 DT");
+        
+        // Display initial products
+        int initialProductCount = Math.min(PRODUCTS_PER_PAGE, filteredProducts.size());
+        productCount.setText(String.format("Showing %d of %d products", initialProductCount, filteredProducts.size()));
         displayProducts(0);
         displayFeaturedProducts();
     }
@@ -90,7 +103,7 @@ public class FrontOfficeController implements Initializable {
                     .orElse(100.0);
             
             priceSlider.setMax(maxProductPrice);
-            maxPrice.setText(String.format("$%.2f", maxProductPrice));
+            maxPrice.setText(String.format("%.2f DT", maxProductPrice));
         } catch (Exception e) {
             showError("Error loading products", e.getMessage());
         }
@@ -124,7 +137,7 @@ public class FrontOfficeController implements Initializable {
 
     private void setupPriceSlider() {
         priceSlider.valueProperty().addListener((obs, old, newValue) -> {
-            maxPrice.setText(String.format("$%.2f", newValue.doubleValue()));
+            maxPrice.setText(String.format("%.2f DT", newValue.doubleValue()));
             filterProducts();
         });
     }
@@ -146,9 +159,17 @@ public class FrontOfficeController implements Initializable {
     }
 
     private void setupPagination() {
-        productPagination.setPageCount((int) Math.ceil((double) filteredProducts.size() / PRODUCTS_PER_PAGE));
+        int pageCount = (int) Math.ceil((double) filteredProducts.size() / PRODUCTS_PER_PAGE);
+        pageCount = Math.max(1, pageCount); // Ensure at least one page
+        
+        productPagination.setPageCount(pageCount);
         productPagination.setCurrentPageIndex(0);
         productPagination.setPageFactory(this::displayProducts);
+        
+        // Add page change listener to update product count
+        productPagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> {
+            displayProducts(newIndex.intValue());
+        });
     }
 
     private Node displayProducts(int pageIndex) {
@@ -162,6 +183,11 @@ public class FrontOfficeController implements Initializable {
             productsGrid.getChildren().add(createProductCard(product));
         }
         
+        // Update product count text
+        int productsShown = toIndex - fromIndex;
+        int totalProducts = filteredProducts.size();
+        productCount.setText(String.format("Showing %d of %d products", productsShown, totalProducts));
+        
         return productsGrid;
     }
 
@@ -174,6 +200,10 @@ public class FrontOfficeController implements Initializable {
                 .forEach(product -> {
                     VBox card = createProductCard(product);
                     card.setPrefWidth(280);
+                    card.setMinWidth(280);
+                    card.setMaxWidth(280);
+                    card.setPrefHeight(350);
+                    card.setMinHeight(350);
                     featuredProducts.getChildren().add(card);
                 });
     }
@@ -181,6 +211,12 @@ public class FrontOfficeController implements Initializable {
     private VBox createProductCard(Product product) {
         VBox card = new VBox(10);
         card.getStyleClass().add("product-card");
+        card.setPrefWidth(220);
+        card.setMinWidth(220);
+        card.setMaxWidth(220);
+        card.setPrefHeight(320);
+        card.setMinHeight(320);
+        card.setStyle("-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 0); -fx-border-color: #e2efe2; -fx-border-radius: 8;");
         
         // Product Image
         ImageView imageView = new ImageView();
@@ -191,55 +227,64 @@ public class FrontOfficeController implements Initializable {
         String imagePath = product.getImage();
         if (imagePath != null && !imagePath.isEmpty()) {
             try {
-                // Convert the database path to a resource path
-                String resourcePath;
-                if (imagePath.startsWith("file:") || imagePath.startsWith("http")) {
-                    resourcePath = imagePath;
-                } else {
-                    // Assuming images are stored in resources/images directory
-                    resourcePath = getClass().getResource("/images/" + imagePath).toExternalForm();
-                }
+                // Use ImageUtils to load the product image
+                Image image = ImageUtils.loadProductImage(imagePath, 180, 180);
                 
-                Image image = new Image(resourcePath, 180, 180, true, true);
-                if (!image.isError()) {
+                if (image != null && !image.isError()) {
                     imageView.setImage(image);
                     // Add the image to the card
                     StackPane imageContainer = new StackPane(imageView);
                     imageContainer.getStyleClass().add("product-image-container");
+                    imageContainer.setStyle("-fx-padding: 10;");
                     card.getChildren().add(imageContainer);
                 } else {
                     addPlaceholder(card, product);
                 }
             } catch (Exception e) {
+                System.err.println("Error loading image for product " + product.getCategory() + ": " + e.getMessage());
                 addPlaceholder(card, product);
             }
         } else {
             addPlaceholder(card, product);
         }
         
+        // Product details in a separate VBox to control spacing
+        VBox detailsBox = new VBox(8);
+        detailsBox.setAlignment(Pos.CENTER);
+        detailsBox.setPadding(new javafx.geometry.Insets(10, 5, 10, 5));
+        
         Label titleLabel = new Label(product.getCategory());
         titleLabel.getStyleClass().add("product-title");
+        titleLabel.setWrapText(true);
+        titleLabel.setAlignment(Pos.CENTER);
+        titleLabel.setStyle("-fx-text-fill: #386e40; -fx-font-weight: bold; -fx-font-size: 16px;");
         
-        Label priceLabel = new Label(String.format("$%.2f", product.getPrice()));
+        Label priceLabel = new Label(String.format("%.2f DT", product.getPrice()));
         priceLabel.getStyleClass().add("product-price");
+        priceLabel.setStyle("-fx-text-fill: #488251; -fx-font-size: 14px;");
+        
+        detailsBox.getChildren().addAll(titleLabel, priceLabel);
         
         // Button Container
         HBox buttonContainer = new HBox(10);
         buttonContainer.setAlignment(Pos.CENTER);
+        buttonContainer.setPadding(new javafx.geometry.Insets(0, 0, 10, 0));
         
         // Add to Cart Button
         Button addToCartBtn = new Button("Add to Cart");
         addToCartBtn.getStyleClass().add("add-to-cart-button");
+        addToCartBtn.setStyle("-fx-background-color: #ffb006; -fx-text-fill: black; -fx-font-weight: bold; -fx-background-radius: 4;");
         addToCartBtn.setOnAction(e -> addToCart(product));
         
         // View QR Code Button
         Button viewQrBtn = new Button("View QR");
         viewQrBtn.getStyleClass().add("view-qr-button");
-        viewQrBtn.setOnAction(e -> displayQRCode(product));
+        viewQrBtn.setStyle("-fx-background-color: transparent; -fx-border-color: #386e40; -fx-text-fill: #386e40; -fx-background-radius: 4; -fx-border-radius: 4;");
+        viewQrBtn.setOnAction(e -> displayQRCode(product, viewQrBtn));
         
         buttonContainer.getChildren().addAll(addToCartBtn, viewQrBtn);
         
-        card.getChildren().addAll(titleLabel, priceLabel, buttonContainer);
+        card.getChildren().addAll(detailsBox, buttonContainer);
         card.setAlignment(Pos.CENTER);
         
         return card;
@@ -249,15 +294,16 @@ public class FrontOfficeController implements Initializable {
         Region placeholder = new Region();
         placeholder.setMinSize(180, 180);
         placeholder.setMaxSize(180, 180);
-        placeholder.setStyle("-fx-background-color: #dcfce7; -fx-background-radius: 8;");
+        placeholder.setStyle("-fx-background-color: #f6fbf7; -fx-background-radius: 8;");
         
         String categoryInitial = !product.getCategory().isEmpty() ? 
             product.getCategory().substring(0, 1).toUpperCase() : "P";
         Label placeholderText = new Label(categoryInitial);
-        placeholderText.setStyle("-fx-font-size: 48px; -fx-text-fill: #064e3b; -fx-font-weight: bold;");
+        placeholderText.setStyle("-fx-font-size: 48px; -fx-text-fill: #386e40; -fx-font-weight: bold;");
         
         StackPane placeholderStack = new StackPane(placeholder, placeholderText);
         placeholderStack.getStyleClass().add("product-image-container");
+        placeholderStack.setStyle("-fx-padding: 10;");
         
         card.getChildren().add(placeholderStack);
     }
@@ -300,8 +346,13 @@ public class FrontOfficeController implements Initializable {
         }
         
         // Update pagination
-        productPagination.setPageCount((int) Math.ceil((double) filteredProducts.size() / PRODUCTS_PER_PAGE));
-        displayProducts(productPagination.getCurrentPageIndex());
+        int pageCount = (int) Math.ceil((double) filteredProducts.size() / PRODUCTS_PER_PAGE);
+        pageCount = Math.max(1, pageCount); // Ensure at least one page
+        productPagination.setPageCount(pageCount);
+        
+        // Reset to first page when filter changes
+        productPagination.setCurrentPageIndex(0);
+        displayProducts(0);
     }
 
     private void addToCart(Product product) {
@@ -331,7 +382,7 @@ public class FrontOfficeController implements Initializable {
         alert.showAndWait();
     }
 
-    private void displayQRCode(Product product) {
+    private void displayQRCode(Product product, Button sourceButton) {
         this.selectedProduct = product;
         
         // Generate QR code image
@@ -343,6 +394,49 @@ public class FrontOfficeController implements Initializable {
         
         // Enable save button
         saveQrCodeButton.setDisable(false);
+        
+        // Show popup with QR code
+        showQRCodePopup(product, qrImage, sourceButton);
+    }
+    
+    private void showQRCodePopup(Product product, Image qrImage, Button sourceButton) {
+        // Create popup
+        Popup popup = new Popup();
+        popup.setAutoHide(true);
+        popup.setHideOnEscape(true);
+        
+        // Create a container for the QR code
+        StackPane popupContent = new StackPane();
+        popupContent.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0); -fx-background-radius: 5;");
+        
+        // Create QR code ImageView
+        ImageView popupQrView = new ImageView(qrImage);
+        popupQrView.setFitWidth(200);
+        popupQrView.setFitHeight(200);
+        popupQrView.setPreserveRatio(true);
+        
+        // Create a title label
+        Label titleLabel = new Label(product.getCategory() + " - " + String.format("%.2f DT", product.getPrice()));
+        titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 0 0 10 0;");
+        
+        // Close on click
+        popupContent.setOnMouseClicked(e -> popup.hide());
+        
+        // Create a VBox to hold the title and image
+        VBox popupVBox = new VBox(10);
+        popupVBox.setAlignment(Pos.CENTER);
+        popupVBox.getChildren().addAll(titleLabel, popupQrView);
+        
+        popupContent.getChildren().add(popupVBox);
+        popup.getContent().add(popupContent);
+        
+        // Show popup near the button
+        javafx.geometry.Bounds buttonBounds = sourceButton.localToScreen(sourceButton.getBoundsInLocal());
+        double centerX = buttonBounds.getMinX() + buttonBounds.getWidth() / 2;
+        double centerY = buttonBounds.getMinY() + buttonBounds.getHeight() / 2;
+        
+        // Position popup above the button with some offset
+        popup.show(sourceButton, centerX - 100, centerY - 240);
     }
     
     private void saveQRCodeToFile() {

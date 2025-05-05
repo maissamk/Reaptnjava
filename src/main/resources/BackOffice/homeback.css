@@ -281,3 +281,41 @@
 .pulse-effect {
     -fx-animation: pulse 2s infinite;
 }
+
+/* Dropdown Button Styles */
+.dropdown-btn {
+    -fx-mark-color: #FFD54F;
+    -fx-content-display: right;
+    -fx-cursor: hand;
+}
+
+.dropdown-btn:hover {
+    -fx-background-color: rgba(255, 213, 79, 0.15);
+}
+
+/* Context Menu Styles for Products Dropdown */
+.context-menu {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-color: rgba(0, 0, 0, 0.1);
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0.2, 0, 3);
+}
+
+.menu-item {
+    -fx-padding: 8 15;
+    -fx-background-radius: 6;
+}
+
+.menu-item:hover {
+    -fx-background-color: rgba(46, 125, 50, 0.1);
+}
+
+.menu-item:focused {
+    -fx-background-color: rgba(46, 125, 50, 0.15);
+}
+
+.menu-item .label {
+    -fx-text-fill: #424242;
+    -fx-font-weight: 500;
+}
