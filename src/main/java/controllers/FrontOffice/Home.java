@@ -6,73 +6,42 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.image.ImageView;
 import javafx.fxml.Initializable;
-import controllers.FrontOffice.material.client.ShowMaterielLocationController;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import services.UserServices;
 import utils.SessionManager;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Home implements Initializable {
 
-    @FXML
-    public Button material;
+    @FXML public Button material;
     // Navigation elements
-    @FXML
-    private HBox topNavigationBar;
-    @FXML
-    private ImageView logoImageView;
-
-
-
-    @FXML
-    private Button accueilButton;
-    @FXML
-    private Button produitsButton;
-    @FXML
-    private Button produitsDetailButton;
-    @FXML
-    private Button parcelleButton;
-    @FXML
-    private Button offersButton;
-    @FXML
-    private Button masterfulButton;
-    @FXML
-    private Button loginButton;
-    @FXML
-    private Button profileButton;
-    @FXML
-    private Button commandeButton;
-
+    @FXML private HBox topNavigationBar;
+    @FXML private ImageView logoImageView;
+    @FXML private Button accueilButton;
+    @FXML private Button produitsButton;
+    @FXML private Button parcelleButton;
+    @FXML private Button offersButton;
+    @FXML private Button masterfulButton;
+    @FXML private Button loginButton;
+    @FXML private Button profileButton;
+    @FXML private Button commandeButton;
 
     // User info elements
-    @FXML
-    private ImageView userAvatar;
-    @FXML
-    private Label userNameLabel;
-    @FXML
-    private Label userRoleLabel;
-
-    // Main content
-    @FXML
-    private StackPane mainContentPane;
-    @FXML
-    private Label welcomeLabel;
+    @FXML private ImageView userAvatar;
+    @FXML private Label userNameLabel;
+    @FXML private Label userRoleLabel;
+    @FXML private StackPane mainContentPane; // Make sure this matches your FXML
+    @FXML private Label welcomeLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -128,12 +97,9 @@ public class Home implements Initializable {
     private void setupEventHandlers() {
         // Navigation buttons
         accueilButton.setOnAction(e -> handleAccueil());
-
         commandeButton.setOnAction(this::handleCommande);
-
         material.setOnAction(this::handleMaterial);
         produitsButton.setOnAction(e -> handleProduitsDetail());
-        produitsDetailButton.setOnAction(e -> handleProduitsDetail());
         parcelleButton.setOnAction(e -> handleParcelle());
         offersButton.setOnAction(e -> handleOffers());
         masterfulButton.setOnAction(e -> handleMasterful());
@@ -143,10 +109,62 @@ public class Home implements Initializable {
         profileButton.setOnAction(e -> handleProfile());
     }
 
-    private void handleProduitsDetail() {
+
+    private void handleParcelle() {
+        try {
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
+            Parent baseRoot = baseLoader.load();
+            BaseFrontController baseController = baseLoader.getController();
+
+            // Charger Afficherparcelles dans le contentPane
+            Parent content = FXMLLoader.load(getClass().getResource("/FrontOffice/parcelles/Afficherparcelles.fxml"));
+            baseController.getContentPane().getChildren().setAll(content);
+
+            // Mettre à jour la scène
+            Stage stage = (Stage) parcelleButton.getScene().getWindow();
+            stage.setScene(new Scene(baseRoot));
+        } catch (IOException e) {
+            e.printStackTrace();
+            //showAlert("Erreur", "Échec du chargement : " + e.getMessage());
+        }
     }
 
-    // Navigation handlers (keep your existing methods)
+
+
+
+    @FXML
+    private void handleProfile() {
+        try {
+            // Load the profile FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/profile.fxml"));
+            Parent profileContent = loader.load();
+
+            // Clear existing content and add the profile content
+            mainContentPane.getChildren().clear();
+            mainContentPane.getChildren().add(profileContent);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load profile page", Alert.AlertType.ERROR);
+        }
+    }
+
+    private void handleProduitsDetail() {
+        try {
+            // Charger FrontOffice.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Produits/FrontOffice.fxml"));
+            Parent productContent = loader.load();
+            
+            // Effacer le contenu existant et ajouter le nouveau contenu
+            mainContentPane.getChildren().clear();
+            mainContentPane.getChildren().add(productContent);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load products page: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
     private void handleAccueil() {
         System.out.println("Accueil clicked");
     }
@@ -156,37 +174,54 @@ public class Home implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
 
-            // Get the stage from the event source
-            //  Node source = (Node) event.getSource();
-            //    Stage stage = (Stage) source.getScene().getWindow();
-            //stage.setFullScreen(true);
-            // Set the new scene
             Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.sizeToScene(); // Optional: resize to fit new content
+            
+            // Obtenir les dimensions de l'écran pour une interface responsive
+            javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
+            
+            // Définir la taille de la fenêtre à 80% de l'écran
+            double width = screenBounds.getWidth() * 0.8;
+            double height = screenBounds.getHeight() * 0.8;
+            
+            Scene scene = new Scene(root, width, height);
+            
+            // Activer le redimensionnement
+            stage.setResizable(true);
+            
+            // Définir une taille minimale
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+            
+            // Configurer la scène
+            stage.setScene(scene);
+            
+            // Centrer sur l'écran
+            stage.centerOnScreen();
+            
             stage.show();
         } catch (IOException e) {
+            showAlert("Error", "Failed to load page: " + fxmlPath, Alert.AlertType.ERROR);
+            System.out.println(e.getMessage());
         }
     }
 
-    // Usage in your button handler:
     @FXML
     private void handleProduits(ActionEvent event) {
+        // Implementation
     }
 
     @FXML
     private void handleCommande(ActionEvent event) {
-        navigateTo("/BackOffice/GestionCommandeBack/CommandesAvecDetails.fxml", event);
+        navigateTo("/FrontOffice/GestionCommande/CommandesAvecDetails.fxml", event);
     }
 
     private void handleMaterial(ActionEvent event) {
+        System.out.println("xxxxxxx");
         navigateTo("/FrontOffice/materials/client/IndexMateriel.fxml", event);
+        System.out.println("xxxxxxx");
     }
 
 
-    private void handleParcelle() {
-        System.out.println("Parcelle clicked");
-    }
 
     @FXML
     private void handleOffers() {
@@ -218,27 +253,6 @@ public class Home implements Initializable {
     }
 
     @FXML
-    private void handleProfile() {
-        try {
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
-            Parent baseRoot = baseLoader.load();
-            BaseFrontController baseController = baseLoader.getController();
-
-            FXMLLoader profileLoader = new FXMLLoader(getClass().getResource("/FrontOffice/user/profile.fxml"));
-            Parent profileContent = profileLoader.load();
-
-            baseController.getContentPane().getChildren().setAll(profileContent);
-
-            Stage stage = (Stage) profileButton.getScene().getWindow();
-            stage.setScene(new Scene(baseRoot));
-            stage.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
     private void handleLogin() {
         try {
             if (SessionManager.getInstance().isLoggedIn()) {
@@ -247,23 +261,27 @@ public class Home implements Initializable {
 
                 // Refresh the home page
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
-                Parent root = loader.load();
-
                 Stage stage = (Stage) loginButton.getScene().getWindow();
-                stage.setScene(new Scene(root));
+                stage.setScene(new Scene(loader.load()));
                 stage.show();
             } else {
                 // Login logic - redirect to login page
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/Login.fxml"));
-                Parent root = loader.load();
-
                 Stage stage = (Stage) loginButton.getScene().getWindow();
-                stage.setScene(new Scene(root));
+                stage.setScene(new Scene(loader.load()));
                 stage.show();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            showAlert("Error", "Failed to load login page", Alert.AlertType.ERROR);
         }
+    }
+
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     public void HomeBack(ActionEvent actionEvent) throws IOException {

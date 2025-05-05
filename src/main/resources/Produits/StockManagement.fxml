@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="700.0" prefWidth="950.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BackOffice.StockManagementController">
+    <VBox spacing="20.0" styleClass="management-content" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        </padding>
+        
+        <HBox alignment="CENTER_LEFT" spacing="15.0">
+            <ImageView fitHeight="60.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                    <Image url="@../images/logoapp.png" />
+                </image>
+            </ImageView>
+            <Label styleClass="section-header" text="Stock Management">
+                <graphic>
+                    <FontIcon iconLiteral="fas-boxes" iconSize="24" />
+                </graphic>
+            </Label>
+        </HBox>
+        
+        <HBox alignment="CENTER_LEFT" spacing="15.0">
+            <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="search-box" HBox.hgrow="ALWAYS">
+                <padding>
+                    <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                </padding>
+                <FontIcon iconLiteral="fas-search" iconSize="16" iconColor="#3b82f6" />
+                <TextField fx:id="searchField" prefWidth="300.0" promptText="Search by product name, category, season..." styleClass="search-box-field" HBox.hgrow="ALWAYS" />
+            </HBox>
+            <Button fx:id="showLowStockButton" text="Show Low Stock Items" styleClass="warning-button">
+                <graphic>
+                    <FontIcon iconLiteral="fas-exclamation-triangle" iconSize="14" />
+                </graphic>
+            </Button>
+        </HBox>
+        
+        <TableView fx:id="stockTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="idColumn" prefWidth="50.0" text="ID" />
+                <TableColumn fx:id="productColumn" prefWidth="200.0" text="Product" />
+                <TableColumn fx:id="availableQuantityColumn" prefWidth="120.0" text="Available Quantity" />
+                <TableColumn fx:id="stockMinimumColumn" prefWidth="120.0" text="Min Stock" />
+                <TableColumn fx:id="stockMaximumColumn" prefWidth="120.0" text="Max Stock" />
+                <TableColumn fx:id="entryDateColumn" prefWidth="150.0" text="Entry Date" />
+                <TableColumn fx:id="exitDateColumn" prefWidth="150.0" text="Exit Date" />
+            </columns>
+        </TableView>
+        
+        <VBox spacing="20.0" styleClass="card">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <FontIcon iconLiteral="fas-info-circle" iconSize="18" iconColor="#3b82f6" />
+                <Label styleClass="section-header" text="Stock Details" />
+                <VBox.margin>
+                    <Insets bottom="10.0" />
+                </VBox.margin>
+            </HBox>
+            
+            <HBox spacing="20.0">
+                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                    <Label styleClass="form-label" text="Product">
+                        <graphic>
+                            <FontIcon iconLiteral="fas-apple-alt" iconSize="14" iconColor="#3b82f6" />
+                        </graphic>
+                    </Label>
+                    <ComboBox fx:id="productComboBox" maxWidth="Infinity" />
+                </VBox>
+                
+                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                    <Label styleClass="form-label" text="Available Quantity">
+                        <graphic>
+                            <FontIcon iconLiteral="fas-sort-numeric-up" iconSize="14" iconColor="#3b82f6" />
+                        </graphic>
+                    </Label>
+                    <TextField fx:id="availableQuantityField" promptText="Enter quantity" />
+                </VBox>
+            </HBox>
+            
+            <HBox spacing="20.0">
+                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                    <Label styleClass="form-label" text="Minimum Stock">
+                        <graphic>
+                            <FontIcon iconLiteral="fas-arrow-down" iconSize="14" iconColor="#3b82f6" />
+                        </graphic>
+                    </Label>
+                    <TextField fx:id="stockMinimumField" promptText="Enter minimum stock" />
+                </VBox>
+                
+                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                    <Label styleClass="form-label" text="Maximum Stock">
+                        <graphic>
+                            <FontIcon iconLiteral="fas-arrow-up" iconSize="14" iconColor="#3b82f6" />
+                        </graphic>
+                    </Label>
+                    <TextField fx:id="stockMaximumField" promptText="Enter maximum stock" />
+                </VBox>
+            </HBox>
+            
+            <HBox spacing="20.0">
+                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                    <Label styleClass="form-label" text="Entry Date">
+                        <graphic>
+                            <FontIcon iconLiteral="fas-calendar-plus" iconSize="14" iconColor="#3b82f6" />
+                        </graphic>
+                    </Label>
+                    <DatePicker fx:id="entryDatePicker" maxWidth="Infinity" promptText="Select entry date" />
+                </VBox>
+                
+                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                    <Label styleClass="form-label" text="Exit Date (Optional)">
+                        <graphic>
+                            <FontIcon iconLiteral="fas-calendar-minus" iconSize="14" iconColor="#3b82f6" />
+                        </graphic>
+                    </Label>
+                    <DatePicker fx:id="exitDatePicker" maxWidth="Infinity" promptText="Select exit date" />
+                </VBox>
+            </HBox>
+            
+            <HBox alignment="CENTER" spacing="15.0">
+                <Button fx:id="addButton" mnemonicParsing="false" prefHeight="45.0" styleClass="success-button" text="Add">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-plus" iconSize="14" />
+                    </graphic>
+                </Button>
+                <Button fx:id="updateButton" mnemonicParsing="false" prefHeight="45.0" styleClass="warning-button" text="Update">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-edit" iconSize="14" />
+                    </graphic>
+                </Button>
+                <Button fx:id="deleteButton" mnemonicParsing="false" prefHeight="45.0" styleClass="delete-button" text="Delete">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-trash-alt" iconSize="14" />
+                    </graphic>
+                </Button>
+                <Button fx:id="clearButton" mnemonicParsing="false" prefHeight="45.0" text="Clear">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-eraser" iconSize="14" />
+                    </graphic>
+                </Button>
+            </HBox>
+        </VBox>
+    </VBox>
+</AnchorPane> 

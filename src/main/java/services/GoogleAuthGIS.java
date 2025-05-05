@@ -18,10 +18,8 @@ import com.google.api.services.oauth2.model.Userinfo;
 import javafx.concurrent.Task;
 import Models.user;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.ServerSocket;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -56,41 +54,69 @@ public class GoogleAuthGIS {
         return new Task<user>() {
             @Override
             protected user call() throws Exception {
-                LocalServerReceiver receiver = new LocalServerReceiver.Builder()
-                        .setPort(LOCAL_RECEIVER_PORT)
-                        .setCallbackPath("/Callback")
-                        .build();
+                // Try multiple ports in sequence
+                for (int port : new int[]{8888, 8889, 8890, 0}) { // 0 = random available port
+                    LocalServerReceiver receiver = null;
+                    try {
+                        // First check if port is available
+                        if (port != 0 && !isPortAvailable(port)) {
+                            System.out.println("Port " + port + " is in use, skipping...");
+                            continue;
+                        }
 
-                try {
-                    // Open browser for user to select account
-                    String authorizationUrl = flow.newAuthorizationUrl()
-                            .setRedirectUri(receiver.getRedirectUri())
-                            .build();
+                        receiver = new LocalServerReceiver.Builder()
+                                .setPort(port)
+                                .setCallbackPath("/Callback")
+                                .build();
 
-                    System.out.println("Opening browser to: " + authorizationUrl);
-                    openBrowser(authorizationUrl);
+                        System.out.println("Attempting OAuth flow on port: " + port);
 
-                    // Wait for authorization code
-                    Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+                        // Only open browser for the first available port
+                        if (port == 8888 || port == 0) {
+                            String authorizationUrl = flow.newAuthorizationUrl()
+                                    .setRedirectUri(receiver.getRedirectUri())
+                                    .set("prompt", "select_account")
 
-                    if (credential == null) {
-                        throw new RuntimeException("Failed to obtain credentials");
+                                    .build();
+                            openBrowser(authorizationUrl);
+                        }
+
+                        Credential credential = new AuthorizationCodeInstalledApp(flow, receiver)
+                                .authorize("user");
+
+                        // Success case
+                        Oauth2 oauth2 = new Oauth2.Builder(flow.getTransport(), JSON_FACTORY, credential)
+                                .setApplicationName("YourAppName")
+                                .build();
+
+                        Userinfo userInfo = oauth2.userinfo().get().execute();
+                        return createOrUpdateUser(userInfo);
+
+                    } catch (IOException e) {
+                        if (e.getMessage().contains("Address already in use")) {
+                            System.out.println("Port " + port + " failed: " + e.getMessage());
+                            continue; // Try next port
+                        }
+                        throw e; // Re-throw other exceptions
+                    } finally {
+                        if (receiver != null) {
+                            receiver.stop();
+                        }
                     }
-
-                    // Get user info
-                    Oauth2 oauth2 = new Oauth2.Builder(flow.getTransport(), JSON_FACTORY, credential)
-                            .setApplicationName("YourAppName")
-                            .build();
-
-                    Userinfo userInfo = oauth2.userinfo().get().execute();
-                    return createOrUpdateUser(userInfo);
-                } finally {
-                    receiver.stop();
                 }
+                throw new RuntimeException("Failed to find available port for OAuth flow");
             }
         };
     }
 
+    // Helper method to check port availability
+    private boolean isPortAvailable(int port) {
+        try (ServerSocket ignored = new ServerSocket(port)) {
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
     private void openBrowser(String url) {
         try {
             java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));

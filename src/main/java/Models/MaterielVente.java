@@ -1,5 +1,7 @@
 package Models;
 
+import services.MaterielService;
+
 import java.time.LocalDateTime;
 
 public class MaterielVente {
@@ -129,5 +131,10 @@ public class MaterielVente {
         this.slug = slug;
         this.created_at = created_at;
         this.updated_at = updated_at;
+    }
+    public MaterielService materielService = new MaterielService();
+
+    public Categorie getCategorie() {
+        return  materielService.findByCategory(categorie_id);
     }
 }

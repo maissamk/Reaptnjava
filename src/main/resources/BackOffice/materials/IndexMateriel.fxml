@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -12,12 +13,14 @@
             <Label style="-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" text="Gestion des Matériels Agricoles">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="@/images/kamyon.jpg" />
+                        <Image url="@../../images/kamyon.jpg" />
                     </ImageView>
                 </graphic>
             </Label>
             <Region HBox.hgrow="ALWAYS" />
             <Button onAction="#gotocategorie" style="-fx-background-color: #388e3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Catégories" />
+            <Button onAction="#showStatistics" style="-fx-background-color: #81c784; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Statistiques" />
+            <Button onAction="#gotohisotrique" style="-fx-background-color: #388e3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Historique " />
         </HBox>
     </top>
 
@@ -68,6 +71,59 @@
 
                         <Pagination fx:id="locationPagination" style="-fx-alignment: center; -fx-padding: 10; -fx-page-information-visible: false;" />
                     </VBox>
+                </Tab>
+
+                <!-- New Statistics Tab -->
+                <Tab text="Statistiques" style="-fx-font-family: 'Segoe UI';" onSelectionChanged="#loadStatistics">
+                    <content>
+                        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+                            <VBox spacing="20" style="-fx-padding: 20;">
+                                <Label text="Statistiques des Matériels" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2e7d32; -fx-padding: 0 0 10 0;" />
+
+                                <!-- Availability Chart -->
+                                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 1);">
+                                    <Label text="Disponibilité des Matériels" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #388e3c;" />
+                                    <BarChart fx:id="availabilityChart" legendVisible="false" animated="true" style="-fx-background-color: transparent;">
+                                        <xAxis>
+                                            <CategoryAxis label="Type" />
+                                        </xAxis>
+                                        <yAxis>
+                                            <NumberAxis label="Nombre" />
+                                        </yAxis>
+                                    </BarChart>
+                                </VBox>
+
+                                <!-- Price Distribution Chart -->
+                                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 1);">
+                                    <Label text="Répartition des Prix" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #388e3c;" />
+                                    <BarChart fx:id="priceChart" legendVisible="false" animated="true" style="-fx-background-color: transparent;">
+                                        <xAxis>
+                                            <CategoryAxis label="Gamme de Prix" />
+                                        </xAxis>
+                                        <yAxis>
+                                            <NumberAxis label="Nombre" />
+                                        </yAxis>
+                                    </BarChart>
+                                </VBox>
+
+                                <!-- Summary Cards -->
+                                <HBox spacing="20" style="-fx-padding: 10 0 0 0;">
+                                    <VBox style="-fx-background-color: #e8f5e9; -fx-padding: 15; -fx-background-radius: 8; -fx-spacing: 5; -fx-pref-width: 200;">
+                                        <Label text="Total Matériels" style="-fx-font-weight: bold; -fx-text-fill: #2e7d32;" />
+                                        <Label fx:id="totalMaterialsLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #1b5e20;" />
+                                    </VBox>
+                                    <VBox style="-fx-background-color: #e8f5e9; -fx-padding: 15; -fx-background-radius: 8; -fx-spacing: 5; -fx-pref-width: 200;">
+                                        <Label text="Disponibles" style="-fx-font-weight: bold; -fx-text-fill: #2e7d32;" />
+                                        <Label fx:id="availableMaterialsLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #1b5e20;" />
+                                    </VBox>
+                                    <VBox style="-fx-background-color: #e8f5e9; -fx-padding: 15; -fx-background-radius: 8; -fx-spacing: 5; -fx-pref-width: 200;">
+                                        <Label text="Prix Moyen" style="-fx-font-weight: bold; -fx-text-fill: #2e7d32;" />
+                                        <Label fx:id="averagePriceLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #1b5e20;" />
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+                        </ScrollPane>
+                    </content>
                 </Tab>
             </tabs>
         </TabPane>

@@ -18,7 +18,7 @@
         <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header">
             <!-- Logo -->
             <ImageView fitHeight="71.0" fitWidth="280.0" preserveRatio="true" styleClass="logo">
-                <Image url="@images/logoapp.PNG" />
+                <Image url="@images/logoapp.jpg" />
             </ImageView>
 
             <!-- User Info -->
