@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 
+<?import javafx.scene.control.Button?>
 <ScrollPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.FrontOffice.GestionCommande.HistoriqueController"
@@ -185,6 +186,9 @@
                 <Label text="Merci pour votre confiance !" styleClass="thank-you-title"/>
                 <Label text="Nous apprécions votre fidélité et travaillons dur pour vous offrir la meilleure expérience possible." styleClass="thank-you-text"/>
             </VBox>
+
         </VBox>
+
+
     </content>
 </ScrollPane>
