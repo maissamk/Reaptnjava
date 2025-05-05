@@ -50,13 +50,30 @@ public class ParcelleCard {
 
     private void loadImage(String imagePath) {
         try {
-            Image image = new Image(getClass().getResourceAsStream("/" + imagePath));
+            // D'abord, vérifiez si le chemin commence déjà par un slash
+            String resourcePath = imagePath;
+            if (!resourcePath.startsWith("/")) {
+                resourcePath = "/" + imagePath;
+            }
+
+            // Essayez de charger l'image
+            Image image = new Image(getClass().getResourceAsStream(resourcePath));
+
+            // Vérifiez si l'image a été correctement chargée
+            if (image.isError()) {
+                System.out.println("Erreur de chargement de l'image: " + resourcePath);
+                // Si l'image n'a pas été chargée, essayez une méthode alternative
+                image = new Image(getClass().getResourceAsStream("/images/defaut1.jpeg"));
+            }
+
             imageView.setImage(image);
             imageView.setPreserveRatio(true);
             imageView.setFitWidth(280);
             imageView.setFitHeight(150);
         } catch (Exception e) {
-            imageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png")));
+            System.out.println("Exception lors du chargement de l'image: " + e.getMessage());
+            // En cas d'erreur, chargez l'image par défaut
+            imageView.setImage(new Image(getClass().getResourceAsStream("/images/defaut1.jpeg")));
         }
     }
 
