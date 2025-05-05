@@ -18,8 +18,21 @@ import service.StockService;
 import javafx.stage.FileChooser;
 import java.io.File;
 import java.io.FileOutputStream;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfPageEventHelper;
+import com.itextpdf.text.pdf.PdfWriter;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
@@ -32,6 +45,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ReportsController {
 
@@ -565,12 +586,534 @@ public class ReportsController {
     }
     
     private void exportToExcel() {
-        // Excel export functionality will be implemented here
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Coming Soon");
-        alert.setHeaderText("Excel Export");
-        alert.setContentText("Excel export functionality will be implemented in a future update.");
-        alert.showAndWait();
+        try {
+            // Create file chooser for saving the Excel file
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Excel Report");
+            fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
+            fileChooser.setInitialFileName("Reaptn_Report_" + 
+                java.time.LocalDate.now().format(dateFormatter) + ".xlsx");
+            
+            File file = fileChooser.showSaveDialog(exportExcelButton.getScene().getWindow());
+            if (file == null) {
+                return; // User canceled the save dialog
+            }
+            
+            // Create workbook and sheet
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet sheet = workbook.createSheet("Reaptn Report");
+            
+            // Get the selected report type
+            String reportType = reportTypeComboBox.getValue();
+            
+            // Create title row with report type
+            Row titleRow = sheet.createRow(0);
+            Cell titleCell = titleRow.createCell(0);
+            titleCell.setCellValue("Reaptn Agricultural Report - " + reportType);
+            
+            // Apply styling to title
+            CellStyle titleStyle = workbook.createCellStyle();
+            org.apache.poi.ss.usermodel.Font titleFont = workbook.createFont();
+            titleFont.setBold(true);
+            titleFont.setFontHeightInPoints((short) 16);
+            titleStyle.setFont(titleFont);
+            titleCell.setCellStyle(titleStyle);
+            
+            // Add date row
+            Row dateRow = sheet.createRow(1);
+            Cell dateCell = dateRow.createCell(0);
+            dateCell.setCellValue("Generated on: " + java.time.LocalDate.now().format(dateFormatter));
+            
+            // Add empty row for spacing
+            sheet.createRow(2);
+            
+            int rowIndex = 3;
+            
+            // Based on report type, export different data
+            switch (reportType) {
+                case "Product Type Distribution":
+                    rowIndex = exportProductTypeDistribution(workbook, sheet, rowIndex);
+                    break;
+                case "Stock Level Report":
+                    rowIndex = exportStockLevelReport(workbook, sheet, rowIndex);
+                    break;
+                case "Low Stock Items":
+                    rowIndex = exportLowStockReport(workbook, sheet, rowIndex);
+                    break;
+                case "Seasonal Products":
+                    rowIndex = exportSeasonalProductsReport(workbook, sheet, rowIndex);
+                    break;
+                case "Product Price Analysis":
+                    rowIndex = exportPriceAnalysisReport(workbook, sheet, rowIndex);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown report type: " + reportType);
+            }
+            
+            // Auto-size columns for better readability
+            for (int i = 0; i < 10; i++) {
+                sheet.autoSizeColumn(i);
+            }
+            
+            // Write the workbook to the file
+            try (FileOutputStream fileOut = new FileOutputStream(file)) {
+                workbook.write(fileOut);
+            }
+            workbook.close();
+            
+            showAlert(Alert.AlertType.INFORMATION, "Export Successful", 
+                    "Report has been successfully exported to " + file.getAbsolutePath());
+            
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Export Error", 
+                    "An error occurred while exporting to Excel: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private int exportProductTypeDistribution(XSSFWorkbook workbook, XSSFSheet sheet, int startRowIndex) 
+            throws SQLException {
+        int rowIndex = startRowIndex;
+        
+        // Create header row
+        Row headerRow = sheet.createRow(rowIndex++);
+        String[] headers = {"Product Type", "Season", "Production Method", "Count", "Percentage"};
+        
+        // Apply header style
+        CellStyle headerStyle = workbook.createCellStyle();
+        org.apache.poi.ss.usermodel.Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerStyle.setFont(headerFont);
+        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(headerStyle);
+        }
+        
+        // Get data
+        List<ProductType> productTypes = productTypeService.getAll();
+        List<Product> products = productService.getAll();
+        
+        // Count products by type
+        Map<ProductType, Integer> typeCounts = new HashMap<>();
+        for (ProductType type : productTypes) {
+            typeCounts.put(type, 0);
+        }
+        
+        int totalProducts = 0;
+        for (Product product : products) {
+            ProductType type = product.getType();
+            if (type != null) {
+                typeCounts.put(type, typeCounts.getOrDefault(type, 0) + 1);
+                totalProducts++;
+            }
+        }
+        
+        // Create data rows
+        CellStyle dataStyle = workbook.createCellStyle();
+        dataStyle.setAlignment(HorizontalAlignment.LEFT);
+        
+        // Create alternate row style
+        CellStyle alternateStyle = workbook.createCellStyle();
+        alternateStyle.setAlignment(HorizontalAlignment.LEFT);
+        alternateStyle.setFillForegroundColor(IndexedColors.LEMON_CHIFFON.getIndex());
+        alternateStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        
+        int rowCounter = 0;
+        for (Map.Entry<ProductType, Integer> entry : typeCounts.entrySet()) {
+            if (entry.getValue() > 0) {
+                ProductType type = entry.getKey();
+                int count = entry.getValue();
+                double percentage = (double) count / totalProducts * 100;
+                
+                Row row = sheet.createRow(rowIndex++);
+                
+                // Apply alternating row styles
+                CellStyle rowStyle = (rowCounter % 2 == 0) ? dataStyle : alternateStyle;
+                rowCounter++;
+                
+                Cell cell0 = row.createCell(0);
+                cell0.setCellValue(type.getProductionMethod());
+                cell0.setCellStyle(rowStyle);
+                
+                Cell cell1 = row.createCell(1);
+                cell1.setCellValue(type.getSeason());
+                cell1.setCellStyle(rowStyle);
+                
+                Cell cell2 = row.createCell(2);
+                cell2.setCellValue(type.getProductionMethod());
+                cell2.setCellStyle(rowStyle);
+                
+                Cell cell3 = row.createCell(3);
+                cell3.setCellValue(count);
+                cell3.setCellStyle(rowStyle);
+                
+                Cell cell4 = row.createCell(4);
+                cell4.setCellValue(String.format("%.2f%%", percentage));
+                cell4.setCellStyle(rowStyle);
+            }
+        }
+        
+        // Add empty row
+        rowIndex++;
+        
+        // Add total row
+        Row totalRow = sheet.createRow(rowIndex++);
+        CellStyle totalStyle = workbook.createCellStyle();
+        org.apache.poi.ss.usermodel.Font totalFont = workbook.createFont();
+        totalFont.setBold(true);
+        totalStyle.setFont(totalFont);
+        
+        Cell totalLabelCell = totalRow.createCell(0);
+        totalLabelCell.setCellValue("Total Products:");
+        totalLabelCell.setCellStyle(totalStyle);
+        
+        Cell totalValueCell = totalRow.createCell(3);
+        totalValueCell.setCellValue(totalProducts);
+        totalValueCell.setCellStyle(totalStyle);
+        
+        return rowIndex;
+    }
+    
+    private int exportStockLevelReport(XSSFWorkbook workbook, XSSFSheet sheet, int startRowIndex) 
+            throws Exception {
+        int rowIndex = startRowIndex;
+        
+        // Create header row
+        Row headerRow = sheet.createRow(rowIndex++);
+        String[] headers = {"Product", "Category", "Available Quantity", "Minimum Level", "Maximum Level", "Status"};
+        
+        // Apply header style
+        CellStyle headerStyle = workbook.createCellStyle();
+        org.apache.poi.ss.usermodel.Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerStyle.setFont(headerFont);
+        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(headerStyle);
+        }
+        
+        // Get data
+        List<Stock> stocks = stockService.findAll();
+        
+        // Create styles for different stock levels
+        CellStyle normalStyle = workbook.createCellStyle();
+        
+        CellStyle lowStockStyle = workbook.createCellStyle();
+        lowStockStyle.setFillForegroundColor(IndexedColors.LIGHT_ORANGE.getIndex());
+        lowStockStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        
+        CellStyle criticalStyle = workbook.createCellStyle();
+        criticalStyle.setFillForegroundColor(IndexedColors.RED1.getIndex());
+        criticalStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        
+        CellStyle overstockStyle = workbook.createCellStyle();
+        overstockStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+        overstockStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        
+        // Create data rows
+        for (Stock stock : stocks) {
+            Product product = stock.getProduct();
+            if (product != null) {
+                Row row = sheet.createRow(rowIndex++);
+                
+                // Determine row style based on stock level
+                CellStyle rowStyle = normalStyle;
+                String status = "Normal";
+                
+                if (stock.getAvailableQuantity() < stock.getStockMinimum()) {
+                    rowStyle = lowStockStyle;
+                    status = "Low Stock";
+                    
+                    if (stock.getAvailableQuantity() < stock.getStockMinimum() * 0.5) {
+                        rowStyle = criticalStyle;
+                        status = "Critical";
+                    }
+                } else if (stock.getAvailableQuantity() > stock.getStockMaximum()) {
+                    rowStyle = overstockStyle;
+                    status = "Overstock";
+                }
+                
+                Cell cell0 = row.createCell(0);
+                cell0.setCellValue(product.getCategory());
+                cell0.setCellStyle(rowStyle);
+                
+                Cell cell1 = row.createCell(1);
+                cell1.setCellValue(product.getCategory());
+                cell1.setCellStyle(rowStyle);
+                
+                Cell cell2 = row.createCell(2);
+                cell2.setCellValue(stock.getAvailableQuantity());
+                cell2.setCellStyle(rowStyle);
+                
+                Cell cell3 = row.createCell(3);
+                cell3.setCellValue(stock.getStockMinimum());
+                cell3.setCellStyle(rowStyle);
+                
+                Cell cell4 = row.createCell(4);
+                cell4.setCellValue(stock.getStockMaximum());
+                cell4.setCellStyle(rowStyle);
+                
+                Cell cell5 = row.createCell(5);
+                cell5.setCellValue(status);
+                cell5.setCellStyle(rowStyle);
+            }
+        }
+        
+        return rowIndex;
+    }
+    
+    private int exportLowStockReport(XSSFWorkbook workbook, XSSFSheet sheet, int startRowIndex) 
+            throws Exception {
+        int rowIndex = startRowIndex;
+        
+        // Create header row
+        Row headerRow = sheet.createRow(rowIndex++);
+        String[] headers = {"Product", "Category", "Available Quantity", "Minimum Level", "Shortage"};
+        
+        // Apply header style
+        CellStyle headerStyle = workbook.createCellStyle();
+        org.apache.poi.ss.usermodel.Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerStyle.setFont(headerFont);
+        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(headerStyle);
+        }
+        
+        // Get data
+        List<Stock> lowStockItems = stockService.findLowStocks();
+        
+        // Create styles
+        CellStyle lowStockStyle = workbook.createCellStyle();
+        lowStockStyle.setFillForegroundColor(IndexedColors.LIGHT_ORANGE.getIndex());
+        lowStockStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        
+        CellStyle criticalStyle = workbook.createCellStyle();
+        criticalStyle.setFillForegroundColor(IndexedColors.RED1.getIndex());
+        criticalStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        
+        // Create data rows
+        for (Stock stock : lowStockItems) {
+            Product product = stock.getProduct();
+            if (product != null) {
+                Row row = sheet.createRow(rowIndex++);
+                
+                // Determine row style based on severity
+                CellStyle rowStyle = lowStockStyle;
+                if (stock.getAvailableQuantity() < stock.getStockMinimum() * 0.5) {
+                    rowStyle = criticalStyle;
+                }
+                
+                Cell cell0 = row.createCell(0);
+                cell0.setCellValue(product.getCategory());
+                cell0.setCellStyle(rowStyle);
+                
+                Cell cell1 = row.createCell(1);
+                cell1.setCellValue(product.getCategory());
+                cell1.setCellStyle(rowStyle);
+                
+                Cell cell2 = row.createCell(2);
+                cell2.setCellValue(stock.getAvailableQuantity());
+                cell2.setCellStyle(rowStyle);
+                
+                Cell cell3 = row.createCell(3);
+                cell3.setCellValue(stock.getStockMinimum());
+                cell3.setCellStyle(rowStyle);
+                
+                Cell cell4 = row.createCell(4);
+                cell4.setCellValue(stock.getStockMinimum() - stock.getAvailableQuantity());
+                cell4.setCellStyle(rowStyle);
+            }
+        }
+        
+        return rowIndex;
+    }
+    
+    private int exportSeasonalProductsReport(XSSFWorkbook workbook, XSSFSheet sheet, int startRowIndex) 
+            throws SQLException {
+        int rowIndex = startRowIndex;
+        
+        // Create header row
+        Row headerRow = sheet.createRow(rowIndex++);
+        String[] headers = {"Season", "Number of Products", "Total Value (DT)"};
+        
+        // Apply header style
+        CellStyle headerStyle = workbook.createCellStyle();
+        org.apache.poi.ss.usermodel.Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerStyle.setFont(headerFont);
+        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(headerStyle);
+        }
+        
+        // Get data
+        List<Product> products = productService.getAll();
+        
+        // Group by season and calculate statistics
+        Map<String, List<Product>> productsBySeason = products.stream()
+            .filter(p -> p.getType() != null && p.getType().getSeason() != null)
+            .collect(java.util.stream.Collectors.groupingBy(p -> p.getType().getSeason()));
+        
+        // Create styles for different seasons
+        Map<String, CellStyle> seasonStyles = new HashMap<>();
+        
+        CellStyle springStyle = workbook.createCellStyle();
+        springStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        springStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        seasonStyles.put("Spring", springStyle);
+        
+        CellStyle summerStyle = workbook.createCellStyle();
+        summerStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+        summerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        seasonStyles.put("Summer", summerStyle);
+        
+        CellStyle fallStyle = workbook.createCellStyle();
+        fallStyle.setFillForegroundColor(IndexedColors.LIGHT_ORANGE.getIndex());
+        fallStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        seasonStyles.put("Fall", fallStyle);
+        
+        CellStyle winterStyle = workbook.createCellStyle();
+        winterStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        winterStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        seasonStyles.put("Winter", winterStyle);
+        
+        CellStyle defaultStyle = workbook.createCellStyle();
+        
+        // Create data rows
+        for (Map.Entry<String, List<Product>> entry : productsBySeason.entrySet()) {
+            String season = entry.getKey();
+            List<Product> seasonProducts = entry.getValue();
+            int count = seasonProducts.size();
+            double totalValue = seasonProducts.stream()
+                .mapToDouble(p -> p.getPrice() * p.getQuantity())
+                .sum();
+            
+            Row row = sheet.createRow(rowIndex++);
+            
+            // Apply season-specific style if available
+            CellStyle rowStyle = seasonStyles.getOrDefault(season, defaultStyle);
+            
+            Cell cell0 = row.createCell(0);
+            cell0.setCellValue(season);
+            cell0.setCellStyle(rowStyle);
+            
+            Cell cell1 = row.createCell(1);
+            cell1.setCellValue(count);
+            cell1.setCellStyle(rowStyle);
+            
+            Cell cell2 = row.createCell(2);
+            cell2.setCellValue(totalValue);
+            cell2.setCellStyle(rowStyle);
+        }
+        
+        return rowIndex;
+    }
+    
+    private int exportPriceAnalysisReport(XSSFWorkbook workbook, XSSFSheet sheet, int startRowIndex) 
+            throws SQLException {
+        int rowIndex = startRowIndex;
+        
+        // Create header row
+        Row headerRow = sheet.createRow(rowIndex++);
+        String[] headers = {"Category", "Avg Price (DT)", "Min Price (DT)", "Max Price (DT)", "Product Count"};
+        
+        // Apply header style
+        CellStyle headerStyle = workbook.createCellStyle();
+        org.apache.poi.ss.usermodel.Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerStyle.setFont(headerFont);
+        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(headerStyle);
+        }
+        
+        // Get data
+        List<Product> products = productService.getAll();
+        
+        // Group by category
+        Map<String, List<Product>> productsByCategory = products.stream()
+            .collect(java.util.stream.Collectors.groupingBy(Product::getCategory));
+        
+        // Create alternating row styles
+        CellStyle style1 = workbook.createCellStyle();
+        
+        CellStyle style2 = workbook.createCellStyle();
+        style2.setFillForegroundColor(IndexedColors.LEMON_CHIFFON.getIndex());
+        style2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        
+        // Create data rows
+        int rowCounter = 0;
+        for (Map.Entry<String, List<Product>> entry : productsByCategory.entrySet()) {
+            String category = entry.getKey();
+            List<Product> categoryProducts = entry.getValue();
+            
+            double avgPrice = categoryProducts.stream()
+                .mapToDouble(Product::getPrice)
+                .average()
+                .orElse(0);
+            
+            double minPrice = categoryProducts.stream()
+                .mapToDouble(Product::getPrice)
+                .min()
+                .orElse(0);
+            
+            double maxPrice = categoryProducts.stream()
+                .mapToDouble(Product::getPrice)
+                .max()
+                .orElse(0);
+            
+            int count = categoryProducts.size();
+            
+            Row row = sheet.createRow(rowIndex++);
+            
+            // Apply alternating row style
+            CellStyle rowStyle = (rowCounter % 2 == 0) ? style1 : style2;
+            rowCounter++;
+            
+            Cell cell0 = row.createCell(0);
+            cell0.setCellValue(category);
+            cell0.setCellStyle(rowStyle);
+            
+            Cell cell1 = row.createCell(1);
+            cell1.setCellValue(avgPrice);
+            cell1.setCellStyle(rowStyle);
+            
+            Cell cell2 = row.createCell(2);
+            cell2.setCellValue(minPrice);
+            cell2.setCellStyle(rowStyle);
+            
+            Cell cell3 = row.createCell(3);
+            cell3.setCellValue(maxPrice);
+            cell3.setCellStyle(rowStyle);
+            
+            Cell cell4 = row.createCell(4);
+            cell4.setCellValue(count);
+            cell4.setCellStyle(rowStyle);
+        }
+        
+        return rowIndex;
     }
     
     private void showAlert(Alert.AlertType alertType, String title, String message) {

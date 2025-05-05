@@ -29,7 +29,6 @@ public class Home implements Initializable {
     @FXML private ImageView logoImageView;
     @FXML private Button accueilButton;
     @FXML private Button produitsButton;
-    @FXML private Button produitsDetailButton;
     @FXML private Button parcelleButton;
     @FXML private Button offersButton;
     @FXML private Button masterfulButton;
@@ -101,7 +100,6 @@ public class Home implements Initializable {
         commandeButton.setOnAction(this::handleCommande);
         material.setOnAction(this::handleMaterial);
         produitsButton.setOnAction(e -> handleProduitsDetail());
-        produitsDetailButton.setOnAction(e -> handleProduitsDetail());
         parcelleButton.setOnAction(e -> handleParcelle());
         offersButton.setOnAction(e -> handleOffers());
         masterfulButton.setOnAction(e -> handleMasterful());
@@ -152,7 +150,19 @@ public class Home implements Initializable {
     }
 
     private void handleProduitsDetail() {
-        // Implementation
+        try {
+            // Charger FrontOffice.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Produits/FrontOffice.fxml"));
+            Parent productContent = loader.load();
+            
+            // Effacer le contenu existant et ajouter le nouveau contenu
+            mainContentPane.getChildren().clear();
+            mainContentPane.getChildren().add(productContent);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load products page: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     private void handleAccueil() {
@@ -165,8 +175,29 @@ public class Home implements Initializable {
             Parent root = loader.load();
 
             Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.sizeToScene(); // Optional: resize to fit new content
+            
+            // Obtenir les dimensions de l'écran pour une interface responsive
+            javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
+            
+            // Définir la taille de la fenêtre à 80% de l'écran
+            double width = screenBounds.getWidth() * 0.8;
+            double height = screenBounds.getHeight() * 0.8;
+            
+            Scene scene = new Scene(root, width, height);
+            
+            // Activer le redimensionnement
+            stage.setResizable(true);
+            
+            // Définir une taille minimale
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+            
+            // Configurer la scène
+            stage.setScene(scene);
+            
+            // Centrer sur l'écran
+            stage.centerOnScreen();
+            
             stage.show();
         } catch (IOException e) {
             showAlert("Error", "Failed to load page: " + fxmlPath, Alert.AlertType.ERROR);

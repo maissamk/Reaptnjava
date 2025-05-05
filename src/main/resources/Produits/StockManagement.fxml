@@ -16,7 +16,7 @@
         <HBox alignment="CENTER_LEFT" spacing="15.0">
             <ImageView fitHeight="60.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
                 <image>
-                    <Image url="@../images/reap-tn-logo.png" />
+                    <Image url="@../images/logoapp.png" />
                 </image>
             </ImageView>
             <Label styleClass="section-header" text="Stock Management">
