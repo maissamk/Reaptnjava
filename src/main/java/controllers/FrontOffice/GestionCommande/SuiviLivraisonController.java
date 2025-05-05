@@ -2,6 +2,8 @@ package controllers.FrontOffice.GestionCommande;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -10,6 +12,7 @@ import javafx.scene.text.Font;
 import Models.gestionCommande.Livraison;
 import services.gestionCommande.LivraisonService;
 
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -108,6 +111,16 @@ public class SuiviLivraisonController {
         }
     }
 
+    @FXML
+    private void suivreAutreCommande() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/GestionCommande/Historique.fxml"));
+            Parent root = loader.load();
+            adresseLabel.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void startAutoRefresh(int commandeId) {
         refreshTimer.scheduleAtFixedRate(new TimerTask() {

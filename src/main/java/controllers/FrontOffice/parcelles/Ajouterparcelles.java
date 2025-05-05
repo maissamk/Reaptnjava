@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import Models.ParcelleProprietes;
 import services.ParcelleProprietesService;
@@ -41,6 +42,7 @@ public class Ajouterparcelles {
     @FXML private Label fileNameLabel;
     @FXML private Button afficherButton;
     @FXML private Button ajouterContratButton;
+    @FXML private Button parcelleButton;
 
     // Map display elements
     @FXML private WebView mapWebView;
@@ -124,6 +126,31 @@ public class Ajouterparcelles {
 
         // Initialize Leaflet map
         initializeMap();
+
+        parcelleButton.setOnAction(event -> handleParcelle());
+    }
+
+
+    @FXML
+    private void handleParcelle() {
+        try {
+            // Charger le layout de base (avec la navbar)
+            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
+            Parent baseRoot = baseLoader.load();
+            BaseFrontController baseController = baseLoader.getController();
+
+            // Charger Afficherparcelles dans le contentPane du layout de base
+            Parent content = FXMLLoader.load(getClass().getResource("/FrontOffice/parcelles/Afficherparcelles.fxml"));
+            baseController.getContentPane().getChildren().setAll(content);
+
+            // Mettre à jour la scène actuelle
+            Stage stage = (Stage) parcelleButton.getScene().getWindow();
+            stage.setScene(new Scene(baseRoot));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Échec du chargement : " + e.getMessage());
+        }
     }
 
     private void initializeMap() {
@@ -368,6 +395,10 @@ public class Ajouterparcelles {
         }
     }
 
+
+
+    //handle acceil nav vers la page d acceil
+
     @FXML
     private void handleAfficherListe() {
         try {
@@ -384,6 +415,7 @@ public class Ajouterparcelles {
 
             // Update current window
             Stage stage = (Stage) afficherButton.getScene().getWindow();
+
             stage.setScene(new Scene(baseRoot));
 
         } catch (IOException e) {
@@ -418,7 +450,7 @@ public class Ajouterparcelles {
         boolean estDisponible = disponibleCheckBox.isSelected();
 
         // Improved image handling
-        String imagePath = "/images/default.png"; // Default image path
+        String imagePath = "images/default.png"; // Default image path without leading slash
 
         if (selectedFile != null) {
             try {
@@ -442,8 +474,8 @@ public class Ajouterparcelles {
                     }
                 }
 
-                // Store path with leading slash to ensure it works with resource loading
-                imagePath = "/images/" + fileName;
+                // Store path relative to resources without leading slash
+                imagePath = "images/" + fileName;
 
             } catch (IOException e) {
                 showAlert("Erreur", "Erreur lors de la copie de l'image : " + e.getMessage());
@@ -731,6 +763,5 @@ public class Ajouterparcelles {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
 
 }

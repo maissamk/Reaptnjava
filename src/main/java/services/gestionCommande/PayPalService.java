@@ -39,12 +39,12 @@ public class PayPalService {
 
             // Création du montant PayPal
             Amount paypalAmount = new Amount();
-            paypalAmount.setCurrency("EUR");
+            paypalAmount.setCurrency("DT");
             paypalAmount.setTotal(amount.toString());
 
             Transaction transaction = new Transaction();
             transaction.setAmount(paypalAmount);
-            transaction.setDescription("Commande #" + commande.getId());
+            transaction.setDescription("Commande ReapTN ");
 
             List<Transaction> transactions = new ArrayList<>();
             transactions.add(transaction);
