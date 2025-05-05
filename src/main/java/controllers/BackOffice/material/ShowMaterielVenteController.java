@@ -33,7 +33,7 @@ public class ShowMaterielVenteController {
         descriptionLabel.setText(materiel.getDescription());
         disponibiliteLabel.setText(materiel.isDisponibilite() ? "Disponible" : "Non disponible");
         disponibiliteLabel.setStyle("-fx-text-fill: " + (materiel.isDisponibilite() ? "#4CAF50" : "#F44336") + ";");
-        categorieLabel.setText("Catégorie: " + materiel.getCategorieId());
+        categorieLabel.setText("Catégorie: " + materiel.getCategorie());
         createdAtLabel.setText("Ajouté le: " + materiel.getCreatedAt().toLocalDate());
     }
 

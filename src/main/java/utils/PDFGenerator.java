@@ -143,7 +143,7 @@ public class PDFGenerator {
         addDetailRow(table, "Price", String.format("%.2f TND", materiel.getPrix()));
         addDetailRow(table, "Description", materiel.getDescription());
         addDetailRow(table, "Availability", materiel.isDisponibilite() ? "Available" : "Not Available");
-        addDetailRow(table, "Category ID", materiel.getCategorieId() != null ? materiel.getCategorieId().toString() : "N/A");
+        addDetailRow(table, "Category ID", materiel.getCategorie() != null ? materiel.getCategorieId().toString() : "N/A");
 
 
         document.add(table);
@@ -160,7 +160,7 @@ public class PDFGenerator {
         addTableHeader(table, "PROPERTY", "VALUE");
 
         // Material details
-        addDetailRow(table, "Material ID", String.valueOf(materiel.getId()));
+
         addDetailRow(table, "Name", materiel.getNom());
         addDetailRow(table, "Daily Price", String.format("%.2f TND/day", materiel.getPrix()));
         addDetailRow(table, "Description", materiel.getDescription());

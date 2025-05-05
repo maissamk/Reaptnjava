@@ -6,7 +6,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.User.Register">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.User.Register" fx:id="rootPane">
 
     <!-- Background Image -->
     <ImageView fitHeight="600.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="false">
@@ -86,7 +86,7 @@
         <!-- Left side with logo -->
         <ImageView fitHeight="154.0" fitWidth="213.0" layoutX="56.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@../../images/logoapp.png" />
+                <Image url="@/images/logoapp.jpg" />
             </image>
         </ImageView>
 

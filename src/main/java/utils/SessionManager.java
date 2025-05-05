@@ -6,6 +6,7 @@ import services.UserServices;
 import java.io.*;
 import java.util.Properties;
 import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.util.Duration;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -209,7 +210,19 @@ public class SessionManager {
     public boolean canUserLogin(user user) {
         return user != null && !UserStatusService.UserStatus.BLOQUE.toString().equals(user.getStatus());
     }
+    private static user pendingUser;
 
+    public static void setPendingUser(user user) {
+        pendingUser = user;
+    }
+
+    public static user getPendingUser() {
+        return pendingUser;
+    }
+
+    public static void clearPendingUser() {
+        pendingUser = null;
+    }
 
 
 }

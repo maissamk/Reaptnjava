@@ -78,4 +78,5 @@ public class MaterielLocation {
     public void setUserIdMaterielLocationId(Integer user_id_materiellocation_id) {
         this.user_id_materiellocation_id = user_id_materiellocation_id;
     }
+
 }

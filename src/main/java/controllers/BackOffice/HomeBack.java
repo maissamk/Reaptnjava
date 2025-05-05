@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -19,6 +18,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import utils.NavigationUtil;
 import utils.SessionManager;
 
 import java.io.IOException;
@@ -47,6 +47,7 @@ public class HomeBack implements Initializable {
 
     // Sidebar Buttons
     @FXML private Button statisticsBtn;
+    @FXML private Button statisticsBtnUser;
     @FXML private Button farmersBtn;
     @FXML private Button parcelsBtn;
     @FXML private Button harvestBtn;
@@ -108,6 +109,8 @@ public class HomeBack implements Initializable {
         reportsBtn.setOnAction(e -> loadContent("/views/BackOffice/Reports.fxml"));
 
         // Sidebar Navigation
+        statisticsBtnUser.setOnAction(this::handleStatisticsButton);
+        //statisticsBtn.setOnAction(e -> loadContent("/views/BackOffice/Statistics.fxml"));
         statisticsBtn.setOnAction(e -> loadContent("/BackOffice/Offre/statistiques.fxml"));
         farmersBtn.setOnAction(e -> loadContent("/views/BackOffice/Farmers.fxml"));
         parcelsBtn.setOnAction(e -> loadContent("/views/BackOffice/Parcels.fxml"));
@@ -146,7 +149,7 @@ public class HomeBack implements Initializable {
 
     private void loadDashboardContent() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/BackOffice/Dashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
             Parent dashboard = loader.load();
             contentPane.getChildren().setAll(dashboard);
         } catch (IOException e) {
@@ -197,15 +200,34 @@ public class HomeBack implements Initializable {
             });
         }
     }
+    @FXML
+    private void handleStatisticsButton(ActionEvent event) {
+        try {
+            // Load the UserStats content into the main content area
+            loadContent("/BackOffice/user/UserStats.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            NavigationUtil.showErrorAlert("Navigation Error", "Failed to open statistics", e.getMessage());
+        }
+    }
 
     private void handleLogout() {
         SessionManager.getInstance().logout();
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/views/Auth/Login.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/user/Login.fxml"));
             Stage stage = (Stage) logoutBtn.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void handleBack(ActionEvent event) {
+        // Just load the dashboard content
+        try {
+            loadContent("/BackOffice/HomeBack.fxml");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

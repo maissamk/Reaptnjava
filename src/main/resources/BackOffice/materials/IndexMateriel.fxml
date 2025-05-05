@@ -13,13 +13,14 @@
             <Label style="-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: 'Segoe UI';" text="Gestion des Matériels Agricoles">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="@../../images/tractor.png" />
+                        <Image url="@../../images/kamyon.jpg" />
                     </ImageView>
                 </graphic>
             </Label>
             <Region HBox.hgrow="ALWAYS" />
             <Button onAction="#gotocategorie" style="-fx-background-color: #388e3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Catégories" />
             <Button onAction="#showStatistics" style="-fx-background-color: #81c784; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Statistiques" />
+            <Button onAction="#gotohisotrique" style="-fx-background-color: #388e3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Historique " />
         </HBox>
     </top>
 

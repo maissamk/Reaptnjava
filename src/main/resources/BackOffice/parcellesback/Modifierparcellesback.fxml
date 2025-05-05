@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
+            fx:controller="controllers.BackOffice.parcelles.Modifierparcellesback"
+            prefHeight="600.0" prefWidth="700.0">
+
+    <VBox spacing="10" layoutX="20" layoutY="20" prefWidth="660">
+        <Label text="Modifier Parcelle" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+
+        <TextField fx:id="titreField" promptText="Titre"/>
+        <TextField fx:id="prixField" promptText="Prix"/>
+        <ComboBox fx:id="statutCombo" promptText="Statut"/>
+        <ComboBox fx:id="typeTerrain" promptText="Type de terrain"/>
+        <TextField fx:id="tailleField" promptText="Taille (m²)"/>
+        <TextField fx:id="emplacementField" promptText="Emplacement"/>
+        <TextField fx:id="nomProprio" promptText="Nom du propriétaire"/>
+        <TextField fx:id="contactProprio" promptText="Contact du propriétaire"/>
+        <TextField fx:id="emailField" promptText="Email"/>
+        <CheckBox fx:id="disponibleCheckBox" text="Disponible"/>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="Choisir une image" onAction="#handleFileSelect"/>
+            <Label fx:id="fileNameLabel" text="Aucun fichier choisi" />
+        </HBox>
+
+        <HBox spacing="15" alignment="CENTER">
+            <Button text="Enregistrer les modifications" onAction="#handleModifier"/>
+            <Button text="Annuler" onAction="#handleAnnuler"/>
+        </HBox>
+
+    </VBox>
+</AnchorPane>

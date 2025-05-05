@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.text.Text?>
+<?import components.WeatherWidget?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.FrontOffice.FrontOfficeController"
+            stylesheets="@../styles/style.css"
+            prefHeight="900.0" prefWidth="1400.0">
+
+    <!-- Top Navigation Bar - Enhanced with Logo and Better Spacing -->
+    <top>
+        <VBox>
+            <!-- Main Navigation Bar -->
+            <HBox styleClass="front-nav" spacing="20">
+                <padding>
+                    <Insets top="15" right="40" bottom="15" left="40"/>
+                </padding>
+                
+                <!-- Logo and Brand -->
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <ImageView fitHeight="50.0" fitWidth="150.0" preserveRatio="true">
+                        <image>
+                            <Image url="@../images/reap-tn-logo.png" />
+                        </image>
+                    </ImageView>
+                    <Label text="Agricultural Management" styleClass="brand-subtitle"/>
+                </HBox>
+                
+                <!-- Search Bar -->
+                <HBox alignment="CENTER" HBox.hgrow="ALWAYS" styleClass="search-container">
+                    <padding>
+                        <Insets left="20" right="20"/>
+                    </padding>
+                    <TextField fx:id="searchField" promptText="Search for fruits, vegetables, and more..." styleClass="search-box-field" HBox.hgrow="ALWAYS"/>
+                    <Button text="Search" styleClass="search-button"/>
+                </HBox>
+                
+                <!-- Cart and Account -->
+                <HBox alignment="CENTER_RIGHT" spacing="20" HBox.hgrow="NEVER">
+                    <Button fx:id="cartButton" styleClass="cart-button">
+                        <graphic>
+                            <HBox spacing="10" alignment="CENTER">
+                                <Label text="Cart"/>
+                                <Label fx:id="cartItemCount" styleClass="cart-count" text="0"/>
+                            </HBox>
+                        </graphic>
+                    </Button>
+                </HBox>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="main-scroll">
+            <VBox spacing="40">
+                <padding>
+                    <Insets top="30" right="40" bottom="40" left="40"/>
+                </padding>
+
+                <!-- Hero Banner Section -->
+                <StackPane styleClass="hero-banner" minHeight="300">
+                    <VBox alignment="CENTER_LEFT" spacing="15">
+                        <padding>
+                            <Insets left="80"/>
+                        </padding>
+                        <Label text="Fresh &amp; Organic" styleClass="hero-subtitle"/>
+                        <Label text="Healthy Products for Your Daily Life" styleClass="hero-title"/>
+                        <Label text="Get the best quality fruits and vegetables delivered to your doorstep" 
+                               styleClass="hero-description" wrapText="true" maxWidth="500"/>
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <padding>
+                                <Insets top="20"/>
+                            </padding>
+                            <Button text="Shop Now" styleClass="hero-button"/>
+                            <Button text="Learn More" styleClass="hero-secondary-button"/>
+                        </HBox>
+                    </VBox>
+                </StackPane>
+
+                <!-- Featured Section - Improved with title description -->
+                <VBox styleClass="section-container">
+                    <HBox alignment="BASELINE_LEFT" spacing="20">
+                        <Label text="Featured Products" styleClass="section-header"/>
+                        <Label text="Our best selling items this week" styleClass="section-subheader"/>
+                    </HBox>
+                    <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" styleClass="featured-scroll" VBox.vgrow="NEVER">
+                        <HBox fx:id="featuredProducts" spacing="30" styleClass="featured-container">
+                            <padding>
+                                <Insets top="20" right="20" bottom="20" left="20"/>
+                            </padding>
+                        </HBox>
+                    </ScrollPane>
+                </VBox>
+
+                <!-- Main Products Grid with Weather Widget -->
+                <HBox spacing="40">
+                    <!-- Filters Sidebar - Enhanced with better organization -->
+                    <VBox spacing="25" styleClass="filters-sidebar">
+                        <padding>
+                            <Insets top="30" right="30" bottom="30" left="30"/>
+                        </padding>
+                        
+                        <HBox styleClass="filter-title-container" alignment="CENTER_LEFT" spacing="10">
+                            <Label text="Filters" styleClass="filter-header"/>
+                            <Button text="Reset" styleClass="filter-reset-button"/>
+                        </HBox>
+                        
+                        <!-- Category Filter -->
+                        <VBox spacing="15" styleClass="filter-section">
+                            <Label text="Categories" styleClass="filter-section-header"/>
+                            <VBox fx:id="categoryFilters" spacing="10"/>
+                        </VBox>
+                        
+                        <!-- Price Range Filter -->
+                        <VBox spacing="15" styleClass="filter-section">
+                            <Label text="Price Range" styleClass="filter-section-header"/>
+                            <Slider fx:id="priceSlider"/>
+                            <HBox spacing="10">
+                                <Label fx:id="minPrice" styleClass="price-label"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label fx:id="maxPrice" styleClass="price-label"/>
+                            </HBox>
+                        </VBox>
+                        
+                        <!-- Sort Options -->
+                        <VBox spacing="15" styleClass="filter-section">
+                            <Label text="Sort By" styleClass="filter-section-header"/>
+                            <ComboBox fx:id="sortComboBox" styleClass="sort-combo"/>
+                        </VBox>
+                        
+                        <!-- Weather Widget Section -->
+                        <VBox spacing="15" styleClass="filter-section">
+                            <Label text="Local Weather" styleClass="filter-section-header"/>
+                            <WeatherWidget fx:id="weatherWidget"/>
+                        </VBox>
+                        
+                        <!-- QR Code Section -->
+                        <VBox spacing="15" styleClass="qr-code-section">
+                            <Label text="Product QR Code" styleClass="filter-section-header"/>
+                            <StackPane fx:id="qrCodeContainer" styleClass="qr-code-container" prefHeight="200" prefWidth="200">
+                                <ImageView fx:id="qrCodeImageView" fitHeight="180" fitWidth="180" preserveRatio="true"/>
+                            </StackPane>
+                            <Label fx:id="qrCodeLabel" text="Select a product to view QR code" wrapText="true" styleClass="qr-code-label"/>
+                            <Button fx:id="saveQrCodeButton" text="Save QR Code" styleClass="save-qr-button"/>
+                        </VBox>
+                    </VBox>
+
+                    <!-- Products Grid - Enhanced with title -->
+                    <VBox HBox.hgrow="ALWAYS" spacing="30">
+                        <HBox alignment="BASELINE_LEFT" spacing="20">
+                            <Label text="All Products" styleClass="section-header"/>
+                            <Label fx:id="productCount" text="Showing 0 products" styleClass="section-subheader"/>
+                        </HBox>
+                        
+                        <FlowPane fx:id="productsGrid" hgap="30" vgap="30" styleClass="products-grid">
+                            <padding>
+                                <Insets top="20" right="20" bottom="20" left="20"/>
+                            </padding>
+                        </FlowPane>
+                        
+                        <!-- Pagination -->
+                        <HBox alignment="CENTER">
+                            <Pagination fx:id="productPagination" styleClass="custom-pagination"/>
+                        </HBox>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane> 

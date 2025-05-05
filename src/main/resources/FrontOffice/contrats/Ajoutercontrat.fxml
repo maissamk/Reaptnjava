@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.FrontOffice.contrats.Ajoutercontrat"
+      spacing="25"
+      prefWidth="600"
+      prefHeight="400"
+      style="-fx-background-color: #f5f8fa;">
+
+    <padding>
+        <Insets top="30" right="40" bottom="30" left="40"/>
+    </padding>
+
+    <Label text="Créer un Nouveau Contrat"
+           style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;">
+        <VBox.margin>
+            <Insets bottom="10"/>
+        </VBox.margin>
+    </Label>
+
+    <VBox spacing="25" style="-fx-background-color: white; -fx-background-radius: 8;">
+        <padding>
+            <Insets top="25" right="25" bottom="25" left="25"/>
+        </padding>
+
+        <!-- Section Dates -->
+        <VBox spacing="12">
+            <Label text="Dates du contrat" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #34495e;"/>
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Date de début" style="-fx-text-fill: #7f8c8d;"/>
+                    <DatePicker fx:id="dateDebutField" promptText="Début (j/mm/aaaa)"
+                                style="-fx-pref-width: 250; -fx-background-color: #f8f9fa; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Date de fin" style="-fx-text-fill: #7f8c8d;"/>
+                    <DatePicker fx:id="dateFinField" promptText="Fin (j/mm/aaaa)"
+                                style="-fx-pref-width: 250; -fx-background-color: #f8f9fa; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <Separator/>
+
+        <!-- Section Acteurs -->
+        <VBox spacing="12">
+            <Label text="Parties contractantes" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #34495e;"/>
+            <VBox spacing="5">
+                <Label text="Nom de l'acheteur" style="-fx-text-fill: #7f8c8d;"/>
+                <TextField fx:id="nomAcheteurField" promptText="Entrez le nom complet de l'acheteur"
+                           style="-fx-background-color: #f8f9fa; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
+            </VBox>
+            <VBox spacing="5">
+                <Label text="Nom du vendeur" style="-fx-text-fill: #7f8c8d;"/>
+                <TextField fx:id="nomVendeurField" promptText="Entrez le nom complet du vendeur"
+                           style="-fx-background-color: #f8f9fa; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
+            </VBox>
+        </VBox>
+
+        <Separator/>
+
+        <!-- Section Détails -->
+        <VBox spacing="12">
+            <Label text="Détails du contrat" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #34495e;"/>
+            <VBox spacing="5">
+                <Label text="Informations" style="-fx-text-fill: #7f8c8d;"/>
+                <TextField fx:id="infoContratField" promptText="Description ou détails du contrat"
+                           style="-fx-background-color: #f8f9fa; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
+            </VBox>
+            <VBox spacing="5">
+                <Label text="Signature" style="-fx-text-fill: #7f8c8d;"/>
+                <TextField fx:id="signatureField" promptText="Information de signature"
+                           style="-fx-background-color: #f8f9fa; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
+            </VBox>
+        </VBox>
+    </VBox>
+
+    <!-- Boutons d'action -->
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <Button text="Afficher les contrats" onAction="#goToAfficherContrats"
+                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 4; -fx-padding: 10 20;">
+            <font>
+                <Font name="System Bold" size="12.0"/>
+            </font>
+        </Button>
+        <Button fx:id="addContratButton" text="Enregistrer le contrat"
+                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 4; -fx-padding: 10 20;">
+            <font>
+                <Font name="System Bold" size="12.0"/>
+            </font>
+        </Button>
+    </HBox>
+</VBox>
