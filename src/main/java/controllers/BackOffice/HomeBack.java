@@ -2,6 +2,7 @@ package controllers.BackOffice;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
@@ -188,6 +190,7 @@ public class HomeBack implements Initializable {
                 statisticsBtn, farmersBtn, parcelsBtn, harvestBtn, settingsBtn, logsBtn
         };
 
+        // Regular buttons
         for (Button btn : buttons) {
             btn.setOnMouseEntered(e -> {
                 btn.setStyle("-fx-background-color: rgba(255,255,255,0.2);");
@@ -199,6 +202,32 @@ public class HomeBack implements Initializable {
                 btn.setEffect(null);
             });
         }
+
+        // Special styling for logout button
+        logoutBtn.setOnMouseEntered(e -> {
+            logoutBtn.setStyle("-fx-background-color: rgba(211, 47, 47, 0.2); " +
+                    "-fx-border-color: rgba(211, 47, 47, 0.5); " +
+                    "-fx-border-width: 1; " +
+                    "-fx-border-radius: 20;");
+            logoutBtn.setEffect(new DropShadow(10, Color.rgb(211, 47, 47, 0.7)));
+        });
+
+        logoutBtn.setOnMouseExited(e -> {
+            logoutBtn.setStyle("-fx-background-color: transparent; " +
+                    "-fx-border-color: rgba(255, 255, 255, 0.3); " +
+                    "-fx-border-width: 1; " +
+                    "-fx-border-radius: 20;");
+            logoutBtn.setEffect(null);
+        });
+
+        // Add subtle pulse animation to logout button
+        Timeline pulse = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(logoutBtn.opacityProperty(), 0.9)),
+                new KeyFrame(Duration.seconds(1.5), new KeyValue(logoutBtn.opacityProperty(), 1)),
+                new KeyFrame(Duration.seconds(3), new KeyValue(logoutBtn.opacityProperty(), 0.9))
+        );
+        pulse.setCycleCount(Timeline.INDEFINITE);
+        pulse.play();
     }
     @FXML
     private void handleStatisticsButton(ActionEvent event) {
@@ -212,15 +241,41 @@ public class HomeBack implements Initializable {
     }
 
     private void handleLogout() {
-        SessionManager.getInstance().logout();
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/user/Login.fxml"));
-            Stage stage = (Stage) logoutBtn.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Show confirmation dialog
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Logout Confirmation");
+        alert.setHeaderText("You're about to logout");
+        alert.setContentText("Are you sure you want to logout?");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == javafx.scene.control.ButtonType.OK) {
+                // Perform logout
+                SessionManager.getInstance().logout();
+
+                // Navigate to login screen
+                try {
+                    // Close the current stage
+                    Stage currentStage = (Stage) logoutBtn.getScene().getWindow();
+                    currentStage.close();
+
+                    // Open login stage
+                    Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/user/Login.fxml"));
+                    Stage loginStage = new Stage();
+                    loginStage.setScene(new Scene(root));
+                    loginStage.setTitle("Login");
+                    loginStage.show();
+
+                    // Optional: Set fullscreen if needed
+                    // loginStage.setFullScreen(true);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    NavigationUtil.showErrorAlert("Navigation Error",
+                            "Failed to logout",
+                            "An error occurred while trying to logout: " + e.getMessage());
+                }
+            }
+        });
     }
     @FXML
     private void handleBack(ActionEvent event) {

@@ -32,7 +32,7 @@ public class Home implements Initializable {
     @FXML private Button produitsDetailButton;
     @FXML private Button parcelleButton;
     @FXML private Button offersButton;
-    @FXML private Button masterfulButton;
+    //@FXML private Button masterfulButton;
     @FXML private Button loginButton;
     @FXML private Button profileButton;
     @FXML private Button commandeButton;
@@ -43,6 +43,10 @@ public class Home implements Initializable {
     @FXML private Label userRoleLabel;
     @FXML private StackPane mainContentPane; // Make sure this matches your FXML
     @FXML private Label welcomeLabel;
+
+
+    private double normalWidth = 1250.0; // Default width matching your FXML
+    private double normalHeight = 800.0; // Default height (adjust as needed)
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -67,7 +71,10 @@ public class Home implements Initializable {
             if (currentUser != null) {
                 // Update user profile section
                 userNameLabel.setText(currentUser.getNom());
-                userRoleLabel.setText(String.join(", ", currentUser.getRoles()));
+
+                // Convert role to display-friendly format
+                String roleDisplay = convertRoleToDisplayFormat(currentUser.getRoles());
+                userRoleLabel.setText(roleDisplay);
 
                 try {
                     Image avatar = new Image(getClass().getResourceAsStream(
@@ -95,6 +102,41 @@ public class Home implements Initializable {
         profileButton.setVisible(false);
     }
 
+    // New helper method to convert role strings
+    private String convertRoleToDisplayFormat(String roles) {
+        if (roles == null || roles.isEmpty()) {
+            return "User";
+        }
+
+        // Split multiple roles if needed
+        String[] roleArray = roles.split(",");
+
+        // Convert each role to display format
+        StringBuilder displayRoles = new StringBuilder();
+        for (String role : roleArray) {
+            String trimmedRole = role.trim();
+            switch (trimmedRole) {
+                case "ROLE_ADMIN":
+                    displayRoles.append("Admin");
+                    break;
+                case "ROLE_CLIENT":
+                    displayRoles.append("Client");
+                    break;
+                case "ROLE_AGRICULTEUR":
+                    displayRoles.append("Agriculteur");
+                    break;
+                default:
+                    displayRoles.append(trimmedRole.replace("ROLE_", ""));
+            }
+
+            // Add comma if multiple roles
+            if (!trimmedRole.equals(roleArray[roleArray.length-1].trim())) {
+                displayRoles.append(", ");
+            }
+        }
+
+        return displayRoles.toString();
+    }
     private void setupEventHandlers() {
         // Navigation buttons
         accueilButton.setOnAction(e -> handleAccueil());
@@ -104,7 +146,7 @@ public class Home implements Initializable {
         produitsDetailButton.setOnAction(e -> handleProduitsDetail());
         parcelleButton.setOnAction(e -> handleParcelle());
         offersButton.setOnAction(e -> handleOffers());
-        masterfulButton.setOnAction(e -> handleMasterful());
+        //masterfulButton.setOnAction(e -> handleMasterful());
 
         // Auth buttons
         loginButton.setOnAction(e -> handleLogin());
@@ -260,5 +302,28 @@ public class Home implements Initializable {
         Stage stage = (Stage) loginButton.getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.show();
+    }
+
+
+    private void initializeStageSize(Stage stage) {
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            if (!stage.isFullScreen()) {
+                normalWidth = newVal.doubleValue();
+            }
+        });
+
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            if (!stage.isFullScreen()) {
+                normalHeight = newVal.doubleValue();
+            }
+        });
+
+        stage.fullScreenProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal) {
+                // When exiting full-screen, restore the previous size
+                stage.setWidth(normalWidth);
+                stage.setHeight(normalHeight);
+            }
+        });
     }
 }

@@ -12,9 +12,9 @@
 <?import javafx.scene.shape.Circle?>
 
 <?import javafx.scene.layout.StackPane?>
-<BorderPane prefHeight="100.0" prefWidth="1250.0" stylesheets="/css/home.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.Home" fx:id="rootPane"  >
+<BorderPane prefHeight="100.0" prefWidth="1250.0" stylesheets="/css/home.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.Home" fx:id="rootPane">
 
-   <!-- Top Navigation Bar -->
+   <!-- Top Navigation Bar (unchanged) -->
    <top>
       <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header">
          <!-- Logo -->
@@ -29,9 +29,12 @@
                   <Circle centerX="21.0" centerY="21.0" radius="21.0" />
                </clip>
             </ImageView>
-            <VBox spacing="1">
-               <Label fx:id="userNameLabel" styleClass="user-name" />
-               <Label fx:id="userRoleLabel" styleClass="user-role" />
+            <VBox spacing="5" alignment="CENTER_LEFT">
+               <VBox spacing="1">
+                  <Label fx:id="userNameLabel" styleClass="user-name" />
+                  <Label fx:id="userRoleLabel" styleClass="user-role" />
+               </VBox>
+               <Button fx:id="profileButton" styleClass="profile-button" text="Mon Profile" />
             </VBox>
          </HBox>
 
@@ -44,40 +47,32 @@
          <Button fx:id="parcelleButton" styleClass="nav-button" text="Parcelle" />
          <Button fx:id="offersButton" onAction="#handleOffers" styleClass="nav-button" text="Offers" />
          <Button fx:id="commandeButton" onAction="#handleCommande" styleClass="featured-button" text="Commande" />
-         <Button fx:id="masterfulButton" styleClass="featured-button" text="Masterful Agricole" />
+         <!--Button fx:id="masterfulButton" styleClass="featured-button" text="Masterful Agricole" /-->
 
          <Region HBox.hgrow="ALWAYS" />
 
          <!-- Auth Buttons -->
          <Button fx:id="loginButton" styleClass="auth-button" text="Login" />
-         <Button fx:id="profileButton" styleClass="profile-button" text="My Profile" />
+         <!--Button fx:id="profileButton" styleClass="profile-button" text="My Profile" /-->
       </HBox>
    </top>
 
-   <!-- Main Content Area -->
+   <!-- Main Content Area - Modified as described -->
    <center>
-      <StackPane fx:id="mainContentPane" />
-   <!-- <VBox alignment="CENTER" spacing="40" style="-fx-padding: 50;">
-       <VBox alignment="CENTER" spacing="10">
+      <StackPane fx:id="mainContentPane">
+         <!-- Default content -->
+         <VBox alignment="CENTER" spacing="40" style="-fx-padding: 50;">
+            <VBox alignment="CENTER" spacing="10">
+               <Label styleClass="tagline" text="YOU SOW, YOU REAP" />
+            </VBox>
+            <ImageView fitHeight="400" fitWidth="800" pickOnBounds="true" preserveRatio="true" styleClass="hero-image">
+               <Image url="@/images/agriculture-hero.jpg" />
+            </ImageView>
+         </VBox>
+      </StackPane>
+   </center>
 
-          <Label styleClass="tagline" text="YOU SOW, YOU REAP" />
-       </VBox>
-
-
-       <ImageView fitHeight="400" fitWidth="800" pickOnBounds="true" preserveRatio="true" styleClass="hero-image">
-          <Image url="@/images/agriculture-hero.jpg" />
-       </ImageView>
-
-
-
-    </VBox>-->
- </center>
-
-   <!-- Footer -->
-   <HBox alignment="CENTER" spacing="20">
-      <Button fx:id="HomeBackButton" onAction="#HomeBack" styleClass="featured-button" text="Back" />
-
-   </HBox>
+   <!-- Footer (unchanged) -->
    <bottom>
       <VBox spacing="0">
          <Separator style="-fx-background-color: #c8e6c9;" />

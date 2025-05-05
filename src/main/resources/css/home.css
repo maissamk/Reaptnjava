@@ -93,16 +93,40 @@
 }
 
 .profile-button {
-    -fx-background-color: #4285F4;
+    -fx-background-color: #5c6bc0; /* Softer blue */
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-padding: 8 20;
-    -fx-background-radius: 20;
+    -fx-font-size: 12px;
+    -fx-padding: 4 12;
+    -fx-background-radius: 15;
     -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0.1, 0, 1);
+    -fx-border-color: transparent;
+    -fx-min-width: 80px;
 }
 
 .profile-button:hover {
-    -fx-background-color: #5c9dff;
+    -fx-background-color: #7986cb; /* Lighter blue on hover */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.2, 0, 1);
+}
+
+/* Adjust user info section spacing */
+.user-info-container {
+    -fx-spacing: 8;
+    -fx-padding: 0 0 0 10;
+}
+
+/* Make user name and role more compact */
+.user-name {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.user-role {
+    -fx-text-fill: #e8f5e9;
+    -fx-font-size: 10px;
+    -fx-padding: 0 0 3 0;
 }
 
 .welcome-text {

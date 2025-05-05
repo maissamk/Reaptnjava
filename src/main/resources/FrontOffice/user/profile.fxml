@@ -6,67 +6,63 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.User.ProfileController"
-            style="-fx-background-color: #f5f9f4;">
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@/css/profile.css" fx:controller="controllers.FrontOffice.User.ProfileController">
 
     <center>
-        <VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;">
-            <!-- Camera Preview Section -->
-            <VBox alignment="CENTER" spacing="10">
-                <Label text="Face Registration" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
-                <ImageView fx:id="cameraPreview" fitHeight="200" fitWidth="200" preserveRatio="true"/>
-                <Button fx:id="registerFaceButton" text="Register Face"
-                        style="-fx-background-color: #34A853; -fx-text-fill: white; -fx-font-weight: bold;"
-                        onAction="#handleRegisterFace"/>
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+            <VBox alignment="TOP_CENTER" spacing="30">
+                <!-- Main Profile Container -->
+                <VBox styleClass="profile-container" alignment="TOP_CENTER">
+                    <!-- Avatar and Welcome -->
+                    <VBox alignment="CENTER" spacing="10">
+                        <ImageView fx:id="avatarImage" fitHeight="150" fitWidth="150" styleClass="avatar-image">
+                            <image>
+                                <Image url="@/images/defaultavatar.png" />
+                            </image>
+                        </ImageView>
+                        <Label fx:id="welcomeLabel" styleClass="welcome-label"/>
+                    </VBox>
+
+                    <!-- Profile Information -->
+                    <GridPane styleClass="info-grid" hgap="20" vgap="15">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="180" halignment="RIGHT"/>
+                            <ColumnConstraints prefWidth="300" halignment="LEFT"/>
+                        </columnConstraints>
+
+                        <Label text="Full Name:" styleClass="info-label" GridPane.rowIndex="0"/>
+                        <Label fx:id="fullNameLabel" styleClass="info-value" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                        <Label text="Email:" styleClass="info-label" GridPane.rowIndex="1"/>
+                        <Label fx:id="emailLabel" styleClass="info-value" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <Label text="Phone:" styleClass="info-label" GridPane.rowIndex="2"/>
+                        <Label fx:id="phoneLabel" styleClass="info-value" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                        <Label text="Role:" styleClass="info-label" GridPane.rowIndex="3"/>
+                        <Label fx:id="roleLabel" styleClass="info-value" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                        <Label text="Status:" styleClass="info-label" GridPane.rowIndex="4"/>
+                        <Label fx:id="statusLabel" styleClass="info-value" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <!-- Action Buttons -->
+                    <HBox styleClass="button-container" alignment="CENTER">
+                        <Button text="User List" styleClass="action-button" onAction="#handleUserList"/>
+                        <Button text="Edit Profile" styleClass="action-button" onAction="#handleEditProfile"/>
+                        <Button text="Back to Home" styleClass="back-button" onAction="#handleBack"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Face Registration Section -->
+                <VBox styleClass="face-registration-section" alignment="CENTER" spacing="20">
+                    <Label text="Face Registration" styleClass="section-header"/>
+                    <ImageView fx:id="cameraPreview" fitHeight="220" fitWidth="220" preserveRatio="true" styleClass="camera-preview"/>
+                    <Button fx:id="registerFaceButton" text="Register Face" styleClass="register-button"
+                            onAction="#handleRegisterFace"/>
+                </VBox>
             </VBox>
-
-            <!-- Profile Information Section -->
-            <GridPane hgap="20" vgap="15" alignment="CENTER">
-                <columnConstraints>
-                    <ColumnConstraints prefWidth="150" halignment="RIGHT"/>
-                    <ColumnConstraints prefWidth="250" halignment="LEFT"/>
-                </columnConstraints>
-
-                <!-- Avatar Section -->
-                <ImageView fx:id="avatarImage" fitHeight="120" fitWidth="120"
-                           style="-fx-background-radius: 60; -fx-border-radius: 60;"
-                           GridPane.columnSpan="2" GridPane.halignment="CENTER">
-                    <image>
-                        <Image url="@/images/defaultavatar.png" />
-                    </image>
-                </ImageView>
-
-                <!-- Profile Information -->
-                <Label fx:id="welcomeLabel" style="-fx-font-size: 18; -fx-font-weight: bold;"
-                       GridPane.columnSpan="2" GridPane.halignment="CENTER"/>
-
-                <Label text="Full Name:" style="-fx-font-weight: BOLD;" GridPane.rowIndex="1"/>
-                <Label fx:id="fullNameLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-                <Label text="Email:" style="-fx-font-weight: BOLD;" GridPane.rowIndex="2"/>
-                <Label fx:id="emailLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-
-                <Label text="Phone:" style="-fx-font-weight: BOLD;" GridPane.rowIndex="3"/>
-                <Label fx:id="phoneLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-
-                <Label text="Role:" style="-fx-font-weight: BOLD;" GridPane.rowIndex="4"/>
-                <Label fx:id="roleLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-
-                <Label text="Status:" style="-fx-font-weight: BOLD;" GridPane.rowIndex="5"/>
-                <Label fx:id="statusLabel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
-            </GridPane>
-
-            <!-- Action Buttons -->
-            <HBox alignment="CENTER" spacing="20">
-                <Button text="User List" style="-fx-background-color: #4285F4; -fx-text-fill: white; -fx-font-weight: BOLD;"
-                        onAction="#handleUserList"/>
-                <Button text="Edit Profile" style="-fx-background-color: #4285F4; -fx-text-fill: white; -fx-font-weight: BOLD;"
-                        onAction="#handleEditProfile"/>
-                <Button text="Back to Home" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: BOLD;"
-                        onAction="#handleBack"/>
-            </HBox>
-        </VBox>
+        </ScrollPane>
     </center>
-
 </BorderPane>

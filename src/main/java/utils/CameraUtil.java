@@ -1,42 +1,59 @@
 package utils;
 
-import javafx.embed.swing.SwingFXUtils;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.JavaFXFrameConverter;
+import org.bytedeco.javacv.OpenCVFrameGrabber;
 import javafx.scene.image.Image;
-import org.bytedeco.javacv.*;
-import org.bytedeco.opencv.opencv_core.IplImage;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class CameraUtil {
-    private static FrameGrabber grabber;
+    private OpenCVFrameGrabber grabber;
+    private JavaFXFrameConverter converter;
+    private boolean isCameraActive;
 
-    public static Image captureImage() throws FrameGrabber.Exception {
-        OpenCVFrameGrabber grabber = new OpenCVFrameGrabber(0);
-        try {
+    public CameraUtil() {
+        this.converter = new JavaFXFrameConverter();
+    }
+
+    public void startCamera() throws Exception {
+        if (grabber == null) {
+            grabber = new OpenCVFrameGrabber(0); // 0 for default camera
             grabber.start();
-            Frame frame = grabber.grab();
-            OpenCVFrameConverter.ToMat converter = new OpenCVFrameConverter.ToMat();
-            Java2DFrameConverter java2DConverter = new Java2DFrameConverter();
-            return SwingFXUtils.toFXImage(java2DConverter.convert(frame), null);
-        } finally {
-            try {
-                grabber.stop();
-            } catch (Exception e) {
-                System.err.println("Error stopping grabber: " + e.getMessage());
-            }
+            isCameraActive = true;
         }
     }
 
-    public static void saveImageToFile(Image image, String filePath) throws IOException {
-        BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
-        if (bImage != null) {
-            File outputFile = new File(filePath);
-            ImageIO.write(bImage, "png", outputFile);
-        } else {
-            throw new IOException("Failed to convert JavaFX Image to BufferedImage");
+    public Frame grabFrame() throws Exception {
+        if (isCameraActive && grabber != null) {
+            return grabber.grab();
+        }
+        return null;
+    }
+
+    public Image convertFrameToImage(Frame frame) {
+        return converter.convert(frame);
+    }
+
+    public void stopCamera() {
+        try {
+            if (grabber != null) {
+                isCameraActive = false;
+                grabber.stop();
+                grabber.release();
+                grabber = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean saveImageToFile(Image image, String filePath) {
+        try {
+            java.awt.image.BufferedImage bImage = javafx.embed.swing.SwingFXUtils.fromFXImage(image, null);
+            java.io.File outputFile = new java.io.File(filePath);
+            return javax.imageio.ImageIO.write(bImage, "png", outputFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

@@ -55,8 +55,12 @@
             <Region HBox.hgrow="ALWAYS" />
 
             <!-- Logout Button with Icon -->
-            <Button fx:id="logoutBtn" styleClass="logout-btn">
-
+            <Button fx:id="logoutBtn" styleClass="logout-btn" text="Logout">
+                <graphic>
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@/images/icons/logout.png" />
+                    </ImageView>
+                </graphic>
             </Button>
         </HBox>
     </top>
@@ -74,7 +78,7 @@
                 </graphic>
             </Button>
 
-            <Button fx:id="statisticsBtnUser" styleClass="side-btn" text="Statistics" >
+            <Button fx:id="statisticsBtnUser" styleClass="side-btn" text="Statistics User" >
                 <graphic>
                     <ImageView fitHeight="22" fitWidth="22">
                         <Image url="@/images/icons/stats.png" />
