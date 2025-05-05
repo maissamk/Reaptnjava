@@ -1,7 +1,7 @@
 === Détails de l'Offre ===
 ID: 5
 Titre: expert lutte antiparasitaire
-Description: veuiller me contacter sur si vous etes interessé
+Description: veuiller me contacter sur 45789456 si vous etes interessé
 
 === Employés liés ===
 Nom: baligh
@@ -15,4 +15,12 @@ Email: ahmed@gmail.com
 Nom: Ahmed
 Prénom: Soltan
 Email: ahmed@gmail.com
+-----
+Nom: client
+Prénom: client
+Email: client99@gmail.com
+-----
+Nom: xd
+Prénom: xd
+Email: client100@gmail.com
 -----

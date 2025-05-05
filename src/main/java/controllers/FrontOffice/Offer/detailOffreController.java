@@ -178,6 +178,8 @@ public class detailOffreController {
     @FXML private TableColumn<Employe, String> compColumn;
 
     @FXML private TableColumn<Employe, String> dispoColumn;
+    @FXML
+    private TableColumn<Employe, Void> actionColumn;
 
     @FXML
     private TextField userIdField;
@@ -350,6 +352,42 @@ public class detailOffreController {
                 }
             }
         });
+
+
+
+        //set the confirmer and reject buttons
+        actionColumn.setCellFactory(col -> new TableCell<>() {
+            private final Button confirmButton = new Button("Confirmer");
+            private final Button rejectButton = new Button("Rejeter");
+            private final HBox actionButtons = new HBox(10, confirmButton, rejectButton);
+
+            {
+                confirmButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+                rejectButton.setStyle("-fx-background-color: #F44336; -fx-text-fill: white;");
+
+                confirmButton.setOnAction(event -> {
+                    Employe emp = getTableView().getItems().get(getIndex());
+                    handleConfirm(emp);
+                });
+
+                rejectButton.setOnAction(event -> {
+                    Employe emp = getTableView().getItems().get(getIndex());
+                    handleReject(emp);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(actionButtons);
+                }
+            }
+        });
+
+
 
         // Set the items in the table
         ObservableList<Employe> employes = FXCollections.observableArrayList(
@@ -591,6 +629,26 @@ public class detailOffreController {
         // Buttons for switching language
         langButton.setText(LanguageManager.getString("german"));
         englishButton.setText(LanguageManager.getString("english"));
+    }
+
+
+    private void handleConfirm(Employe emp) {
+        try {
+            emp.setConf(true); // Make sure your Employe class has this field
+            employeService.updateConfirmerField(emp.getId(), true);
+            employeTable.refresh();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleReject(Employe emp) {
+        try {
+            employeService.deleteEmploye(emp.getId());
+            employeTable.getItems().remove(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

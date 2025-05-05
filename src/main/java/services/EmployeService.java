@@ -281,4 +281,22 @@ public class EmployeService implements IService<Employe> {
     }
 
 
+    //for confirm and reject functionality
+
+    public void updateConfirmerField(int employeId, boolean confirmer) throws SQLException {
+        String sql = "UPDATE employe SET conf = ? WHERE id = ?";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setBoolean(1, confirmer);
+        stmt.setInt(2, employeId);
+        stmt.executeUpdate();
+    }
+
+    public void deleteEmploye(int employeId) throws SQLException {
+        String sql = "DELETE FROM employe WHERE id = ?";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setInt(1, employeId);
+        stmt.executeUpdate();
+    }
+
+
 }
