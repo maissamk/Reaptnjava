@@ -1,5 +1,6 @@
 package services;
 
+import Models.Categorie;
 import Models.MaterielLocation;
 import Models.MaterielVente;
 import com.itextpdf.text.DocumentException;
@@ -56,7 +57,81 @@ public class MaterielService implements IMaterielService {
     }
 
 
+    public Categorie findByCategory(int id) {
+        Categorie category = null;
+        String req = "SELECT * FROM categorie WHERE id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(req)) {
+            ps.setInt(1, id);
+            ResultSet res = ps.executeQuery();
+            if (res.next()) {
+                category = new Categorie();
+                category.setId(res.getInt("id"));
+                category.setNom(res.getString("nom"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return category;
+    }
 
+
+    public List<MaterielLocation> getMaterielsLocationLoues() {
+        List<MaterielLocation> locations = new ArrayList<>();
+        String req = "SELECT ml.*, u.nom as user_nom FROM materiellocation ml " +
+                "LEFT JOIN user u ON ml.user_id_materiellocation_id = u.id " +
+                "WHERE ml.user_id_materiellocation_id IS NOT NULL";
+
+        try (PreparedStatement ps = cnx.prepareStatement(req)) {
+            ResultSet res = ps.executeQuery();
+            while (res.next()) {
+                MaterielLocation m = new MaterielLocation();
+                m.setId(res.getInt("id"));
+                m.setNom(res.getString("nom"));
+                m.setPrix(res.getDouble("prix"));
+                m.setDescription(res.getString("description"));
+                m.setDisponibilite(res.getBoolean("disponibilite"));
+                m.setImage(res.getString("image"));
+                m.setUserIdMaterielLocationId(res.getObject("user_id_materiellocation_id", Integer.class));
+                // Ajout du nom de l'utilisateur
+                //  m.setUserNom(res.getString("user_nom"));
+                locations.add(m);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return locations;
+    }
+
+    public List<MaterielVente> getMaterielsVenteAchetes() {
+        List<MaterielVente> ventes = new ArrayList<>();
+        String req = "SELECT mv.*, u.nom as user_nom FROM materielvente mv " +
+                "LEFT JOIN user u ON mv.user_id_materielvente_id = u.id " +
+                "WHERE mv.user_id_materielvente_id IS NOT NULL";
+
+        try (PreparedStatement ps = cnx.prepareStatement(req)) {
+            ResultSet res = ps.executeQuery();
+            while (res.next()) {
+                MaterielVente m = new MaterielVente();
+                m.setId(res.getInt("id"));
+                m.setNom(res.getString("nom"));
+                m.setPrix(res.getDouble("prix"));
+                m.setDescription(res.getString("description"));
+                m.setDisponibilite(res.getBoolean("disponibilite"));
+                m.setImage(res.getString("image"));
+                m.setUserIdMaterielVenteId(res.getObject("user_id_materielvente_id", Integer.class));
+                m.setCommandeId(res.getObject("commande_id", Integer.class));
+                m.setCategorieId(res.getObject("categorie_id", Integer.class));
+                m.setSlug(res.getString("slug"));
+                m.setCreatedAt(res.getTimestamp("created_at").toLocalDateTime());
+                m.setUpdatedAt(res.getTimestamp("updated_at").toLocalDateTime());
+                // Ajout du nom de l'utilisateur
+                ventes.add(m);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ventes;
+    }
 
 
 

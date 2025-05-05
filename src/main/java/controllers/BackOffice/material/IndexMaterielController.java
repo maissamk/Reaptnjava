@@ -2,6 +2,11 @@ package controllers.BackOffice.material;
 
 import Models.MaterielLocation;
 import Models.MaterielVente;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,6 +29,8 @@ import javafx.stage.Stage;
 import services.MaterielService;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -63,6 +70,11 @@ public class IndexMaterielController {
         loadLocationData();
         addVenteBtn.setOnAction(this::goToAddVente);
         addLocationBtn.setOnAction(this::goToAddLocation);
+
+        // Setup dynamic search listeners
+        searchVenteField.textProperty().addListener((obs, oldVal, newVal) -> handleSearchVente());
+        searchLocationField.textProperty().addListener((obs, oldVal, newVal) -> handleSearchLocation());
+
         setupPaginationListeners();
     }
 
@@ -291,6 +303,13 @@ public class IndexMaterielController {
         }
         imageView.setFitWidth(280);
         imageView.setFitHeight(150);
+
+        // QR Code
+        ImageView qrCodeView = generateQRCodeForMaterial(materiel);
+        qrCodeView.setFitWidth(80);
+        qrCodeView.setFitHeight(80);
+        qrCodeView.setStyle("-fx-border-color: #ddd; -fx-border-width: 1px;");
+
         // Details
         Label nameLabel = new Label(materiel.getNom());
         nameLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
@@ -319,7 +338,11 @@ public class IndexMaterielController {
 
         buttonBox.getChildren().addAll(showBtn, editBtn, deleteBtn);
 
-        card.getChildren().addAll(imageView, nameLabel, priceLabel, statusLabel, buttonBox);
+        // Add QR code to the card
+        HBox infoBox = new HBox(10);
+        infoBox.getChildren().addAll(qrCodeView, new VBox(5, nameLabel, priceLabel, statusLabel));
+
+        card.getChildren().addAll(imageView, infoBox, buttonBox);
 
         return card;
     }
@@ -339,6 +362,12 @@ public class IndexMaterielController {
         }
         imageView.setFitWidth(280);
         imageView.setFitHeight(150);
+
+        // QR Code
+        ImageView qrCodeView = generateQRCodeForMaterial(materiel);
+        qrCodeView.setFitWidth(80);
+        qrCodeView.setFitHeight(80);
+        qrCodeView.setStyle("-fx-border-color: #ddd; -fx-border-width: 1px;");
 
         // Details
         Label nameLabel = new Label(materiel.getNom());
@@ -367,9 +396,85 @@ public class IndexMaterielController {
         deleteBtn.setOnAction(e -> handleDeleteLocation(materiel));
 
         buttonBox.getChildren().addAll(showBtn, editBtn, deleteBtn);
-        card.getChildren().addAll(imageView, nameLabel, priceLabel, statusLabel, buttonBox);
+
+        // Add QR code to the card
+        HBox infoBox = new HBox(10);
+        infoBox.getChildren().addAll(qrCodeView, new VBox(5, nameLabel, priceLabel, statusLabel));
+
+        card.getChildren().addAll(imageView, infoBox, buttonBox);
 
         return card;
+    }
+
+    private ImageView generateQRCodeForMaterial(Object materiel) {
+        try {
+            String qrContent;
+            if (materiel instanceof MaterielVente) {
+                MaterielVente mv = (MaterielVente) materiel;
+                qrContent = String.format("Matériel Vente\nNom: %s\nPrix: %.2f TND\nDisponible: %s\nDescription: %s",
+                        mv.getNom(), mv.getPrix(), mv.isDisponibilite() ? "Oui" : "Non", mv.getDescription());
+            } else if (materiel instanceof MaterielLocation) {
+                MaterielLocation ml = (MaterielLocation) materiel;
+                qrContent = String.format("Matériel Location\nNom: %s\nPrix: %.2f TND/jour\nDisponible: %s\nDescription: %s",
+                        ml.getNom(), ml.getPrix(), ml.isDisponibilite() ? "Oui" : "Non", ml.getDescription());
+            } else {
+                return new ImageView();
+            }
+
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+            BitMatrix bitMatrix = qrCodeWriter.encode(qrContent, BarcodeFormat.QR_CODE, 200, 200);
+
+            ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+            MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+            byte[] pngData = pngOutputStream.toByteArray();
+
+            return new ImageView(new Image(new ByteArrayInputStream(pngData)));
+        } catch (WriterException | IOException e) {
+            System.err.println("Error generating QR code: " + e.getMessage());
+            return new ImageView();
+        }
+    }
+
+    @FXML
+    private void handleSearchVente() {
+        String query = searchVenteField.getText().trim().toLowerCase();
+
+        if (query.isEmpty()) {
+            loadVenteData();
+            return;
+        }
+
+        List<MaterielVente> filtered = materielService.findAllVente().stream()
+                .filter(m -> m.getNom().toLowerCase().contains(query) ||
+                        m.getDescription().toLowerCase().contains(query) ||
+                        String.valueOf(m.getPrix()).contains(query))
+                .toList();
+
+        venteList.clear();
+        venteList.addAll(filtered);
+        currentVentePage = 0;
+        refreshVenteList();
+    }
+
+    @FXML
+    private void handleSearchLocation() {
+        String query = searchLocationField.getText().trim().toLowerCase();
+
+        if (query.isEmpty()) {
+            loadLocationData();
+            return;
+        }
+
+        List<MaterielLocation> filtered = materielService.findAllLocation().stream()
+                .filter(m -> m.getNom().toLowerCase().contains(query) ||
+                        m.getDescription().toLowerCase().contains(query) ||
+                        String.valueOf(m.getPrix()).contains(query))
+                .toList();
+
+        locationList.clear();
+        locationList.addAll(filtered);
+        currentLocationPage = 0;
+        refreshLocationList();
     }
 
     private void handleShowVente(MaterielVente materiel) {
@@ -434,25 +539,7 @@ public class IndexMaterielController {
         });
     }
 
-    @FXML
-    private void handleSearchVente() {
-        String query = searchVenteField.getText().trim();
-        List<MaterielVente> filtered = materielService.searchVente(query);
-        venteList.clear();
-        venteList.addAll(filtered);
-        currentVentePage = 0;
-        refreshVenteList();
-    }
 
-    @FXML
-    private void handleSearchLocation() {
-        String query = searchLocationField.getText().trim();
-        List<MaterielLocation> filtered = materielService.searchLocation(query);
-        locationList.clear();
-        locationList.addAll(filtered);
-        currentLocationPage = 0;
-        refreshLocationList();
-    }
 
     private void setupPaginationListeners() {
         ventePagination.currentPageIndexProperty().addListener((observable, oldValue, newValue) -> {
@@ -499,6 +586,37 @@ public class IndexMaterielController {
             showAlert("Erreur", "Impossible d'ouvrir le formulaire d'ajout", Alert.AlertType.ERROR);
         }
     }
+    @FXML
+    void gotohisotrique(ActionEvent event) {
+        try {
+            // Get the current stage
+
+            // Load new window
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Backoffice/materials/HistoriqueController.fxml"));
+            Parent root = loader.load();
+
+            Stage newStage = new Stage();
+            newStage.setTitle("Gestion des Catégories");
+            newStage.setScene(new Scene(root));
+
+            // Close current window
+            Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+
+            // Set stage width and height to screen dimensions
+            newStage.setWidth(screenBounds.getWidth());
+            newStage.setHeight(screenBounds.getHeight());
+
+
+            // Show new window
+            newStage.show();
+
+        } catch (IOException e) {
+            showAlert("Erreur", "Impossible d'ouvrir la gestion des catégories", Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
+    }
+
+
     @FXML
     void gotocategorie(ActionEvent event) {
         try {
