@@ -1,6 +1,7 @@
 package controllers.FrontOffice.parcelles;
 
 import controllers.FrontOffice.BaseFrontController;
+import controllers.FrontOffice.Home;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -10,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import Models.ParcelleProprietes;
@@ -39,6 +41,8 @@ public class Afficherparcelles {
     private final ParcelleProprietesService service = new ParcelleProprietesService();
     private List<ParcelleProprietes> allParcelles; // Cache des données
     private ScheduledExecutorService executorService;
+    private StackPane mainContentPane;
+
 
     @FXML
     public void initialize() {
@@ -46,31 +50,30 @@ public class Afficherparcelles {
         loadData();
     }
 
+    public void setMainContentPane(StackPane pane) {
+        this.mainContentPane = pane;
+    }
+
     /// ///new code estimer parclle
     @FXML
     private void handleEstimer() {
         try {
-            // Load the base front layout
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
-            Parent baseRoot = baseLoader.load();
-            BaseFrontController baseController = baseLoader.getController();
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
-            // Load the estimation content
             FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/parcelles/EstimerParcelle.fxml"));
             Parent content = contentLoader.load();
 
-            // Set the content in the base layout
-            baseController.getContentPane().getChildren().setAll(content);
+            homeController.getMainContentPane().getChildren().setAll(content);
 
-            // Update the current stage
             Stage stage = (Stage) btnEstimer.getScene().getWindow();
-            stage.setScene(new Scene(baseRoot));
+            stage.setScene(new Scene(homeRoot));
             stage.show();
         } catch (IOException e) {
-            showAlert("Erreur de Navigation", "Impossible d'ouvrir l'outil d'estimation: " + e.getMessage());
+            showAlert("Erreur", "Impossible d'ouvrir l'estimation : " + e.getMessage());
         }
     }
-
     private void initFiltres() {
         cbType.getItems().addAll("Agricole", "Résidentiel", "Commercial", "Mixte");
 
@@ -217,25 +220,29 @@ public class Afficherparcelles {
 
     private void openModificationWindow(ParcelleProprietes parcelle) {
         try {
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
-            Parent baseRoot = baseLoader.load();
-            BaseFrontController baseController = baseLoader.getController();
+            // Load Home.fxml which contains the navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
+            // Load the modification content
             FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/parcelles/Modifierparcelles.fxml"));
             Parent content = contentLoader.load();
 
-            baseController.getContentPane().getChildren().setAll(content);
-
+            // Get the modification controller and set up the data
             Modifierparcelles controller = contentLoader.getController();
             controller.setParcelleToEdit(parcelle);
-            controller.setRefreshCallback(() -> {
-                loadData();
-                ((Stage) baseRoot.getScene().getWindow()).close();
-            });
+            controller.setRefreshCallback(this::loadData); // Refresh the data when done
 
+            // Set the content in Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
+
+            // Create and show the stage
             Stage stage = new Stage();
-            stage.setScene(new Scene(baseRoot));
+            stage.setScene(new Scene(homeRoot));
+            stage.setTitle("Modifier Parcelle");
             stage.show();
+
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'ouvrir l'éditeur : " + e.getMessage());
         }
@@ -297,20 +304,24 @@ public class Afficherparcelles {
     @FXML
     private void handleRetour() {
         try {
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
-            Parent baseRoot = baseLoader.load();
-            BaseFrontController baseController = baseLoader.getController();
+            // Load Home.fxml (which contains the navbar)
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
+            // Load the content you want to display
             FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/parcelles/Ajouterparcelles.fxml"));
             Parent content = contentLoader.load();
 
-            baseController.getContentPane().getChildren().setAll(content);
+            // Set the content in Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
 
+            // Update the stage
             Stage stage = (Stage) btnRetour.getScene().getWindow();
-            stage.setScene(new Scene(baseRoot));
+            stage.setScene(new Scene(homeRoot));
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            showAlert("Erreur", "Impossible de retourner à l'ajout : " + e.getMessage());
         }
     }
 

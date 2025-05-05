@@ -1,11 +1,16 @@
 package controllers.FrontOffice.User;
 
 import Models.user;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import services.UserServices;
 import utils.NavigationUtil;
 import utils.PasswordUtils;
@@ -16,9 +21,30 @@ public class ResetPasswordVerificationController {
     @FXML private TextField codeField;
     @FXML private PasswordField newPasswordField;
     @FXML private PasswordField confirmPasswordField;
-    @FXML private Node rootPane;
+    @FXML private AnchorPane rootPane;
+    @FXML private ImageView backgroundImage;
 
     private String email;
+
+    @FXML
+    public void initialize() {
+        Platform.runLater(() -> {
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            Scene scene = stage.getScene();
+
+            // Bind background image to window size
+            if (backgroundImage != null) {
+                backgroundImage.fitWidthProperty().bind(scene.widthProperty());
+                backgroundImage.fitHeightProperty().bind(scene.heightProperty());
+            }
+
+            // Make window full screen or maximized
+            stage.setMaximized(true);
+
+            // Focus on code field when window loads
+            codeField.requestFocus();
+        });
+    }
 
     public void initData(String email) {
         this.email = email;
@@ -56,6 +82,7 @@ public class ResetPasswordVerificationController {
         if (user != null &&
                 user.getResetToken() != null &&
                 user.getResetToken().equals(code) &&
+                user.getTokenExpiry() != null &&
                 user.getTokenExpiry().isAfter(LocalDateTime.now())) {
 
             // Update password
@@ -63,11 +90,17 @@ public class ResetPasswordVerificationController {
             user.setPassword(hashedPassword);
             user.setResetToken(null);
             user.setTokenExpiry(null);
-            userService.update(user);
 
-            NavigationUtil.showAlert("Success", "Password Reset",
-                    "Your password has been updated successfully.");
-            NavigationUtil.navigateTo("/FrontOffice/user/Login.fxml", rootPane);
+            try {
+                userService.update(user);  // still returns void
+                NavigationUtil.showAlert("Success", "Password Reset",
+                        "Your password has been updated successfully.");
+                NavigationUtil.navigateToAnchorPane("/FrontOffice/user/Login.fxml", rootPane);
+            } catch (Exception e) {
+                e.printStackTrace(); // optional: log error
+                NavigationUtil.showErrorAlert("Error", "Update Failed",
+                        "Failed to update password. Please try again.");
+            }
         } else {
             NavigationUtil.showErrorAlert("Error", "Invalid Code",
                     "The verification code is invalid or expired.");
@@ -75,6 +108,6 @@ public class ResetPasswordVerificationController {
     }
 
     public void redirectToLogin(ActionEvent actionEvent) {
-        NavigationUtil.navigateTo("/FrontOffice/user/login.fxml", rootPane);
+        NavigationUtil.navigateToAnchorPane("/FrontOffice/user/login.fxml", rootPane);
     }
 }

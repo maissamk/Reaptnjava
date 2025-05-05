@@ -7,6 +7,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import controllers.BackOffice.HomeBack;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -251,18 +252,29 @@ public class IndexMaterielController {
     }
     private void handleEditVente(MaterielVente materiel) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Backoffice/materials/EditMaterielVente.fxml"));
-            Parent root = loader.load();
+            // 1. Load the HomeBack layout with navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
+            Parent homeRoot = homeLoader.load();
+            HomeBack homeController = homeLoader.getController();
 
-            EditMaterielVenteController controller = loader.getController();
-            controller.setMaterielToEdit(materiel);
+            // 2. Load the edit content
+            FXMLLoader editLoader = new FXMLLoader(getClass().getResource("/Backoffice/materials/EditMaterielVente.fxml"));
+            Parent editContent = editLoader.load();
+            EditMaterielVenteController editController = editLoader.getController();
+            editController.setMaterielToEdit(materiel);
 
+            // 3. Put the edit form in HomeBack's content pane
+            homeController.getContentPane().getChildren().setAll(editContent);
+
+            // 4. Create and show the stage (same as original)
             Stage stage = new Stage();
             stage.setTitle("Modifier Matériel à Vendre");
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(homeRoot));
             stage.showAndWait();
 
+            // 5. Refresh data (same as original)
             loadVenteData();
+
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'ouvrir l'éditeur", Alert.AlertType.ERROR);
         }
@@ -556,15 +568,27 @@ public class IndexMaterielController {
     @FXML
     private void goToAddVente(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Backoffice/materials/AddMaterielVente.fxml"));
-            Parent root = loader.load();
+            // 1. Load the HomeBack layout with navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
+            Parent homeRoot = homeLoader.load();
+            HomeBack homeController = homeLoader.getController();
 
+            // 2. Load the add content
+            FXMLLoader addLoader = new FXMLLoader(getClass().getResource("/Backoffice/materials/AddMaterielVente.fxml"));
+            Parent addContent = addLoader.load();
+
+            // 3. Put the add form in HomeBack's content pane
+            homeController.getContentPane().getChildren().setAll(addContent);
+
+            // 4. Create and show the stage (same as original)
             Stage stage = new Stage();
             stage.setTitle("Ajouter Matériel à Vendre");
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(homeRoot));
             stage.showAndWait();
 
+            // 5. Refresh data (same as original)
             loadVenteData();
+
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'ouvrir le formulaire d'ajout", Alert.AlertType.ERROR);
         }
@@ -589,33 +613,35 @@ public class IndexMaterielController {
     @FXML
     void gotohisotrique(ActionEvent event) {
         try {
-            // Get the current stage
+            // 1. Load the main HomeBack layout (contains navbar)
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
+            Parent homeRoot = homeLoader.load();
+            HomeBack homeController = homeLoader.getController();
 
-            // Load new window
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Backoffice/materials/HistoriqueController.fxml"));
-            Parent root = loader.load();
+            // 2. Load the historique content
+            FXMLLoader histLoader = new FXMLLoader(getClass().getResource("/Backoffice/materials/HistoriqueController.fxml"));
+            Parent histContent = histLoader.load();
 
+            // 3. Set the historique content in HomeBack's content pane
+            homeController.getContentPane().getChildren().setAll(histContent);
+
+            // 4. Create and configure the new window
             Stage newStage = new Stage();
-            newStage.setTitle("Gestion des Catégories");
-            newStage.setScene(new Scene(root));
+            newStage.setTitle("Historique des Matériels");
+            newStage.setScene(new Scene(homeRoot));
 
-            // Close current window
+            // Set full screen dimensions
             Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-
-            // Set stage width and height to screen dimensions
             newStage.setWidth(screenBounds.getWidth());
             newStage.setHeight(screenBounds.getHeight());
 
-
-            // Show new window
             newStage.show();
 
         } catch (IOException e) {
-            showAlert("Erreur", "Impossible d'ouvrir la gestion des catégories", Alert.AlertType.ERROR);
+            showAlert("Erreur", "Impossible d'ouvrir l'historique", Alert.AlertType.ERROR);
             e.printStackTrace();
         }
     }
-
 
     @FXML
     void gotocategorie(ActionEvent event) {

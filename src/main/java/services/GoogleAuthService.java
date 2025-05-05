@@ -13,13 +13,11 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.client.util.store.MemoryDataStoreFactory;
 import javafx.concurrent.Task;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

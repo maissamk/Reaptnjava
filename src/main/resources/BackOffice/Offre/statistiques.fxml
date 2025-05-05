@@ -14,7 +14,7 @@
             stylesheets="@/css/homeback.css">
 
     <!-- SIDEBAR: DO NOT TOUCH -->
-    <left>
+    <!-- left>
         <VBox styleClass="sidebar" spacing="10" prefWidth="220">
             <Label text="MAIN MENU" styleClass="menu-title"/>
             <Button fx:id="statisticsBtn" text="Statistics" styleClass="side-btn"/>
@@ -31,7 +31,7 @@
                 <Label text="© 2023 AgriSoft" styleClass="copyright-label"/>
             </VBox>
         </VBox>
-    </left>
+    </leftT -->
 
     <!-- MAIN CONTENT -->
     <center>

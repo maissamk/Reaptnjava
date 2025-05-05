@@ -4,6 +4,7 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 import controllers.FrontOffice.BaseFrontController;
+import controllers.FrontOffice.Home;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -181,14 +182,22 @@ public class Affichercontrat {
     @FXML
     private void handleAfficherParcelles() {
         try {
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
-            Parent baseRoot = baseLoader.load();
-            BaseFrontController controller = baseLoader.getController();
-            Parent content = FXMLLoader.load(getClass().getResource("/FrontOffice/parcelles/Afficherparcelles.fxml"));
-            controller.getContentPane().getChildren().setAll(content);
+            // Load Home.fxml which contains the navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
+            // Load the parcelle list content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/parcelles/Afficherparcelles.fxml"));
+            Parent content = contentLoader.load();
+
+            // Set the content in Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
+
+            // Update the stage
             Stage stage = (Stage) btnRetour.getScene().getWindow();
-            stage.setScene(new Scene(baseRoot));
+            stage.setScene(new Scene(homeRoot));
+            stage.show();
         } catch (IOException e) {
             showAlert("Erreur", "Navigation impossible : " + e.getMessage());
         }
@@ -196,20 +205,34 @@ public class Affichercontrat {
 
 
 
+
     private void openDetailView(Contrat contrat) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/contrats/DetailleContrat.fxml"));
-            Parent root = loader.load();
+            // Load Home.fxml which contains the navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
-            DetailContrat controller = loader.getController();
-            controller.initData(contrat); // Passage du contrat sélectionné
+            // Load the detail content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/contrats/DetailleContrat.fxml"));
+            Parent content = contentLoader.load();
 
+            // Get the detail controller and pass the selected Contrat
+            DetailContrat controller = contentLoader.getController();
+            controller.initData(contrat);
+
+            // Set the content in Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
+
+            // Update the stage
             Stage stage = (Stage) btnRetour.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(homeRoot));
+            stage.show();
         } catch (IOException e) {
             showAlert("Erreur", e.getMessage());
         }
     }
+
 
     private void openModificationWindow(Contrat contrat) {
         try {
@@ -412,21 +435,26 @@ public class Affichercontrat {
     @FXML
     private void handleRetour() {
         try {
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
-            Parent baseRoot = baseLoader.load();
+            // Load Home.fxml which contains the navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
-            BaseFrontController controller = baseLoader.getController();
-            Parent content = FXMLLoader.load(getClass().getResource("/FrontOffice/contrats/Ajoutercontrat.fxml"));
-            controller.getContentPane().getChildren().setAll(content);
+            // Load the add contract content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/contrats/Ajoutercontrat.fxml"));
+            Parent content = contentLoader.load();
 
+            // Set the content in Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
+
+            // Update the stage
             Stage stage = (Stage) btnRetour.getScene().getWindow();
-            stage.setScene(new Scene(baseRoot));
-
+            stage.setScene(new Scene(homeRoot));
+            stage.show();
         } catch (IOException e) {
             showAlert("Erreur", "Navigation impossible : " + e.getMessage());
         }
     }
-
     private void showAlert(String titre, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titre);

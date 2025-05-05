@@ -143,7 +143,7 @@ public class PDFGenerator {
         addDetailRow(table, "Price", String.format("%.2f TND", materiel.getPrix()));
         addDetailRow(table, "Description", materiel.getDescription());
         addDetailRow(table, "Availability", materiel.isDisponibilite() ? "Available" : "Not Available");
-        addDetailRow(table, "Category ID", materiel.getCategorie() != null ? materiel.getCategorieId().toString() : "N/A");
+        addDetailRow(table, "Category ID", materiel.getCategorie() != null ? materiel.getCategorie().toString() : "N/A");
 
 
         document.add(table);

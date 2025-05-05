@@ -1,15 +1,13 @@
 package controllers.FrontOffice.contrats;
 
 import controllers.FrontOffice.BaseFrontController;
+import controllers.FrontOffice.Home;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import Models.Contrat;
 import services.ContratService;
@@ -19,6 +17,8 @@ import javafx.event.ActionEvent;
 
 import java.io.IOException;
 import java.sql.Date;
+
+import static utils.NavigationUtil.showAlert;
 
 public class Ajoutercontrat {
 
@@ -121,29 +121,42 @@ public class Ajoutercontrat {
     @FXML
     private void goToAfficherContrats(ActionEvent event) {
         try {
-            // 1. Charger le layout de base
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
-            Parent baseRoot = baseLoader.load();
-            BaseFrontController baseController = baseLoader.getController();
+            // 1. Load Home.fxml which contains the navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
-            // 2. Charger le contenu Affichercontrat
+            // 2. Load the Affichercontrat content
             Parent content = FXMLLoader.load(getClass().getResource("/FrontOffice/contrats/Affichercontrat.fxml"));
 
-            // 3. Injecter le contenu
-            baseController.getContentPane().getChildren().setAll(content);
+            // 3. Inject the content into Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
 
-            // 4. Récupérer la fenêtre actuelle
+            // 4. Get the current window
             Stage stage;
             if (event != null) {
                 stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             } else {
                 stage = (Stage) addContratButton.getScene().getWindow();
             }
-            stage.setScene(new Scene(baseRoot));
+
+            // 5. Update the stage with the new scene
+            stage.setScene(new Scene(homeRoot));
+            stage.show();
 
         } catch (IOException e) {
-            System.err.println("Erreur de navigation: " + e.getMessage());
+            System.err.println("Navigation error: " + e.getMessage());
             e.printStackTrace();
+            // You might want to show an alert to the user here
+            showAlert("Navigation Error", "Failed to load contracts view: " + e.getMessage());
         }
     }
+    private void showAlert(String titre, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titre);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 }

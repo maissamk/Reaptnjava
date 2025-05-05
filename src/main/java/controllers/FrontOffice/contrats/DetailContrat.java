@@ -1,5 +1,6 @@
 package controllers.FrontOffice.contrats;
 
+import controllers.FrontOffice.Home;
 import controllers.FrontOffice.parcelles.DetailParcelle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -82,29 +83,51 @@ public class DetailContrat {
     @FXML
     private void handleVoirParcelle() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/parcelles/DetailParcelle.fxml"));
-            Parent root = loader.load();
+            // Load Home.fxml which contains the navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
-            DetailParcelle controller = loader.getController();
+            // Load the parcelle detail content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/parcelles/DetailParcelle.fxml"));
+            Parent content = contentLoader.load();
+
+            // Get the detail controller and pass the parcelle data
+            DetailParcelle controller = contentLoader.getController();
             controller.initData(contratCourant.getParcelleProprietes());
 
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
+            // Set the content in Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
+
+            // Update the stage
+            Stage stage = (Stage) btnVoirParcelle.getScene().getWindow();
+            stage.setScene(new Scene(homeRoot));
             stage.show();
         } catch (IOException e) {
             showAlert("Erreur", e.getMessage());
         }
     }
 
+
     @FXML
     private void handleRetour() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/contrats/Affichercontrat.fxml"));
-            Parent root = loader.load();
+            // Load Home.fxml which contains the navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
+            // Load the contracts list content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/contrats/Affichercontrat.fxml"));
+            Parent content = contentLoader.load();
+
+            // Set the content in Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
+
+            // Update the stage
             Stage stage = (Stage) btnRetour.getScene().getWindow();
-            stage.setScene(new Scene(root));
-
+            stage.setScene(new Scene(homeRoot));
+            stage.show();
         } catch (IOException e) {
             showAlert("Erreur", "Navigation impossible : " + e.getMessage());
             e.printStackTrace();

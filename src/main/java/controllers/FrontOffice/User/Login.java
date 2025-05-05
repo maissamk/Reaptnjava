@@ -1,6 +1,7 @@
 package controllers.FrontOffice.User;
 
 import Models.user;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,6 +11,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import services.FacePlusPlusService;
 import services.GoogleAuthGIS;
@@ -36,6 +39,24 @@ public class Login {
 
     private final UserServices userService = new UserServices();
     private final FacePlusPlusService faceService = new FacePlusPlusService();
+
+    @FXML
+    public void initialize() {
+        Platform.runLater(() -> {
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            Scene scene = stage.getScene();
+
+            // Bind image size to scene size
+            ImageView background = (ImageView) scene.lookup("#backgroundImage");
+            if (background != null) {
+                background.fitWidthProperty().bind(scene.widthProperty());
+                background.fitHeightProperty().bind(scene.heightProperty());
+            }
+
+            // Make window full screen or maximized
+            stage.setMaximized(true);
+        });
+    }
 
     @FXML
     void userLogin(ActionEvent event) {
@@ -123,21 +144,47 @@ public class Login {
 
     @FXML
     private void handleFaceLogin(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/user/camera-popup.fxml"));
+            Parent root = loader.load();
+            CameraPopupController controller = loader.getController();
+
+            // Set the callback for when image is captured
+            controller.setOnCaptureCallback(capturedImage -> {
+                if (capturedImage != null) {
+                    processFaceLogin(capturedImage);
+                }
+            });
+
+            Stage dialog = new Stage();
+            dialog.setTitle("Face Recognition Login");
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(((Node)event.getSource()).getScene().getWindow());
+            dialog.setScene(new Scene(root));
+            dialog.showAndWait();
+
+        } catch (IOException e) {
+            NavigationUtil.showErrorAlert("Error", "Camera Error", "Could not open camera: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void processFaceLogin(Image capturedImage) {
         faceLoginButton.setDisable(true);
 
         Task<Void> faceLoginTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
                 try {
-                    Image capturedImage = CameraUtil.captureImage();
                     File tempFile = File.createTempFile("face-login", ".png");
                     CameraUtil.saveImageToFile(capturedImage, tempFile.getAbsolutePath());
 
                     String capturedToken = faceService.detectFace(tempFile);
 
                     if (capturedToken == null) {
-                        javafx.application.Platform.runLater(() ->
-                                NavigationUtil.showErrorAlert("Error", "Face Not Detected", "Please try again with clear face visibility."));
+                        Platform.runLater(() ->
+                                NavigationUtil.showErrorAlert("Error", "Face Not Detected",
+                                        "Please try again with clear face visibility."));
                         return null;
                     }
 
@@ -145,7 +192,7 @@ public class Login {
                     for (user u : usersWithFaces) {
                         if (faceService.compareFaces(u.getFace_token(), capturedToken)) {
                             SessionManager.getInstance().startSession(u);
-                            javafx.application.Platform.runLater(() -> {
+                            Platform.runLater(() -> {
                                 try {
                                     redirectToHome();
                                 } catch (IOException e) {
@@ -156,20 +203,16 @@ public class Login {
                         }
                     }
 
-// ✨ If no user matches the face:
-                    javafx.application.Platform.runLater(() ->
-                            NavigationUtil.showErrorAlert("Login Failed", "Face Not Registered", "Your face was not recognized. Please register first.")
-                    );
+                    Platform.runLater(() ->
+                            NavigationUtil.showErrorAlert("Login Failed", "Face Not Recognized",
+                                    "No registered user matches your face."));
 
-
-                    javafx.application.Platform.runLater(() ->
-                            NavigationUtil.showErrorAlert("Error", "No Match Found", "No registered user matches your face."));
                 } catch (Exception e) {
-                    javafx.application.Platform.runLater(() ->
+                    Platform.runLater(() ->
                             NavigationUtil.showErrorAlert("Error", "Login Failed", e.getMessage()));
                     e.printStackTrace();
                 } finally {
-                    javafx.application.Platform.runLater(() -> faceLoginButton.setDisable(false));
+                    Platform.runLater(() -> faceLoginButton.setDisable(false));
                 }
                 return null;
             }

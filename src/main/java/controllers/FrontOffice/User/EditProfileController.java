@@ -2,6 +2,7 @@ package controllers.FrontOffice.User;
 
 import Models.user;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -32,13 +33,11 @@ public class EditProfileController {
 
     @FXML
     public void initialize() {
-        System.out.println("Initializing EditProfileController...");
         currentUser = SessionManager.getInstance().getCurrentUser();
         if (currentUser != null) {
-            System.out.println("Loading user: " + currentUser.getEmail());
             loadUserData();
         } else {
-            System.out.println("No user logged in!");
+            NavigationUtil.navigateTo("/FrontOffice/user/login.fxml", (Node) firstNameField.getScene().getRoot());
         }
     }
 
@@ -84,11 +83,13 @@ public class EditProfileController {
         }
 
         try {
+            // Update user data
             currentUser.setPrenom(firstNameField.getText());
             currentUser.setNom(lastNameField.getText());
             currentUser.setEmail(emailField.getText());
             currentUser.setTelephone(phoneField.getText());
 
+            // Handle password change if needed
             if (!newPasswordField.getText().isEmpty()) {
                 if (!PasswordUtils.checkSymfonyPassword(currentPasswordField.getText(), currentUser.getPassword())) {
                     showAlert("Error", "Invalid Password", "Current password is incorrect");
@@ -97,24 +98,24 @@ public class EditProfileController {
                 currentUser.setPassword(PasswordUtils.hashForSymfony(newPasswordField.getText()));
             }
 
+            // Handle avatar change if needed
             if (selectedAvatarFile != null) {
                 String avatarPath = saveAvatarToResources(selectedAvatarFile);
                 currentUser.setAvatar(avatarPath);
             }
 
+            // Save changes - assuming update() returns void
             userService.update(currentUser);
-
             SessionManager.getInstance().startSession(currentUser);
-
-            showAlert("Success", "Profile Updated", "Your changes have been saved successfully");
-            NavigationUtil.navigateTo("/FrontOffice/user/profile.fxml", firstNameField);
+            showAlertAndNavigate("Success", "Profile Updated",
+                    "Your changes have been saved successfully",
+                    "/FrontOffice/user/profile.fxml");
 
         } catch (Exception e) {
             showAlert("Error", "Update Failed", "Failed to update profile: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
     private String saveAvatarToResources(File avatarFile) throws IOException {
         String resourcesPath = "src/main/resources/images/avatars/";
         String fileName = currentUser.getId() + "_" + avatarFile.getName();
@@ -146,6 +147,17 @@ public class EditProfileController {
         }
 
         return true;
+    }
+
+    private void showAlertAndNavigate(String title, String header, String content, String fxmlPath) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.setOnHidden(event -> {
+            NavigationUtil.navigateTo(fxmlPath, firstNameField);
+        });
+        alert.show();
     }
 
     @FXML
