@@ -1,14 +1,18 @@
 package controllers.FrontOffice.GestionCommande;
 
+
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.stage.Stage;
 
 public class HistoriqueController {
 
     @FXML
     public void initialize() {
-        // Rien à initialiser car tout est statique dans le FXML
     }
 
-    // Cette classe peut être étendue plus tard si besoin d'ajouter des fonctionnalités
-    // comme l'impression ou l'exportation des commandes
-}
+
+    }
