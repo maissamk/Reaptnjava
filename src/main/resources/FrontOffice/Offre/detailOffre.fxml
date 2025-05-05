@@ -75,6 +75,7 @@
                 <TableColumn fx:id="emailColumn" text="Email" prefWidth="250.0" />
                 <TableColumn fx:id="compColumn" text="Compétence" prefWidth="300.0" />
                 <TableColumn fx:id="dispoColumn" text="Disponibilité" prefWidth="200.0" />
+                <TableColumn fx:id="confColumn" text="Statut" prefWidth="100.0" />
                 <TableColumn fx:id="suggestedColumn" text="Recommandé" prefWidth="100.0" />
                 <TableColumn fx:id="actionColumn" text="Actions" prefWidth="180.0" />
             </columns>

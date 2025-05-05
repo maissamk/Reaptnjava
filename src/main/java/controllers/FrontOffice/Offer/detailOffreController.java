@@ -1,6 +1,7 @@
 package controllers.FrontOffice.Offer;
 import controllers.FrontOffice.BaseFrontController;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -180,6 +181,8 @@ public class detailOffreController {
     @FXML private TableColumn<Employe, String> dispoColumn;
     @FXML
     private TableColumn<Employe, Void> actionColumn;
+    @FXML
+    private TableColumn<Employe, String> confColumn;
 
     @FXML
     private TextField userIdField;
@@ -313,6 +316,13 @@ public class detailOffreController {
             return new ReadOnlyStringWrapper(formattedDays);
         });
 
+        confColumn.setCellValueFactory(cellData -> {
+            boolean conf = cellData.getValue().isConf(); // primitive boolean
+            String status = conf ? "Accepté" : "En attente"; // false = 0 or null → "En attente"
+            return new SimpleStringProperty(status);
+        });
+
+
         // Set the CellValueFactory for the "Suggested" column
         suggestedColumn.setCellValueFactory(cellData -> {
             Employe emp = cellData.getValue();
@@ -389,12 +399,18 @@ public class detailOffreController {
 
 
 
+
+
         // Set the items in the table
         ObservableList<Employe> employes = FXCollections.observableArrayList(
                 employeService.getEmployesByOffreId(offreId, tempNomMap, tempPrenomMap, tempEmailMap)
         );
 
         employeTable.setItems(employes);
+
+
+
+
     }
 
 

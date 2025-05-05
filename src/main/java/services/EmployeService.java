@@ -6,12 +6,9 @@ import Models.Offre;
 import utils.MaConnexion;
 import interfaces.IService;
 
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -296,6 +293,64 @@ public class EmployeService implements IService<Employe> {
         PreparedStatement stmt = connection.prepareStatement(sql);
         stmt.setInt(1, employeId);
         stmt.executeUpdate();
+    }
+
+    //statistiques
+
+
+    public int getTotalEmployes() throws SQLException {
+        List<Employe> employes = select();  // Using the select() method to get all employees
+        return employes.size();  // Return the size of the list as the total number of employees
+    }
+
+
+
+
+    public int getTotalOffres() throws SQLException {
+        String sql = "SELECT COUNT(DISTINCT offre_id) FROM employe";  // Count distinct offre_id values
+        try (Statement st = connection.createStatement(); ResultSet res = st.executeQuery(sql)) {
+            if (res.next()) {
+                return res.getInt(1);  // Return the count of distinct offre_id
+            }
+        }
+        return 0;  // Return 0 if no results found
+    }
+
+
+    // Get the confirmed employees per offer (grouped by offer_id)
+    public Map<Integer, Integer> getConfirmedEmployesPerOffre() throws SQLException {
+        String sql = "SELECT offre_id, COUNT(*) FROM employe WHERE conf = 1 GROUP BY offre_id";  // Count confirmed employees per offer
+        Map<Integer, Integer> confirmedStats = new HashMap<>();
+        try (Statement st = connection.createStatement(); ResultSet res = st.executeQuery(sql)) {
+            while (res.next()) {
+                int offreId = res.getInt("offre_id");
+                int confirmedCount = res.getInt(2);
+                confirmedStats.put(offreId, confirmedCount);  // Store the count in the map
+            }
+        }
+        return confirmedStats;
+    }
+
+
+    public int getConfirmedCount() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM employe WHERE conf = 1";  // Count the number of confirmed employees
+        try (Statement st = connection.createStatement(); ResultSet res = st.executeQuery(sql)) {
+            if (res.next()) {
+                return res.getInt(1);  // Return the count of confirmed employees
+            }
+        }
+        return 0;  // Return 0 if no confirmed employees
+    }
+
+    // Get the total number of unconfirmed employees
+    public int getUnconfirmedCount() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM employe WHERE conf = 0 OR conf IS NULL";  // Count the number of unconfirmed employees
+        try (Statement st = connection.createStatement(); ResultSet res = st.executeQuery(sql)) {
+            if (res.next()) {
+                return res.getInt(1);  // Return the count of unconfirmed employees
+            }
+        }
+        return 0;  // Return 0 if no unconfirmed employees
     }
 
 

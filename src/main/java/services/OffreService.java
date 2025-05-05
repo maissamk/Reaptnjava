@@ -234,4 +234,9 @@ public class OffreService implements IService<Offre> {
     }
 
 
+
+    //statistics are in employe service
+
+
+
 }

@@ -1,5 +1,6 @@
 package controllers.BackOffice;
 
+import controllers.FrontOffice.BaseFrontController;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -209,4 +210,7 @@ public class HomeBack implements Initializable {
             e.printStackTrace();
         }
     }
+
+
+
 }
