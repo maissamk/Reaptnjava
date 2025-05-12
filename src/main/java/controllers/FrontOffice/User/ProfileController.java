@@ -26,6 +26,7 @@ import utils.SessionManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -63,15 +64,30 @@ public class ProfileController {
             statusLabel.setText(currentUser.getStatus() != null ? currentUser.getStatus() : "Active");
 
             try {
-                String avatarPath = currentUser.getAvatar();
-                if (avatarPath == null || avatarPath.isEmpty()) {
+                String avatarPath;
+                if (currentUser.getAvatar() == null || currentUser.getAvatar().isEmpty()) {
                     avatarPath = "/images/defaultavatar.png";
-                } else if (!avatarPath.startsWith("/images/avatars/")) {
-                    avatarPath = "/images/avatars/" + avatarPath;
+                } else {
+                    avatarPath = "/images/avatars/" + currentUser.getAvatar();
                 }
 
-                Image avatar = new Image(getClass().getResourceAsStream(avatarPath));
-                avatarImage.setImage(avatar);
+                // Add random query parameter to bypass cache
+                String uniquePath = avatarPath + "?t=" + System.currentTimeMillis();
+
+                System.out.println("Loading avatar from: " + uniquePath);
+
+                // Clear previous image first
+                avatarImage.setImage(null);
+
+                // Load new image with InputStream to ensure fresh load
+                InputStream imageStream = getClass().getResourceAsStream(avatarPath);
+                if (imageStream != null) {
+                    Image avatar = new Image(imageStream);
+                    avatarImage.setImage(avatar);
+                } else {
+                    System.err.println("Avatar file not found: " + avatarPath);
+                    avatarImage.setImage(new Image(getClass().getResourceAsStream("/images/defaultavatar.png")));
+                }
             } catch (Exception e) {
                 System.err.println("Error loading avatar: " + e.getMessage());
                 avatarImage.setImage(new Image(getClass().getResourceAsStream("/images/defaultavatar.png")));

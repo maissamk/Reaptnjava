@@ -143,8 +143,8 @@ public class HomeBack implements Initializable {
         //statisticsBtn.setOnAction(e -> loadContent("/views/BackOffice/Statistics.fxml"));
         statisticsBtn.setOnAction(e -> loadContent("/BackOffice/Offre/statistiques.fxml"));
         farmersBtn.setOnAction(e -> loadContent("/BackOffice/GestionCommandeBack/ArchivesView.fxml"));
-        parcelsBtn.setOnAction(e -> loadContent("/views/BackOffice/Parcels.fxml"));
-        harvestBtn.setOnAction(e -> loadContent("/views/BackOffice/Harvest.fxml"));
+        parcelsBtn.setOnAction(e -> loadContent("/BackOffice/Employe/indexEmployeBack.fxml"));
+        harvestBtn.setOnAction(e -> loadContent("/BackOffice/Offre/indexOffreBack.fxml"));
         settingsBtn.setOnAction(e -> loadContent("/views/BackOffice/Settings.fxml"));
         logsBtn.setOnAction(e -> loadContent("/views/BackOffice/Logs.fxml"));
         location.setOnAction(this::IndexMateriels);
@@ -154,7 +154,7 @@ public class HomeBack implements Initializable {
         logoutBtn.setOnAction(e -> handleLogout());
 
         // Return to Front
-        returnToFrontBtn.setOnAction(e -> handleReturnToFront());
+//        returnToFrontBtn.setOnAction(e -> handleReturnToFront());
     }
     private void navigateTo(String fxmlPath, ActionEvent event) {
         try {
@@ -325,31 +325,31 @@ public class HomeBack implements Initializable {
         }
     }
 
-    private void handleReturnToFront() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
-            Parent root = loader.load();
-
-            // Obtenir les dimensions de l'écran
-            javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
-
-            // Définir une taille initiale relative à l'écran
-            double width = screenBounds.getWidth() * 0.8;
-            double height = screenBounds.getHeight() * 0.8;
-
-            Scene scene = new Scene(root, width, height);
-
-            Stage stage = (Stage) returnToFrontBtn.getScene().getWindow();
-            stage.setResizable(true);
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
-            stage.setScene(scene);
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    private void handleReturnToFront() {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+//            Parent root = loader.load();
+//
+//            // Obtenir les dimensions de l'écran
+//            javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
+//
+//            // Définir une taille initiale relative à l'écran
+//            double width = screenBounds.getWidth() * 0.8;
+//            double height = screenBounds.getHeight() * 0.8;
+//
+//            Scene scene = new Scene(root, width, height);
+//
+//            Stage stage = (Stage) returnToFrontBtn.getScene().getWindow();
+//            stage.setResizable(true);
+//            stage.setMinWidth(800);
+//            stage.setMinHeight(600);
+//            stage.setScene(scene);
+//            stage.centerOnScreen();
+//            stage.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
 

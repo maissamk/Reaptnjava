@@ -1,18 +1,18 @@
-=== DÃ©tails de l'Offre ===
+=== Détails de l'Offre ===
 ID: 5
 Titre: expert lutte antiparasitaire
-Description: veuiller me contacter sur 4578945 si vous etes interessÃ©
+Description: veuiller me contacter sur si vous etes interessé
 
-=== EmployÃ©s liÃ©s ===
-Nom: baligh
-PrÃ©nom: laouini
-Email: balighagr99@gmail.com
+=== Employés liés ===
+Nom: Salim
+Prénom: Ahmed
+Email: ahmedhaffarl9bour@gmail.com
 -----
-Nom: Ahmed
-PrÃ©nom: Soltan
-Email: ahmed@gmail.com
+Nom: nihel
+Prénom: hassad
+Email: admin@gmail.com
 -----
-Nom: xd
-PrÃ©nom: xd
-Email: client100@gmail.com
+Nom: hassad
+Prénom: nihel
+Email: hassadnihel@gmail.com
 -----

@@ -50,7 +50,7 @@
                 <Button fx:id="productsBtn" styleClass="nav-btn, dropdown-btn" text="Products ▼" minWidth="80.0" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
                 <Button fx:id="ordersBtn" styleClass="nav-btn" text="Orders" minWidth="80.0" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
                 <Button fx:id="reportsBtn" styleClass="nav-btn" text="Reports" minWidth="80.0" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
-                <Button fx:id="returnToFrontBtn" styleClass="nav-btn" text="Return to Front Office" minWidth="120.0" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+                <!--Button fx:id="returnToFrontBtn" styleClass="nav-btn" text="Return to Front Office" minWidth="120.0" maxWidth="Infinity" HBox.hgrow="ALWAYS" /-->
             </HBox>
 
             <Region HBox.hgrow="ALWAYS" />

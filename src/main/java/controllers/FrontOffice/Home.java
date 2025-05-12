@@ -148,11 +148,27 @@ public class Home implements Initializable {
         produitsButton.setOnAction(e -> handleProduitsDetail());
         parcelleButton.setOnAction(e -> handleParcelle());
         offersButton.setOnAction(e -> handleOffers());
-        //masterfulButton.setOnAction(e -> handleMasterful());
+        plantButton.setOnAction(e -> handlePlant());
 
         // Auth buttons
         loginButton.setOnAction(e -> handleLogin());
         profileButton.setOnAction(e -> handleProfile());
+    }
+
+    private void handlePlant() {
+        try{
+        // Load just the parcelle content
+        FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/GestionCommande/analyze_image.fxml"));
+        Parent content = contentLoader.load();
+
+        // Clear existing content and add the parcelle content
+        mainContentPane.getChildren().clear();
+        mainContentPane.getChildren().add(content);
+
+    } catch (IOException e) {
+        e.printStackTrace();
+        showAlert("Error", "Failed to load parcels page: " + e.getMessage(), Alert.AlertType.ERROR);
+    }
     }
 
 

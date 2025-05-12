@@ -117,13 +117,24 @@ public class EditProfileController {
         }
     }
     private String saveAvatarToResources(File avatarFile) throws IOException {
+        // Get the target directory path
         String resourcesPath = "src/main/resources/images/avatars/";
-        String fileName = currentUser.getId() + "_" + avatarFile.getName();
-        File destFile = new File(resourcesPath + fileName);
+        File targetDir = new File(resourcesPath);
 
-       new File(resourcesPath).mkdirs();
+        // Create directory if it doesn't exist
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
 
+        // Generate unique filename (using user ID and timestamp)
+        String fileExtension = avatarFile.getName().substring(avatarFile.getName().lastIndexOf("."));
+        String fileName = currentUser.getId() + "_" + System.currentTimeMillis() + fileExtension;
+        File destFile = new File(targetDir, fileName);
+
+        // Copy the file
         Files.copy(avatarFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        // Return just the filename (without path)
         return fileName;
     }
 
