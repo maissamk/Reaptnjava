@@ -110,7 +110,7 @@ public class ProfileController {
             });
 
             Stage dialog = new Stage();
-            dialog.setTitle("Register Your Face");
+            dialog.setTitle("Register Your face");
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(registerFaceButton.getScene().getWindow());
             dialog.setScene(new Scene(root));
