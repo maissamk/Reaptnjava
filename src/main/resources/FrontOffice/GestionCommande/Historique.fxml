@@ -1,0 +1,104 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+
+<?import javafx.scene.control.Button?>
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.FrontOffice.GestionCommande.HistoriqueController"
+            fitToWidth="true"
+            styleClass="root"
+            stylesheets="@/css/styles.css" >
+
+
+
+    <content>
+        <VBox spacing="20" styleClass="main-container">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- En-tête avec le nouveau style -->
+            <HBox styleClass="header-banner" alignment="CENTER">
+                <padding>
+                    <Insets top="15" right="20" bottom="15" left="20"/>
+                </padding>
+                <Label text="Historique des commandes" styleClass="header-title"/>
+            </HBox>
+
+            <!-- Commande 1 - Livrée -->
+            <VBox styleClass="card">
+                <HBox spacing="15" alignment="CENTER_LEFT">
+
+                    <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                        <Label text="En cours" styleClass="step-text-current"/>
+
+                    </HBox>
+                </HBox>
+
+                <Separator styleClass="card-divider">
+                    <VBox.margin>
+                        <Insets top="10" bottom="10"/>
+                    </VBox.margin>
+                </Separator>
+
+                <Label text="Produits commandés:" styleClass="card-title">
+                    <VBox.margin>
+                        <Insets bottom="10"/>
+                    </VBox.margin>
+                </Label>
+
+                <GridPane hgap="10" vgap="8" styleClass="detail-container">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="10" />
+                        <ColumnConstraints percentWidth="40" />
+                        <ColumnConstraints percentWidth="15" />
+                        <ColumnConstraints percentWidth="15" />
+                        <ColumnConstraints percentWidth="20" />
+                    </columnConstraints>
+
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+
+                    <!-- En-têtes -->
+                    <Label text="Nom" styleClass="detail-label" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <Label text="Prix unitaire" styleClass="detail-label" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                    <Label text="Quantité" styleClass="detail-label" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+                    <Label text="Total" styleClass="detail-label" GridPane.columnIndex="4" GridPane.rowIndex="0"/>
+
+                    <!-- Produit 1 -->
+                    <Label text="Trakteur" styleClass="detail-value" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    <Label text="5840.0 DT" styleClass="detail-value" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                    <Label text="2" styleClass="detail-value" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                    <Label text="11680.0 DT" styleClass="detail-value" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
+
+
+
+                </GridPane>
+
+                <HBox alignment="CENTER_RIGHT" spacing="10">
+                    <VBox.margin>
+                        <Insets top="15" />
+                    </VBox.margin>
+                </HBox>
+            </VBox>
+
+
+
+            <!-- Message de remerciement -->
+            <VBox styleClass="thank-you-container">
+                <Label text="Merci pour votre confiance !" styleClass="thank-you-title"/>
+                <Label text="Nous apprécions votre fidélité et travaillons dur pour vous offrir la meilleure expérience possible." styleClass="thank-you-text"/>
+            </VBox>
+
+        </VBox>
+
+
+    </content>
+</ScrollPane>

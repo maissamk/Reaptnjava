@@ -1,0 +1,124 @@
+/* profile.css */
+.root {
+    -fx-background-color: linear-gradient(to bottom, #f5f9f4, #e6f0e1);
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* Scroll Pane */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 20;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Profile Container with Orange Shadow */
+.profile-container {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 40;
+    -fx-effect: dropshadow(three-pass-box, #FFA500, 15, 0.3, 0, 0);
+    -fx-max-width: 850;
+}
+
+/* Header Styles */
+.section-header {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2d572c;
+    -fx-padding: 0 0 10 0;
+}
+
+.welcome-label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a934a;
+    -fx-padding: 0 0 20 0;
+}
+
+/* Avatar Styles */
+.avatar-image {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0.2, 0, 3);
+    -fx-border-radius: 70;
+    -fx-border-width: 4;
+    -fx-border-color: linear-gradient(to bottom, #FFA500, #FF8C00);
+}
+
+/* Info Grid */
+.info-grid {
+    -fx-hgap: 25;
+    -fx-vgap: 18;
+    -fx-padding: 30 0;
+}
+
+.info-label {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a934a;
+}
+
+.info-value {
+    -fx-font-size: 15px;
+    -fx-text-fill: #444;
+    -fx-padding: 2 0;
+}
+
+/* Face Registration Section */
+.face-registration-section {
+    -fx-background-color: #f8fbf7;
+    -fx-background-radius: 10;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);
+}
+
+.camera-preview {
+    -fx-border-radius: 8;
+    -fx-border-width: 2;
+    -fx-border-color: linear-gradient(to bottom, #FFD700, #FFC000);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0.1, 0, 2);
+}
+
+/* Buttons - Fixed Styling */
+.button-container {
+    -fx-spacing: 20;
+    -fx-padding: 30 0 0 0;
+}
+
+.action-button {
+    -fx-background-color: linear-gradient(to bottom, #4a934a, #3a7a3a);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 10 25;
+    -fx-background-radius: 25;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.2, 0, 1);
+}
+
+.action-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #3a7a3a, #2d572c);
+}
+
+/* Register Face Button - Orange */
+.register-button {
+    -fx-background-color: linear-gradient(to bottom, #FFA500, #FF8C00);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.2, 0, 1);
+}
+
+.register-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #FF8C00, #E67E00);
+}
+
+/* Back to Home Button - Yellow */
+.back-button {
+    -fx-background-color: linear-gradient(to bottom, #FFD700, #FFC000);
+    -fx-text-fill: #333;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.2, 0, 1);
+}
+
+.back-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #FFC000, #E6B000);
+}

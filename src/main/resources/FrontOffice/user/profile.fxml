@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@/css/profile.css" fx:controller="controllers.FrontOffice.User.ProfileController">
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+            <VBox alignment="TOP_CENTER" spacing="30">
+                <!-- Main Profile Container -->
+                <VBox styleClass="profile-container" alignment="TOP_CENTER">
+                    <!-- Avatar and Welcome -->
+                    <VBox alignment="CENTER" spacing="10">
+                        <ImageView fx:id="avatarImage" fitHeight="150" fitWidth="150" styleClass="avatar-image">
+                            <image>
+                                <Image url="@/images/defaultavatar.png" />
+                            </image>
+                        </ImageView>
+                        <Label fx:id="welcomeLabel" styleClass="welcome-label"/>
+                    </VBox>
+
+                    <!-- Profile Information -->
+                    <GridPane styleClass="info-grid" hgap="20" vgap="15">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="180" halignment="RIGHT"/>
+                            <ColumnConstraints prefWidth="300" halignment="LEFT"/>
+                        </columnConstraints>
+
+                        <Label text="Full Name:" styleClass="info-label" GridPane.rowIndex="0"/>
+                        <Label fx:id="fullNameLabel" styleClass="info-value" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                        <Label text="Email:" styleClass="info-label" GridPane.rowIndex="1"/>
+                        <Label fx:id="emailLabel" styleClass="info-value" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <Label text="Phone:" styleClass="info-label" GridPane.rowIndex="2"/>
+                        <Label fx:id="phoneLabel" styleClass="info-value" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                        <Label text="Role:" styleClass="info-label" GridPane.rowIndex="3"/>
+                        <Label fx:id="roleLabel" styleClass="info-value" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                        <Label text="Status:" styleClass="info-label" GridPane.rowIndex="4"/>
+                        <Label fx:id="statusLabel" styleClass="info-value" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <!-- Action Buttons -->
+                    <HBox styleClass="button-container" alignment="CENTER">
+                        <Button text="User List" styleClass="action-button" onAction="#handleUserList"/>
+                        <Button text="Edit Profile" styleClass="action-button" onAction="#handleEditProfile"/>
+                        <Button text="Back to Home" styleClass="back-button" onAction="#handleBack"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Face Registration Section -->
+                <VBox styleClass="face-registration-section" alignment="CENTER" spacing="20">
+                    <Label text="Face Registration" styleClass="section-header"/>
+                    <ImageView fx:id="cameraPreview" fitHeight="220" fitWidth="220" preserveRatio="true" styleClass="camera-preview"/>
+                    <Button fx:id="registerFaceButton" text="Register Face" styleClass="register-button"
+                            onAction="#handleRegisterFace"/>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

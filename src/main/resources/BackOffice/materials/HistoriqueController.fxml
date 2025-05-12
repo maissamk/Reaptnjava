@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.BackOffice.material.HistoriqueController"
+      spacing="20" style="-fx-padding: 15;">
+
+    <Label text="Historique des Locations" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #2e7d32;" />
+
+    <TableView fx:id="locationTable" style="-fx-background-color: white;">
+        <columns>
+            <TableColumn fx:id="locUserMaterialCol" text="Utilisateur - Matériel" prefWidth="350" />
+            <TableColumn fx:id="locPriceCol" text="Prix (TND)" prefWidth="150" />
+        </columns>
+    </TableView>
+
+    <Label text="Historique des Achats" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #2e7d32;" />
+
+    <TableView fx:id="venteTable" style="-fx-background-color: white;">
+        <columns>
+            <TableColumn fx:id="ventUserMaterialCol" text="Utilisateur - Matériel" prefWidth="350" />
+            <TableColumn fx:id="ventPriceCol" text="Prix (TND)" prefWidth="150" />
+        </columns>
+    </TableView>
+
+</VBox>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@/css/editprofile.css" fx:controller="controllers.FrontOffice.User.EditProfileController">
+
+    <!-- Top Section - Header -->
+    <top>
+        <VBox styleClass="header" alignment="CENTER_LEFT" spacing="10">
+            <Label text="Edit Profile" styleClass="header-label"/>
+        </VBox>
+    </top>
+
+    <!-- Center Section - Edit Form -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background: transparent;">
+            <VBox alignment="TOP_CENTER" spacing="30" style="-fx-padding: 30;">
+                <VBox styleClass="form-container" alignment="TOP_CENTER" spacing="30">
+                    <!-- Avatar Section -->
+                    <VBox alignment="CENTER" spacing="15">
+                        <ImageView fx:id="avatarImage" fitHeight="150" fitWidth="150" styleClass="avatar-image">
+                            <image>
+                                <Image url="@/images/defaultavatar.png" />
+                            </image>
+                        </ImageView>
+                        <Button text="Change Avatar" styleClass="action-button change-avatar-button"
+                                onAction="#handleChangeAvatar"/>
+                    </VBox>
+
+                    <!-- Profile Information -->
+                    <GridPane hgap="20" vgap="15">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="180" halignment="RIGHT"/>
+                            <ColumnConstraints prefWidth="300" halignment="LEFT"/>
+                        </columnConstraints>
+
+                        <Label text="First Name:" styleClass="field-label" GridPane.rowIndex="0"/>
+                        <TextField fx:id="firstNameField" styleClass="text-field" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                        <Label text="Last Name:" styleClass="field-label" GridPane.rowIndex="1"/>
+                        <TextField fx:id="lastNameField" styleClass="text-field" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <Label text="Email:" styleClass="field-label" GridPane.rowIndex="2"/>
+                        <TextField fx:id="emailField" styleClass="text-field" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                        <Label text="Phone:" styleClass="field-label" GridPane.rowIndex="3"/>
+                        <TextField fx:id="phoneField" styleClass="text-field" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                        <Label text="Current Password:" styleClass="field-label" GridPane.rowIndex="4"/>
+                        <PasswordField fx:id="currentPasswordField" styleClass="password-field" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                        <Label text="New Password:" styleClass="field-label" GridPane.rowIndex="5"/>
+                        <PasswordField fx:id="newPasswordField" styleClass="password-field" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+                        <Label text="Confirm Password:" styleClass="field-label" GridPane.rowIndex="6"/>
+                        <PasswordField fx:id="confirmPasswordField" styleClass="password-field" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <!-- Action Buttons -->
+                    <HBox styleClass="button-container" alignment="CENTER">
+                        <Button text="Cancel" styleClass="action-button cancel-button" onAction="#handleCancel"/>
+                        <Button text="Save Changes" styleClass="action-button" onAction="#handleSaveChanges"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

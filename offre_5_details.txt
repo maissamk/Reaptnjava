@@ -1,0 +1,18 @@
+=== Détails de l'Offre ===
+ID: 5
+Titre: expert lutte antiparasitaire
+Description: veuiller me contacter sur si vous etes interessé
+
+=== Employés liés ===
+Nom: Salim
+Prénom: Ahmed
+Email: ahmedhaffarl9bour@gmail.com
+-----
+Nom: nihel
+Prénom: hassad
+Email: admin@gmail.com
+-----
+Nom: hassad
+Prénom: nihel
+Email: hassadnihel@gmail.com
+-----

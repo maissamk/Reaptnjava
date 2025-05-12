@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Separator?>
+
+<BorderPane xmlns="http://javafx.com/javafx/18"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.BackOffice.Employe.indexEmployeBack"
+            prefWidth="1200" prefHeight="800"
+            stylesheets="/css/homeback.css">
+
+
+    <!-- Left Sidebar - Modern Collapsible Style -->
+
+
+
+    <center>
+    <VBox spacing="20.0" alignment="CENTER" layoutX="20" layoutY="20" prefWidth="800">
+        <!-- Top Navigation Bar -->
+        <HBox>
+            <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header">
+
+
+
+
+
+
+                <!-- Navigation Buttons -->
+                <Button fx:id="accueilButton" styleClass="nav-button" text="Accueil" />
+                <Button fx:id="produitsButton" styleClass="nav-button" text="Produits" />
+                <Button fx:id="produitsDetailButton" styleClass="nav-button" text="Produits Detail" />
+                <Button fx:id="parcelleButton" styleClass="nav-button" text="Parcelle" />
+                <Button fx:id="offersButton" styleClass="nav-button" text="Offers" />
+                <Button fx:id="masterfulButton" styleClass="featured-button" text="Masterful Agricole" />
+
+
+
+                <!-- Auth Buttons -->
+                <Button fx:id="loginButton" styleClass="auth-button" text="Login" />
+                <Button fx:id="profileButton" styleClass="profile-button" text="My Profile" />
+            </HBox>
+        </HBox>
+
+        <TableView fx:id="employeTable" prefHeight="300.0" prefWidth="760.0">
+            <columns>
+                <TableColumn fx:id="idColumn" text="ID" />
+                <TableColumn fx:id="compColumn" text="Compétence" />
+                <TableColumn fx:id="offreIdColumn" text="Offre ID" />
+                <TableColumn fx:id="userIdColumn" text="User ID" />
+                <TableColumn fx:id="dispoColumn" text="Disponibilité" />
+                <TableColumn fx:id="confColumn" text="Confirmé" />
+                <TableColumn fx:id="suggestedColumn" text="Suggéré" />
+                <TableColumn fx:id="dateJoinColumn" text="Date Join" />
+            </columns>
+        </TableView>
+
+        <GridPane hgap="10" vgap="10">
+            <Label text="User ID:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="userIdField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <Label text="Compétence:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextField fx:id="compField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label text="Offre ID:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <TextField fx:id="offreIdField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        </GridPane>
+
+        <HBox spacing="15.0" alignment="CENTER">
+            <Button fx:id="addButton" text="Ajouter" onAction="#addEmploye" />
+            <Button fx:id="updateButton" text="Mettre à jour" onAction="#updateEmploye" />
+            <Button fx:id="deleteButton" text="Supprimer" onAction="#deleteEmploye" />
+        </HBox>
+
+    </VBox>
+    <!-- Footer -->
+
+    </center>
+</BorderPane>

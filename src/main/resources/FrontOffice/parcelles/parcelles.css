@@ -1,0 +1,227 @@
+/* parcelles.css - Style for Parcelles module */
+
+/* Base styles */
+.root {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-background-image: url("/images/background.jpeg");
+    -fx-background-size: cover;
+    -fx-background-repeat: no-repeat;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-fit-to-width: true;
+    -fx-fit-to-height: false;
+    -fx-hbar-policy: never;
+    -fx-vbar-policy: as-needed;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Main content container */
+.content-container {
+    -fx-background-color: rgba(255, 255, 255, 0.9);
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
+    -fx-padding: 20px;
+    -fx-spacing: 20px;
+}
+
+/* Title styles */
+.page-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2d572c;
+    -fx-padding: 0 0 10px 0;
+    -fx-border-color: #f39c12;
+    -fx-border-width: 0 0 2px 0;
+}
+
+/* Form sections */
+.form-section {
+    -fx-spacing: 5px;
+}
+
+/* Labels */
+.label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2d572c;
+}
+
+/* Input fields */
+.text-field, .combo-box, .date-picker, .text-area {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 4px;
+    -fx-border-color: #dcdcdc;
+    -fx-border-radius: 4px;
+    -fx-padding: 8px;
+    -fx-pref-height: 35px;
+}
+
+.text-field:focused, .combo-box:focused, .date-picker:focused, .text-area:focused {
+    -fx-border-color: #f39c12;
+    -fx-effect: dropshadow(three-pass-box, rgba(243, 156, 18, 0.4), 4, 0, 0, 0);
+}
+
+/* Error labels */
+.error-label {
+    -fx-text-fill: #c0392b;
+    -fx-font-size: 11px;
+    -fx-padding: 0 0 5px 2px;
+}
+
+/* Buttons styles */
+.button {
+    -fx-background-radius: 4px;
+    -fx-padding: 10px 20px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-min-width: 120px;
+    -fx-min-height: 40px;
+}
+
+.save-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+.save-button:hover {
+    -fx-background-color: #388E3C;
+}
+
+.display-button {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+}
+
+.display-button:hover {
+    -fx-background-color: #1976D2;
+}
+
+.cancel-button {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+}
+
+.cancel-button:hover {
+    -fx-background-color: #D32F2F;
+}
+
+.contract-button {
+    -fx-background-color: #FF5722;
+    -fx-text-fill: white;
+}
+
+.contract-button:hover {
+    -fx-background-color: #E64A19;
+}
+
+/* Map container */
+.map-container {
+    -fx-background-color: white;
+    -fx-background-radius: 4px;
+    -fx-border-color: #dcdcdc;
+    -fx-border-radius: 4px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 4, 0, 0, 0);
+}
+
+.map-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2d572c;
+}
+
+/* File chooser */
+.file-chooser-container {
+    -fx-spacing: 10px;
+    -fx-alignment: center-left;
+}
+
+.file-chooser-button {
+    -fx-background-color: #e67e22;
+    -fx-text-fill: white;
+    -fx-min-width: 120px;
+}
+
+.file-chooser-button:hover {
+    -fx-background-color: #d35400;
+}
+
+.file-name-label {
+    -fx-text-fill: #7f8c8d;
+}
+
+/* CheckBox */
+.check-box {
+    -fx-text-fill: #2d572c;
+}
+
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color: #dcdcdc;
+    -fx-border-radius: 3px;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: white;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #4CAF50;
+}
+
+/* Location information */
+.location-info {
+    -fx-background-color: rgba(46, 204, 113, 0.1);
+    -fx-padding: 10px;
+    -fx-background-radius: 4px;
+    -fx-border-color: #2ecc71;
+    -fx-border-radius: 4px;
+    -fx-spacing: 5px;
+}
+
+.location-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #27ae60;
+}
+
+/* Form grid */
+.form-grid {
+    -fx-hgap: 20px;
+    -fx-vgap: 15px;
+    -fx-padding: 10px 0;
+}
+
+/* TitledPane customization */
+.titled-pane {
+    -fx-text-fill: #2d572c;
+}
+
+.titled-pane > .title {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 4px;
+    -fx-padding: 10px;
+}
+
+.titled-pane:focused > .title {
+    -fx-background-color: #e0e0e0;
+}
+
+.titled-pane > .title > .arrow-button .arrow {
+    -fx-background-color: #2d572c;
+}
+
+.titled-pane > *.content {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 0 0 4px 4px;
+}
+
+/* Button box */
+.button-box {
+    -fx-spacing: 20px;
+    -fx-alignment: center;
+    -fx-padding: 20px 0 10px 0;
+}
