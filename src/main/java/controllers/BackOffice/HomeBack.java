@@ -2,6 +2,7 @@ package controllers.BackOffice;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
@@ -44,6 +46,7 @@ public class HomeBack implements Initializable {
     @FXML private Button logoutBtn;
     @FXML private Button categoriebtn;
     @FXML private Button location;
+    @FXML private Button returnToFrontBtn;
 
     // Sidebar Buttons
     @FXML private Button statisticsBtn;
@@ -69,7 +72,9 @@ public class HomeBack implements Initializable {
         startClock();
         addButtonHoverEffects();
     }
-
+    public StackPane getContentPane() {
+        return contentPane;
+    }
     private void loadUserData() {
         if (SessionManager.getInstance().isLoggedIn()) {
             Models.user currentUser = SessionManager.getInstance().getCurrentUser();
@@ -104,17 +109,42 @@ public class HomeBack implements Initializable {
         // Main Navigation
         dashboardBtn.setOnAction(e -> loadDashboardContent());
         usersBtn.setOnAction(e -> loadContent("/BackOffice/user/UserList.fxml"));
-        productsBtn.setOnAction(e -> loadContent("/views/BackOffice/Products.fxml"));
-        ordersBtn.setOnAction(e -> loadContent("/views/BackOffice/Orders.fxml"));
+
+        // Créer un menu déroulant pour le bouton Products
+        javafx.scene.control.ContextMenu productsMenu = new javafx.scene.control.ContextMenu();
+
+        // Créer les 5 options du menu
+        javafx.scene.control.MenuItem dashboardItem = new javafx.scene.control.MenuItem("Dashboard");
+        dashboardItem.setOnAction(e -> loadContent("/Produits/Dashboard.fxml"));
+
+        javafx.scene.control.MenuItem productsItem = new javafx.scene.control.MenuItem("Products");
+        productsItem.setOnAction(e -> loadContent("/Produits/ProductManagement.fxml"));
+
+        javafx.scene.control.MenuItem productTypesItem = new javafx.scene.control.MenuItem("Product Types");
+        productTypesItem.setOnAction(e -> loadContent("/Produits/ProductTypeManagement.fxml"));
+
+        javafx.scene.control.MenuItem stockItem = new javafx.scene.control.MenuItem("Stock Management");
+        stockItem.setOnAction(e -> loadContent("/Produits/StockManagement.fxml"));
+
+        javafx.scene.control.MenuItem reportsItem = new javafx.scene.control.MenuItem("Reports & Analytics");
+        reportsItem.setOnAction(e -> loadContent("/Produits/Reports.fxml"));
+
+        // Ajouter les options au menu
+        productsMenu.getItems().addAll(dashboardItem, productsItem, productTypesItem, stockItem, reportsItem);
+
+        // Configurer le bouton Products pour afficher le menu au clic
+        productsBtn.setOnAction(e -> productsMenu.show(productsBtn, javafx.geometry.Side.BOTTOM, 0, 0));
+
+        ordersBtn.setOnAction(e -> loadContent("/BackOffice/GestionCommandeBack/CommandesAvecDetails.fxml"));
         reportsBtn.setOnAction(e -> loadContent("/views/BackOffice/Reports.fxml"));
 
         // Sidebar Navigation
         statisticsBtnUser.setOnAction(this::handleStatisticsButton);
         //statisticsBtn.setOnAction(e -> loadContent("/views/BackOffice/Statistics.fxml"));
         statisticsBtn.setOnAction(e -> loadContent("/BackOffice/Offre/statistiques.fxml"));
-        farmersBtn.setOnAction(e -> loadContent("/views/BackOffice/Farmers.fxml"));
-        parcelsBtn.setOnAction(e -> loadContent("/views/BackOffice/Parcels.fxml"));
-        harvestBtn.setOnAction(e -> loadContent("/views/BackOffice/Harvest.fxml"));
+        farmersBtn.setOnAction(e -> loadContent("/BackOffice/GestionCommandeBack/ArchivesView.fxml"));
+        parcelsBtn.setOnAction(e -> loadContent("/BackOffice/Employe/indexEmployeBack.fxml"));
+        harvestBtn.setOnAction(e -> loadContent("/BackOffice/Offre/indexOffreBack.fxml"));
         settingsBtn.setOnAction(e -> loadContent("/views/BackOffice/Settings.fxml"));
         logsBtn.setOnAction(e -> loadContent("/views/BackOffice/Logs.fxml"));
         location.setOnAction(this::IndexMateriels);
@@ -122,31 +152,41 @@ public class HomeBack implements Initializable {
 
         // Logout
         logoutBtn.setOnAction(e -> handleLogout());
+
+        // Return to Front
+//        returnToFrontBtn.setOnAction(e -> handleReturnToFront());
     }
     private void navigateTo(String fxmlPath, ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
 
-            // Get the stage from the event source
-        //    Node source = (Node) event.getSource();
-      //      Stage stage = (Stage) source.getScene().getWindow();
-                Stage stage = new Stage();
-         //   stage.setFullScreen(true);
-            // Set the new scene
-            stage.setScene(new Scene(root));
-            stage.sizeToScene(); // Optional: resize to fit new content
+            // Obtenir les dimensions de l'écran pour une interface responsive
+            javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
+
+            // Définir la taille de la fenêtre à 80% de l'écran
+            double width = screenBounds.getWidth() * 0.8;
+            double height = screenBounds.getHeight() * 0.8;
+
+            Scene scene = new Scene(root, width, height);
+
+            // Créer et configurer le stage
+            Stage stage = new Stage();
+            stage.setResizable(true);
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+            stage.setScene(scene);
+            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
     private void IndexMateriels(ActionEvent event) {
-        navigateTo("/BackOffice/materials/IndexMateriel.fxml", event);
+        loadContent("/BackOffice/materials/IndexMateriel.fxml");
+    }    private void handleCategory(ActionEvent event) {
+        loadContent("/BackOffice/category/IndexCategorie.fxml");
     }
-    private void handleCategory(ActionEvent event) {
-        navigateTo("/BackOffice/category/IndexCategorie.fxml", event);
-    }
-
     private void loadDashboardContent() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
@@ -188,6 +228,7 @@ public class HomeBack implements Initializable {
                 statisticsBtn, farmersBtn, parcelsBtn, harvestBtn, settingsBtn, logsBtn
         };
 
+        // Regular buttons
         for (Button btn : buttons) {
             btn.setOnMouseEntered(e -> {
                 btn.setStyle("-fx-background-color: rgba(255,255,255,0.2);");
@@ -199,6 +240,32 @@ public class HomeBack implements Initializable {
                 btn.setEffect(null);
             });
         }
+
+        // Special styling for logout button
+        logoutBtn.setOnMouseEntered(e -> {
+            logoutBtn.setStyle("-fx-background-color: rgba(211, 47, 47, 0.2); " +
+                    "-fx-border-color: rgba(211, 47, 47, 0.5); " +
+                    "-fx-border-width: 1; " +
+                    "-fx-border-radius: 20;");
+            logoutBtn.setEffect(new DropShadow(10, Color.rgb(211, 47, 47, 0.7)));
+        });
+
+        logoutBtn.setOnMouseExited(e -> {
+            logoutBtn.setStyle("-fx-background-color: transparent; " +
+                    "-fx-border-color: rgba(255, 255, 255, 0.3); " +
+                    "-fx-border-width: 1; " +
+                    "-fx-border-radius: 20;");
+            logoutBtn.setEffect(null);
+        });
+
+        // Add subtle pulse animation to logout button
+        Timeline pulse = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(logoutBtn.opacityProperty(), 0.9)),
+                new KeyFrame(Duration.seconds(1.5), new KeyValue(logoutBtn.opacityProperty(), 1)),
+                new KeyFrame(Duration.seconds(3), new KeyValue(logoutBtn.opacityProperty(), 0.9))
+        );
+        pulse.setCycleCount(Timeline.INDEFINITE);
+        pulse.play();
     }
     @FXML
     private void handleStatisticsButton(ActionEvent event) {
@@ -212,15 +279,41 @@ public class HomeBack implements Initializable {
     }
 
     private void handleLogout() {
-        SessionManager.getInstance().logout();
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/user/Login.fxml"));
-            Stage stage = (Stage) logoutBtn.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Show confirmation dialog
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Logout Confirmation");
+        alert.setHeaderText("You're about to logout");
+        alert.setContentText("Are you sure you want to logout?");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == javafx.scene.control.ButtonType.OK) {
+                // Perform logout
+                SessionManager.getInstance().logout();
+
+                // Navigate to login screen
+                try {
+                    // Close the current stage
+                    Stage currentStage = (Stage) logoutBtn.getScene().getWindow();
+                    currentStage.close();
+
+                    // Open login stage
+                    Parent root = FXMLLoader.load(getClass().getResource("/FrontOffice/user/Login.fxml"));
+                    Stage loginStage = new Stage();
+                    loginStage.setScene(new Scene(root));
+                    loginStage.setTitle("Login");
+                    loginStage.show();
+
+                    // Optional: Set fullscreen if needed
+                    // loginStage.setFullScreen(true);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    NavigationUtil.showErrorAlert("Navigation Error",
+                            "Failed to logout",
+                            "An error occurred while trying to logout: " + e.getMessage());
+                }
+            }
+        });
     }
     @FXML
     private void handleBack(ActionEvent event) {
@@ -231,4 +324,33 @@ public class HomeBack implements Initializable {
             e.printStackTrace();
         }
     }
+
+//    private void handleReturnToFront() {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+//            Parent root = loader.load();
+//
+//            // Obtenir les dimensions de l'écran
+//            javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
+//
+//            // Définir une taille initiale relative à l'écran
+//            double width = screenBounds.getWidth() * 0.8;
+//            double height = screenBounds.getHeight() * 0.8;
+//
+//            Scene scene = new Scene(root, width, height);
+//
+//            Stage stage = (Stage) returnToFrontBtn.getScene().getWindow();
+//            stage.setResizable(true);
+//            stage.setMinWidth(800);
+//            stage.setMinHeight(600);
+//            stage.setScene(scene);
+//            stage.centerOnScreen();
+//            stage.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
+
 }

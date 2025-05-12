@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.FrontOffice.contrats.SignatureContratController"
+            prefWidth="800" prefHeight="600"
+            style="-fx-background-color: #ffffff;">
+
+    <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20"
+          AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+
+        <Label text="Signature de Contrat"
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button fx:id="btnChoisirPDF" text="Choisir un PDF" onAction="#handleChoisirPDF"
+                    style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+
+            <Button fx:id="btnSigner" text="Signer le document" onAction="#handleSigner"
+                    style="-fx-background-color: #27ae60; -fx-text-fill: white;"
+                    disable="true"/>
+
+            <ProgressIndicator fx:id="progressIndicator" progress="-1.0" visible="false"/>
+
+            <Label fx:id="lblStatus" text="Aucun document sélectionné"
+                   style="-fx-text-fill: #7f8c8d;"/>
+        </HBox>
+
+        <!-- Le WebView pour la zone de signature, invisible par défaut -->
+        <VBox fx:id="containerSign" visible="false" VBox.vgrow="ALWAYS"
+              style="-fx-border-color: #e0e0e0; -fx-border-width: 1px; -fx-background-color: #f9f9f9;">
+            <WebView fx:id="webViewSignature" VBox.vgrow="ALWAYS" prefHeight="400"/>
+        </VBox>
+    </VBox>
+</AnchorPane>

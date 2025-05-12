@@ -2,6 +2,7 @@ package controllers.FrontOffice.User;
 
 import Models.user;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -32,13 +33,11 @@ public class EditProfileController {
 
     @FXML
     public void initialize() {
-        System.out.println("Initializing EditProfileController...");
         currentUser = SessionManager.getInstance().getCurrentUser();
         if (currentUser != null) {
-            System.out.println("Loading user: " + currentUser.getEmail());
             loadUserData();
         } else {
-            System.out.println("No user logged in!");
+            NavigationUtil.navigateTo("/FrontOffice/user/login.fxml", (Node) firstNameField.getScene().getRoot());
         }
     }
 
@@ -84,11 +83,13 @@ public class EditProfileController {
         }
 
         try {
+            // Update user data
             currentUser.setPrenom(firstNameField.getText());
             currentUser.setNom(lastNameField.getText());
             currentUser.setEmail(emailField.getText());
             currentUser.setTelephone(phoneField.getText());
 
+            // Handle password change if needed
             if (!newPasswordField.getText().isEmpty()) {
                 if (!PasswordUtils.checkSymfonyPassword(currentPasswordField.getText(), currentUser.getPassword())) {
                     showAlert("Error", "Invalid Password", "Current password is incorrect");
@@ -97,32 +98,43 @@ public class EditProfileController {
                 currentUser.setPassword(PasswordUtils.hashForSymfony(newPasswordField.getText()));
             }
 
+            // Handle avatar change if needed
             if (selectedAvatarFile != null) {
                 String avatarPath = saveAvatarToResources(selectedAvatarFile);
                 currentUser.setAvatar(avatarPath);
             }
 
+            // Save changes - assuming update() returns void
             userService.update(currentUser);
-
             SessionManager.getInstance().startSession(currentUser);
-
-            showAlert("Success", "Profile Updated", "Your changes have been saved successfully");
-            NavigationUtil.navigateTo("/FrontOffice/user/profile.fxml", firstNameField);
+            showAlertAndNavigate("Success", "Profile Updated",
+                    "Your changes have been saved successfully",
+                    "/FrontOffice/user/profile.fxml");
 
         } catch (Exception e) {
             showAlert("Error", "Update Failed", "Failed to update profile: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
     private String saveAvatarToResources(File avatarFile) throws IOException {
+        // Get the target directory path
         String resourcesPath = "src/main/resources/images/avatars/";
-        String fileName = currentUser.getId() + "_" + avatarFile.getName();
-        File destFile = new File(resourcesPath + fileName);
+        File targetDir = new File(resourcesPath);
 
-       new File(resourcesPath).mkdirs();
+        // Create directory if it doesn't exist
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
 
+        // Generate unique filename (using user ID and timestamp)
+        String fileExtension = avatarFile.getName().substring(avatarFile.getName().lastIndexOf("."));
+        String fileName = currentUser.getId() + "_" + System.currentTimeMillis() + fileExtension;
+        File destFile = new File(targetDir, fileName);
+
+        // Copy the file
         Files.copy(avatarFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        // Return just the filename (without path)
         return fileName;
     }
 
@@ -146,6 +158,17 @@ public class EditProfileController {
         }
 
         return true;
+    }
+
+    private void showAlertAndNavigate(String title, String header, String content, String fxmlPath) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.setOnHidden(event -> {
+            NavigationUtil.navigateTo(fxmlPath, firstNameField);
+        });
+        alert.show();
     }
 
     @FXML

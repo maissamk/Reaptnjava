@@ -15,48 +15,6 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" styleClass="root" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BackOffice.DashboardController">
-   <left>
-      <VBox prefHeight="700.0" prefWidth="250.0" styleClass="sidebar" BorderPane.alignment="CENTER">
-         <children>
-            <Pane prefHeight="120.0" prefWidth="250.0">
-               <children>
-                  <ImageView fitHeight="75.0" fitWidth="200.0" layoutX="25.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/reap-tn-logo.png" />
-                     </image>
-                  </ImageView>
-                  <Label layoutX="65.0" layoutY="85.0" styleClass="sidebar-subtitle" text="Agricultural Management" />
-               </children>
-            </Pane>
-            <Button alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#loadDashboard" prefHeight="50.0" prefWidth="250.0" styleClass="nav-button, nav-button-selected" text="Dashboard">
-               <graphic>
-                  <FontIcon iconLiteral="fas-chart-line" iconSize="20" />
-               </graphic>
-            </Button>
-            <Button alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#loadProductManagement" prefHeight="50.0" prefWidth="250.0" styleClass="nav-button" text="Products">
-               <graphic>
-                  <FontIcon iconLiteral="fas-apple-alt" iconSize="20" />
-               </graphic>
-            </Button>
-            <Button alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#loadProductTypeManagement" prefHeight="50.0" prefWidth="250.0" styleClass="nav-button" text="Product Types">
-               <graphic>
-                  <FontIcon iconLiteral="fas-tags" iconSize="20" />
-               </graphic>
-            </Button>
-            <Button alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#loadStockManagement" prefHeight="50.0" prefWidth="250.0" styleClass="nav-button" text="Stock Management">
-               <graphic>
-                  <FontIcon iconLiteral="fas-boxes" iconSize="20" />
-               </graphic>
-            </Button>
-            <Button alignment="BASELINE_LEFT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#loadReports" prefHeight="50.0" prefWidth="250.0" styleClass="nav-button" text="Reports &amp; Analytics">
-               <graphic>
-                  <FontIcon iconLiteral="fas-chart-pie" iconSize="20" />
-               </graphic>
-            </Button>
-            <Pane prefHeight="200.0" prefWidth="250.0" VBox.vgrow="ALWAYS" />
-         </children>
-      </VBox>
-   </left>
    <center>
       <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="main-content" BorderPane.alignment="CENTER">
          <content>

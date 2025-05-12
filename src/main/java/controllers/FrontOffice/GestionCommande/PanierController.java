@@ -1,13 +1,16 @@
 package controllers.FrontOffice.GestionCommande;
 
+import controllers.FrontOffice.Home;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.geometry.*;
 import Models.gestionCommande.Commande;
 import Models.gestionCommande.PanierItem;
+import javafx.stage.Stage;
 import services.gestionCommande.CommandeService;
 import services.gestionCommande.SmsService;
 import utils.gestionCommande.PanierSession;
@@ -199,20 +202,30 @@ public class PanierController {
         service.add(commande);
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/GestionCommande/Paiement.fxml"));
-            Parent root = loader.load();
+            // 1. Load Home.fxml (which contains the navbar)
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
-            // Appliquer la feuille de style (optionnel si la scène en gère déjà une)
-            root.getStylesheets().add(getClass().getResource("/css/paiement.css").toExternalForm());
+            // 2. Load the payment content
+            FXMLLoader paymentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/GestionCommande/Paiement.fxml"));
+            Parent paymentContent = paymentLoader.load();
 
-            PaiementController controller = loader.getController();
-            controller.setCommande(commande);
-            controller.setMontantFinal(totalFinal);
+            // 3. Configure the payment controller
+            PaiementController paymentController = paymentLoader.getController();
+            paymentController.setCommande(commande);
+            paymentController.setMontantFinal(totalFinal);
 
-            messageErreurLabel.getScene().setRoot(root);
+            // 4. Set the payment content in Home's mainContentPane
+            homeController.getMainContentPane().getChildren().setAll(paymentContent);
 
+            // 5. Update the stage
+            Stage stage = (Stage) itemsContainer.getScene().getWindow();
+            stage.setScene(new Scene(homeRoot));
+            stage.show();
+
+            // 6. Clear the cart
             PanierSession.viderPanier();
-            afficherPanier();
 
         } catch (IOException e) {
             e.printStackTrace();

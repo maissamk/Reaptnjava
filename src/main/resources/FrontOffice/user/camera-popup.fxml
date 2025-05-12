@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.FrontOffice.User.CameraPopupController"
+      spacing="10" alignment="CENTER" style="-fx-padding: 20;">
+    <Label fx:id="titleLabel" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+    <ImageView fx:id="cameraPreview" fitHeight="300" fitWidth="300" preserveRatio="true"/>
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="captureButton" text="Capture" style="-fx-font-size: 14; -fx-pref-width: 100;"/>
+        <Button fx:id="cancelButton" text="Cancel" style="-fx-font-size: 14; -fx-pref-width: 100;"/>
+    </HBox>
+</VBox>

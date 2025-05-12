@@ -28,6 +28,7 @@
             <Button fx:id="loadMoreButton" alignment="CENTER" contentDisplay="CENTER" onAction="#loadMoreOffers" text="Load More" />
             <!-- Button to Add an Offer -->
             <Button fx:id="addOffreButton" layoutX="200" layoutY="20" onAction="#handleAjouterOffre" text="Ajouter Offre" />
+            <Button fx:id="backHomeButton" layoutX="200" layoutY="20" onAction="#handleReturnHome" text="Home" />
 
             <HBox spacing="10" alignment="CENTER">
                 <Button fx:id="langButton" text="Deutsch" onAction="#switchLang" />

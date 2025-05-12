@@ -1,15 +1,18 @@
 package controllers.FrontOffice.GestionCommande;
 
+import controllers.FrontOffice.Home;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import Models.gestionCommande.Livraison;
+import javafx.stage.Stage;
 import services.gestionCommande.LivraisonService;
 
 import java.io.IOException;
@@ -114,9 +117,28 @@ public class SuiviLivraisonController {
     @FXML
     private void suivreAutreCommande() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/GestionCommande/Historique.fxml"));
-            Parent root = loader.load();
-            adresseLabel.getScene().setRoot(root);
+            // 1. Load Home.fxml (which contains the navbar)
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
+
+            // 2. Load the history content
+            FXMLLoader historyLoader = new FXMLLoader(getClass().getResource("/FrontOffice/GestionCommande/Historique.fxml"));
+            Parent historyContent = historyLoader.load();
+
+            // 3. Set the history content in Home's mainContentPane
+            homeController.getMainContentPane().getChildren().setAll(historyContent);
+
+            // 4. Update the stage
+            Stage stage = (Stage) adresseLabel.getScene().getWindow();
+            Scene scene = new Scene(homeRoot);
+
+            // Apply CSS if needed
+            scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+
+            stage.setScene(scene);
+            stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -8,8 +8,8 @@
 <VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controllers.FrontOffice.contrats.Ajoutercontrat"
-      spacing="25"
-      prefWidth="600"
+      spacing="5"
+      prefWidth="1200"
       prefHeight="400"
       style="-fx-background-color: #f5f8fa;">
 
@@ -24,7 +24,7 @@
         </VBox.margin>
     </Label>
 
-    <VBox spacing="25" style="-fx-background-color: white; -fx-background-radius: 8;">
+    <VBox spacing="5" style="-fx-background-color: white; -fx-background-radius: 8;">
         <padding>
             <Insets top="25" right="25" bottom="25" left="25"/>
         </padding>

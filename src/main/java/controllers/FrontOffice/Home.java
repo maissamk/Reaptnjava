@@ -29,10 +29,9 @@ public class Home implements Initializable {
     @FXML private ImageView logoImageView;
     @FXML private Button accueilButton;
     @FXML private Button produitsButton;
-    @FXML private Button produitsDetailButton;
     @FXML private Button parcelleButton;
     @FXML private Button offersButton;
-    @FXML private Button masterfulButton;
+    @FXML private Button plantButton;
     @FXML private Button loginButton;
     @FXML private Button profileButton;
     @FXML private Button commandeButton;
@@ -44,12 +43,20 @@ public class Home implements Initializable {
     @FXML private StackPane mainContentPane; // Make sure this matches your FXML
     @FXML private Label welcomeLabel;
 
+
+    private double normalWidth = 1250.0; // Default width matching your FXML
+    private double normalHeight = 800.0; // Default height (adjust as needed)
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Check for existing session when initializing
         checkPersistentSession();
         updateUI();
         setupEventHandlers();
+    }
+
+    public StackPane getMainContentPane() {
+        return mainContentPane;
     }
 
     private void checkPersistentSession() {
@@ -67,7 +74,10 @@ public class Home implements Initializable {
             if (currentUser != null) {
                 // Update user profile section
                 userNameLabel.setText(currentUser.getNom());
-                userRoleLabel.setText(String.join(", ", currentUser.getRoles()));
+
+                // Convert role to display-friendly format
+                String roleDisplay = convertRoleToDisplayFormat(currentUser.getRoles());
+                userRoleLabel.setText(roleDisplay);
 
                 try {
                     Image avatar = new Image(getClass().getResourceAsStream(
@@ -95,42 +105,88 @@ public class Home implements Initializable {
         profileButton.setVisible(false);
     }
 
+    // New helper method to convert role strings
+    private String convertRoleToDisplayFormat(String roles) {
+        if (roles == null || roles.isEmpty()) {
+            return "User";
+        }
+
+        // Split multiple roles if needed
+        String[] roleArray = roles.split(",");
+
+        // Convert each role to display format
+        StringBuilder displayRoles = new StringBuilder();
+        for (String role : roleArray) {
+            String trimmedRole = role.trim();
+            switch (trimmedRole) {
+                case "ROLE_ADMIN":
+                    displayRoles.append("Admin");
+                    break;
+                case "ROLE_CLIENT":
+                    displayRoles.append("Client");
+                    break;
+                case "ROLE_AGRICULTEUR":
+                    displayRoles.append("Agriculteur");
+                    break;
+                default:
+                    displayRoles.append(trimmedRole.replace("ROLE_", ""));
+            }
+
+            // Add comma if multiple roles
+            if (!trimmedRole.equals(roleArray[roleArray.length-1].trim())) {
+                displayRoles.append(", ");
+            }
+        }
+
+        return displayRoles.toString();
+    }
     private void setupEventHandlers() {
         // Navigation buttons
         accueilButton.setOnAction(e -> handleAccueil());
         commandeButton.setOnAction(this::handleCommande);
         material.setOnAction(this::handleMaterial);
         produitsButton.setOnAction(e -> handleProduitsDetail());
-        produitsDetailButton.setOnAction(e -> handleProduitsDetail());
         parcelleButton.setOnAction(e -> handleParcelle());
         offersButton.setOnAction(e -> handleOffers());
-        masterfulButton.setOnAction(e -> handleMasterful());
+        plantButton.setOnAction(e -> handlePlant());
 
         // Auth buttons
         loginButton.setOnAction(e -> handleLogin());
         profileButton.setOnAction(e -> handleProfile());
     }
 
+    private void handlePlant() {
+        try{
+        // Load just the parcelle content
+        FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/GestionCommande/analyze_image.fxml"));
+        Parent content = contentLoader.load();
+
+        // Clear existing content and add the parcelle content
+        mainContentPane.getChildren().clear();
+        mainContentPane.getChildren().add(content);
+
+    } catch (IOException e) {
+        e.printStackTrace();
+        showAlert("Error", "Failed to load parcels page: " + e.getMessage(), Alert.AlertType.ERROR);
+    }
+    }
+
 
     private void handleParcelle() {
         try {
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
-            Parent baseRoot = baseLoader.load();
-            BaseFrontController baseController = baseLoader.getController();
+            // Load just the parcelle content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/parcelles/Afficherparcelles.fxml"));
+            Parent content = contentLoader.load();
 
-            // Charger Afficherparcelles dans le contentPane
-            Parent content = FXMLLoader.load(getClass().getResource("/FrontOffice/parcelles/Afficherparcelles.fxml"));
-            baseController.getContentPane().getChildren().setAll(content);
+            // Clear existing content and add the parcelle content
+            mainContentPane.getChildren().clear();
+            mainContentPane.getChildren().add(content);
 
-            // Mettre à jour la scène
-            Stage stage = (Stage) parcelleButton.getScene().getWindow();
-            stage.setScene(new Scene(baseRoot));
         } catch (IOException e) {
             e.printStackTrace();
-            //showAlert("Erreur", "Échec du chargement : " + e.getMessage());
+            showAlert("Error", "Failed to load parcels page: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
-
 
 
 
@@ -152,11 +208,33 @@ public class Home implements Initializable {
     }
 
     private void handleProduitsDetail() {
-        // Implementation
+        try {
+            // Charger FrontOffice.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Produits/FrontOffice.fxml"));
+            Parent productContent = loader.load();
+            
+            // Effacer le contenu existant et ajouter le nouveau contenu
+            mainContentPane.getChildren().clear();
+            mainContentPane.getChildren().add(productContent);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load products page: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     private void handleAccueil() {
-        System.out.println("Accueil clicked");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) accueilButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load home page: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     private void navigateTo(String fxmlPath, ActionEvent event) {
@@ -165,8 +243,29 @@ public class Home implements Initializable {
             Parent root = loader.load();
 
             Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.sizeToScene(); // Optional: resize to fit new content
+            
+            // Obtenir les dimensions de l'écran pour une interface responsive
+            javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
+            
+            // Définir la taille de la fenêtre à 80% de l'écran
+            double width = screenBounds.getWidth() * 0.8;
+            double height = screenBounds.getHeight() * 0.8;
+            
+            Scene scene = new Scene(root, width, height);
+            
+            // Activer le redimensionnement
+            stage.setResizable(true);
+            
+            // Définir une taille minimale
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+            
+            // Configurer la scène
+            stage.setScene(scene);
+            
+            // Centrer sur l'écran
+            stage.centerOnScreen();
+            
             stage.show();
         } catch (IOException e) {
             showAlert("Error", "Failed to load page: " + fxmlPath, Alert.AlertType.ERROR);
@@ -181,13 +280,35 @@ public class Home implements Initializable {
 
     @FXML
     private void handleCommande(ActionEvent event) {
-        navigateTo("/FrontOffice/GestionCommande/CommandesAvecDetails.fxml", event);
+        try {
+            // Load just the commande content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/GestionCommande/PanierView.fxml"));
+            Parent content = contentLoader.load();
+
+            // Clear existing content and add the commande content
+            mainContentPane.getChildren().clear();
+            mainContentPane.getChildren().add(content);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load orders page: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     private void handleMaterial(ActionEvent event) {
-        System.out.println("xxxxxxx");
-        navigateTo("/FrontOffice/materials/client/IndexMateriel.fxml", event);
-        System.out.println("xxxxxxx");
+        try {
+            // Load just the material content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/materials/client/IndexMateriel.fxml"));
+            Parent content = contentLoader.load();
+
+            // Clear existing content and add the material content
+            mainContentPane.getChildren().clear();
+            mainContentPane.getChildren().add(content);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load materials page: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
 
@@ -196,24 +317,17 @@ public class Home implements Initializable {
     private void handleOffers() {
         System.out.println("Offers disponibles clicked");
         try {
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/Frontoffice/baseFront.fxml"));
-            Parent baseRoot = baseLoader.load();
-            BaseFrontController baseController = baseLoader.getController();
+            // Load just the offers content (without another navbar)
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Offre/indexOffre.fxml"));
+            Parent content = contentLoader.load();
 
-            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/Frontoffice/Offre/indexOffre.fxml"));
-            Parent content = contentLoader.load(); // content with its own controller & methods
-
-            // Inject the page content into base layout
-            baseController.getContentPane().getChildren().setAll(content);
-
-            // Now show the complete scene
-            Scene scene = new Scene(baseRoot);
-            Stage stage = (Stage) offersButton.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            // Clear existing content and add the offers content
+            mainContentPane.getChildren().clear();
+            mainContentPane.getChildren().add(content);
 
         } catch (IOException e) {
             e.printStackTrace();
+            showAlert("Error", "Failed to load offers page: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -260,5 +374,28 @@ public class Home implements Initializable {
         Stage stage = (Stage) loginButton.getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.show();
+    }
+
+
+    private void initializeStageSize(Stage stage) {
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            if (!stage.isFullScreen()) {
+                normalWidth = newVal.doubleValue();
+            }
+        });
+
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            if (!stage.isFullScreen()) {
+                normalHeight = newVal.doubleValue();
+            }
+        });
+
+        stage.fullScreenProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal) {
+                // When exiting full-screen, restore the previous size
+                stage.setWidth(normalWidth);
+                stage.setHeight(normalHeight);
+            }
+        });
     }
 }

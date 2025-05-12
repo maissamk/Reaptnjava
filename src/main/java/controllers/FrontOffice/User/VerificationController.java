@@ -5,17 +5,21 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-//import javafx.util.Duration;
+import javafx.stage.Stage;
 import services.UserServices;
 import utils.EmailSenderUser;
 import utils.NavigationUtil;
 import utils.PasswordUtils;
 import utils.SessionManager;
 
-import java.time.Duration; // Correct import for Java Duration
+import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -32,7 +36,7 @@ public class VerificationController {
     public void initialize() {
         pendingUser = SessionManager.getPendingUser();
         if (pendingUser == null) {
-            NavigationUtil.navigateTo("/FrontOffice/user/Register.fxml", rootPane);
+            redirectTo("/FrontOffice/user/Register.fxml");
             return;
         }
 
@@ -59,7 +63,7 @@ public class VerificationController {
             countdown.stop();
             timerLabel.setText("Code expiré!");
             SessionManager.clearPendingUser();
-            NavigationUtil.navigateTo("/FrontOffice/user/Register.fxml", rootPane);
+            redirectTo("/FrontOffice/user/Register.fxml");
         } else {
             timerLabel.setText(String.format("Expire dans %02d:%02d",
                     secondsLeft / 60, secondsLeft % 60));
@@ -86,7 +90,7 @@ public class VerificationController {
                 SessionManager.clearPendingUser();
 
                 // Navigate after successful verification
-                NavigationUtil.navigateTo("/FrontOffice/Home.fxml", rootPane);
+                redirectToHome();
             } else {
                 NavigationUtil.showErrorAlert("Erreur", "Code invalide", "Le code de vérification est incorrect.");
             }
@@ -95,8 +99,6 @@ public class VerificationController {
             NavigationUtil.showErrorAlert("Erreur", "Échec de vérification", "Impossible de terminer la vérification : " + e.getMessage());
         }
     }
-
-
 
     @FXML
     void handleResendCode() {
@@ -115,6 +117,36 @@ public class VerificationController {
     }
 
     public void redirectToLogin(ActionEvent actionEvent) {
-        NavigationUtil.navigateTo("/FrontOffice/user/login.fxml", rootPane);
+        redirectTo("/FrontOffice/user/login.fxml");
+    }
+
+    private void redirectTo(String fxmlPath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setMaximized(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            NavigationUtil.showErrorAlert("Error", "Navigation Failed", "Could not load the requested view.");
+        }
+    }
+
+    private void redirectToHome() throws IOException {
+        user currentUser = SessionManager.getInstance().getCurrentUser();
+        String homePagePath = currentUser.getRoles().contains("ROLE_ADMIN")
+                ? "/BackOffice/HomeBack.fxml"
+                : "/FrontOffice/Home.fxml";
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(homePagePath));
+        Parent root = loader.load();
+
+        Stage stage = (Stage) rootPane.getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setMaximized(true);
     }
 }

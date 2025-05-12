@@ -8,9 +8,9 @@
 <ScrollPane fitToWidth="true" fitToHeight="false" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.FrontOffice.parcelles.Ajouterparcelles"
-            prefHeight="700.0" prefWidth="800.0" vbarPolicy="ALWAYS">
+            prefHeight="800.0" prefWidth="1200.0" vbarPolicy="ALWAYS">
     <content>
-        <VBox spacing="20" style="-fx-padding: 20;">
+        <VBox spacing="5" style="-fx-padding: 20;">
             <Label text="Ajouter une parcelle"
                    style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
 
@@ -114,6 +114,11 @@
                         onAction="#handleAjouterContrat"
                         style="-fx-background-color: #FF5722; -fx-text-fill: white;"
                         prefWidth="150"/>
+                <Button fx:id="parcelleButton" styleClass="nav-button" text="Parcelle" onAction="#handleParcelle" />
+<!--            //new acceuil bouton-->
+
+
+
             </HBox>
         </VBox>
     </content>
