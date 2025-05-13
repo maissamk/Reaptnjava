@@ -312,7 +312,7 @@ public class ProductManagementController {
             }
         });
     }
-    
+
     private void handleImageUpload() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Product Image");
@@ -320,43 +320,37 @@ public class ProductManagementController {
                 new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
         );
         File selectedFile = fileChooser.showOpenDialog(null);
-        
+
         if (selectedFile != null) {
             try {
+                // Define the target directory
+                Path targetDir = Paths.get("C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/images/");
+
                 // Create directory if it doesn't exist
-                Path rootDir = Paths.get(System.getProperty("user.dir"));
-                Path resourcesDir = rootDir.resolve("workshopjdbc3a/src/main/resources");
-                Path imagesDir = resourcesDir.resolve("images");
-                
-                // Create product images subdirectory if needed
-                Path productImagesDir = imagesDir.resolve("products");
-                if (!Files.exists(productImagesDir)) {
-                    Files.createDirectories(productImagesDir);
-                } else if (!Files.exists(imagesDir)) {
-                    Files.createDirectories(imagesDir);
+                if (!Files.exists(targetDir)) {
+                    Files.createDirectories(targetDir);
                 }
-                
+
                 // Generate a unique filename to avoid duplicates
                 String fileExtension = selectedFile.getName().substring(selectedFile.getName().lastIndexOf('.'));
                 String fileName = "product_" + System.currentTimeMillis() + fileExtension;
-                
-                // Store in products directory
-                Path targetPath = productImagesDir.resolve(fileName);
+
+                // Copy the file to the target directory
+                Path targetPath = targetDir.resolve(fileName);
                 Files.copy(selectedFile.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
-                
-                // Store relative path in database (as it is used in FrontOfficeController)
-                currentImagePath = "products/" + fileName;
-                
-                System.out.println("Image saved to: " + targetPath);
-                System.out.println("Path stored in database: " + currentImagePath);
-                
+
+                // Store the relative path in the database
+                // This will depend on how you want to reference it in your application
+                // For example, you might just store the filename or a relative path
+                currentImagePath = "uploads/images/" + fileName;
+
                 // Display the uploaded image
                 Image image = new Image(targetPath.toUri().toString());
                 productImageView.setImage(image);
                 productImageView.setFitWidth(160);
                 productImageView.setFitHeight(160);
                 productImageView.setPreserveRatio(true);
-                
+
                 showAlert(Alert.AlertType.INFORMATION, "Success", "Image uploaded successfully!");
             } catch (Exception e) {
                 e.printStackTrace();

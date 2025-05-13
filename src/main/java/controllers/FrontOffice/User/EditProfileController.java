@@ -30,6 +30,7 @@ public class EditProfileController {
     private final UserServices userService = new UserServices();
     private user currentUser;
     private File selectedAvatarFile;
+    private final String AVATAR_BASE_PATH = "C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/avatars/";
 
     @FXML
     public void initialize() {
@@ -42,21 +43,31 @@ public class EditProfileController {
     }
 
     private void loadUserData() {
-        System.out.println("firstNameField: " + firstNameField);
-        System.out.println("lastNameField: " + lastNameField);
-
         firstNameField.setText(currentUser.getPrenom());
         lastNameField.setText(currentUser.getNom());
         emailField.setText(currentUser.getEmail());
         phoneField.setText(currentUser.getTelephone());
 
         try {
-            String avatarPath = "/images/avatars/" + currentUser.getAvatar();
+            if (currentUser.getAvatar() == null || currentUser.getAvatar().isEmpty()) {
+                // Load default avatar from resources if no avatar is set
+                avatarImage.setImage(new Image(getClass().getResourceAsStream("/images/defaultavatar.png")));
+                return;
+            }
+
+            String avatarPath = AVATAR_BASE_PATH + currentUser.getAvatar();
             System.out.println("Loading avatar from: " + avatarPath);
-            Image avatar = new Image(getClass().getResourceAsStream(avatarPath));
-            avatarImage.setImage(avatar);
+
+            File file = new File(avatarPath);
+            if (file.exists()) {
+                Image avatar = new Image(file.toURI().toString());
+                avatarImage.setImage(avatar);
+            } else {
+                System.out.println("Avatar file not found, using default");
+                avatarImage.setImage(new Image(getClass().getResourceAsStream("/images/defaultavatar.png")));
+            }
         } catch (Exception e) {
-            System.out.println("Error loading avatar, using default");
+            System.out.println("Error loading avatar: " + e.getMessage());
             avatarImage.setImage(new Image(getClass().getResourceAsStream("/images/defaultavatar.png")));
         }
     }
@@ -100,11 +111,11 @@ public class EditProfileController {
 
             // Handle avatar change if needed
             if (selectedAvatarFile != null) {
-                String avatarPath = saveAvatarToResources(selectedAvatarFile);
+                String avatarPath = saveAvatarToUploads(selectedAvatarFile);
                 currentUser.setAvatar(avatarPath);
             }
 
-            // Save changes - assuming update() returns void
+            // Save changes
             userService.update(currentUser);
             SessionManager.getInstance().startSession(currentUser);
             showAlertAndNavigate("Success", "Profile Updated",
@@ -116,14 +127,23 @@ public class EditProfileController {
             e.printStackTrace();
         }
     }
-    private String saveAvatarToResources(File avatarFile) throws IOException {
-        String resourcesPath = "src/main/resources/images/avatars/";
-        String fileName = currentUser.getId() + "_" + avatarFile.getName();
-        File destFile = new File(resourcesPath + fileName);
 
-       new File(resourcesPath).mkdirs();
+    private String saveAvatarToUploads(File avatarFile) throws IOException {
+        // Create directory if it doesn't exist
+        File targetDir = new File(AVATAR_BASE_PATH);
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
 
+        // Generate unique filename (using user ID and timestamp)
+        String fileExtension = avatarFile.getName().substring(avatarFile.getName().lastIndexOf("."));
+        String fileName = currentUser.getId() + "_" + System.currentTimeMillis() + fileExtension;
+        File destFile = new File(targetDir, fileName);
+
+        // Copy the file
         Files.copy(avatarFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        // Return just the filename (without path)
         return fileName;
     }
 

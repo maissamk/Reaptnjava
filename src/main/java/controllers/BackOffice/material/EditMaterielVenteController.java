@@ -31,6 +31,8 @@ public class EditMaterielVenteController {
     private final MaterielService materielService = new MaterielService();
     private final CategorieService categorieService = new CategorieService();
     private MaterielVente materielToEdit;
+    private final String IMAGE_BASE_PATH = "C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/images/";
+    private final String IMAGE_DESTINATION_PATH = "C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/images/";
 
     public void setMaterielToEdit(MaterielVente materiel) {
         this.materielToEdit = materiel;
@@ -101,7 +103,12 @@ public class EditMaterielVenteController {
             // Handle image only if changed
             if (!imagePath.isEmpty() && !imagePath.equals(materielToEdit.getImage())) {
                 String imageFileName = Paths.get(imagePath).getFileName().toString();
-                Path destination = Paths.get("src/main/resources/images_materiels/", imageFileName);
+                Path destination = Paths.get(IMAGE_DESTINATION_PATH, imageFileName);
+
+                // Create directory if it doesn't exist
+                Files.createDirectories(destination.getParent());
+
+                // Copy the image to the destination
                 Files.copy(Paths.get(imagePath), destination, StandardCopyOption.REPLACE_EXISTING);
                 materielToEdit.setImage(imageFileName);
             }
@@ -113,9 +120,9 @@ public class EditMaterielVenteController {
             ((Stage) saveBtn.getScene().getWindow()).close();
         } catch (IOException e) {
             showAlert("Error", "Error while updating: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
         }
     }
-
     private void handleCancel() {
         ((Stage) cancelBtn.getScene().getWindow()).close();
     }

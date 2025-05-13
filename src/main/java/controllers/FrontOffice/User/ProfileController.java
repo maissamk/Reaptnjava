@@ -26,6 +26,7 @@ import utils.SessionManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -63,15 +64,31 @@ public class ProfileController {
             statusLabel.setText(currentUser.getStatus() != null ? currentUser.getStatus() : "Active");
 
             try {
-                String avatarPath = currentUser.getAvatar();
-                if (avatarPath == null || avatarPath.isEmpty()) {
-                    avatarPath = "/images/defaultavatar.png";
-                } else if (!avatarPath.startsWith("/images/avatars/")) {
-                    avatarPath = "/images/avatars/" + avatarPath;
+                String avatarPath;
+                if (currentUser.getAvatar() == null || currentUser.getAvatar().isEmpty()) {
+                    // Load default avatar from resources if no avatar is set
+                    avatarImage.setImage(new Image(getClass().getResourceAsStream("/images/defaultavatar.png")));
+                    return;
+                } else {
+                    // Construct the full path to the avatar file
+                    avatarPath = "C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/avatars/" + currentUser.getAvatar();
                 }
 
-                Image avatar = new Image(getClass().getResourceAsStream(avatarPath));
-                avatarImage.setImage(avatar);
+                System.out.println("Loading avatar from: " + avatarPath);
+
+                // Clear previous image first
+                avatarImage.setImage(null);
+
+                // Load image from file system
+                File file = new File(avatarPath);
+                if (file.exists()) {
+                    String fileUrl = file.toURI().toString();
+                    Image avatar = new Image(fileUrl);
+                    avatarImage.setImage(avatar);
+                } else {
+                    System.err.println("Avatar file not found: " + avatarPath);
+                    avatarImage.setImage(new Image(getClass().getResourceAsStream("/images/defaultavatar.png")));
+                }
             } catch (Exception e) {
                 System.err.println("Error loading avatar: " + e.getMessage());
                 avatarImage.setImage(new Image(getClass().getResourceAsStream("/images/defaultavatar.png")));

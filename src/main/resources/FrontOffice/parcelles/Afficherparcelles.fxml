@@ -52,7 +52,7 @@
             <ListView fx:id="suggestionsList" visible="false" prefHeight="100" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
         </GridPane>
 
-        <HBox spacing="10" alignment="CENTER_LEFT">
+        <HBox spacing="3" alignment="CENTER_LEFT">
             <Button text="Appliquer" onAction="#handleFiltrer"
                     style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
             <Button text="Réinitialiser" onAction="#handleReinitialiser"
@@ -66,7 +66,7 @@
 
         </HBox>
 
-        <HBox spacing="20" alignment="CENTER_LEFT">
+        <HBox spacing="10" alignment="CENTER">
             <Label text="Liste des Parcelles"
                    style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
 

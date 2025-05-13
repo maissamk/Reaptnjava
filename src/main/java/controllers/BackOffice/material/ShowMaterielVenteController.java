@@ -7,6 +7,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import services.MaterielService;
+import java.io.File;
 
 
 public class ShowMaterielVenteController {
@@ -19,9 +20,10 @@ public class ShowMaterielVenteController {
     @FXML private Label createdAtLabel;
     MaterielService service = new MaterielService();
     public void setMateriel(MaterielVente materiel) {
-        try {
-            imageView.setImage(new Image("file:src/main/resources/images_materiels/" + materiel.getImage()));
-        } catch (Exception e) {
+        File imageFile = new File("C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/images/", materiel.getImage());
+        if (imageFile.exists()) {
+            imageView.setImage(new Image(imageFile.toURI().toString()));
+        } else {
             imageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png")));
         }
         imageView.setFitWidth(300);
@@ -33,7 +35,7 @@ public class ShowMaterielVenteController {
         descriptionLabel.setText(materiel.getDescription());
         disponibiliteLabel.setText(materiel.isDisponibilite() ? "Disponible" : "Non disponible");
         disponibiliteLabel.setStyle("-fx-text-fill: " + (materiel.isDisponibilite() ? "#4CAF50" : "#F44336") + ";");
-        categorieLabel.setText("Catégorie: " + materiel.getCategorieId());
+        categorieLabel.setText("Catégorie: " + materiel.getCategorie());
         createdAtLabel.setText("Ajouté le: " + materiel.getCreatedAt().toLocalDate());
     }
 

@@ -55,17 +55,28 @@ public class WeatherWidget extends VBox {
     
     private void setupUI() {
         this.getStyleClass().add("weather-widget");
-        this.setSpacing(10);
-        this.setPadding(new Insets(15));
-        this.setMaxWidth(350);
+        this.setSpacing(5);
+        this.setPadding(new Insets(0));
+        this.setMaxWidth(290);
+        this.setPrefWidth(290);
+        this.setStyle("-fx-background-color: #005b96; -fx-background-radius: 8;");
         
         // Search Box with Refresh Button
         HBox searchBox = new HBox(5);
         searchBox.setAlignment(Pos.CENTER);
+        searchBox.setPadding(new Insets(10, 10, 5, 10));
         cityInputField.setPromptText("Enter city");
+        cityInputField.setPrefWidth(180);
+        cityInputField.setMaxWidth(180);
         cityInputField.getStyleClass().add("weather-search-field");
+        cityInputField.setStyle("-fx-background-color: #084c7f; -fx-text-fill: white; -fx-prompt-text-fill: #a9d6f5;");
+        
+        searchButton.setText("Search");
         searchButton.getStyleClass().add("weather-search-button");
+        searchButton.setStyle("-fx-background-color: #03a9f4; -fx-text-fill: white; -fx-font-size: 11px;");
+        
         refreshButton.getStyleClass().add("weather-refresh-button");
+        refreshButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #a9d6f5; -fx-border-color: transparent;");
         refreshButton.setTooltip(new javafx.scene.control.Tooltip("Refresh current weather"));
         
         // Set action on button and enter key with event consumption to prevent scrolling
@@ -90,16 +101,21 @@ public class WeatherWidget extends VBox {
         // Status label for feedback
         statusLabel.getStyleClass().add("weather-status-label");
         statusLabel.setVisible(true);
+        statusLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #a9d6f5; -fx-padding: 0 0 0 10;");
         
         // Weather Header (Icon, Temperature)
-        HBox weatherHeader = new HBox(20);
+        HBox weatherHeader = new HBox(10);
         weatherHeader.setAlignment(Pos.CENTER);
+        weatherHeader.setPadding(new Insets(0, 0, 0, 10));
         
-        weatherIconView.setFitWidth(80);
-        weatherIconView.setFitHeight(80);
+        weatherIconView.setFitWidth(60);
+        weatherIconView.setFitHeight(60);
         weatherIconView.getStyleClass().add("weather-icon");
         
         temperatureLabel.getStyleClass().add("temperature-label");
+        temperatureLabel.setStyle("-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;");
+        
+        feelsLikeLabel.setStyle("-fx-text-fill: #a9d6f5; -fx-font-size: 12px;");
         
         VBox tempBox = new VBox(5);
         tempBox.setAlignment(Pos.CENTER_LEFT);
@@ -109,27 +125,24 @@ public class WeatherWidget extends VBox {
         
         // Location and Description
         cityLabel.getStyleClass().add("city-label");
+        cityLabel.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 0 0 0 10;");
+        
         descriptionLabel.getStyleClass().add("description-label");
-        
-        // Detailed weather description
-        detailedWeatherLabel.getStyleClass().add("detailed-weather-label");
-        detailedWeatherLabel.setAlignment(Pos.CENTER);
-        detailedWeatherLabel.setWrapText(true);
-        detailedWeatherLabel.setStyle("-fx-font-size: 14px; -fx-padding: 5 0; -fx-font-weight: normal;");
-        
-        // Today's weather message
-        todayWeatherLabel.getStyleClass().add("today-weather-label");
-        todayWeatherLabel.setAlignment(Pos.CENTER);
-        todayWeatherLabel.setStyle("-fx-font-style: italic; -fx-font-size: 14px; -fx-padding: 5 0;");
+        descriptionLabel.setStyle("-fx-text-fill: #a9d6f5; -fx-font-style: italic; -fx-padding: 0 0 0 10;");
         
         // Weather Details
-        HBox weatherDetails = new HBox(30);
+        HBox weatherDetails = new HBox(10);
         weatherDetails.setAlignment(Pos.CENTER);
+        weatherDetails.setPadding(new Insets(5, 10, 10, 10));
         
-        VBox detailsLeft = new VBox(8);
+        VBox detailsLeft = new VBox(5);
+        humidityLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
+        windSpeedLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
         detailsLeft.getChildren().addAll(humidityLabel, windSpeedLabel);
         
-        VBox detailsRight = new VBox(8);
+        VBox detailsRight = new VBox(5);
+        sunriseLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
+        sunsetLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
         detailsRight.getChildren().addAll(sunriseLabel, sunsetLabel);
         
         weatherDetails.getChildren().addAll(detailsLeft, detailsRight);
@@ -138,18 +151,15 @@ public class WeatherWidget extends VBox {
         errorLabel.getStyleClass().add("error-label");
         errorLabel.setVisible(false);
         errorLabel.setManaged(false);
+        errorLabel.setStyle("-fx-text-fill: #ff9e80; -fx-font-size: 11px;");
         
         // Add all to main container
         this.getChildren().addAll(
             searchBox, 
             statusLabel,
-            new Region() {{ setMinHeight(10); }},
             weatherHeader,
             cityLabel,
             descriptionLabel,
-            detailedWeatherLabel,
-            todayWeatherLabel,
-            new Region() {{ setMinHeight(5); }},
             weatherDetails,
             errorLabel
         );

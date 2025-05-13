@@ -2,80 +2,69 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.chart.*?>
-<?import javafx.scene.layout.AnchorPane?>
-
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.control.Separator?>
 
 <BorderPane xmlns="http://javafx.com/javafx/18"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.BackOffice.Offer.Statistiques"
             prefWidth="1200" prefHeight="800"
-            stylesheets="/css/homeback.css">
+            stylesheets="@/css/homeback.css">
 
-
-    <!-- Left Sidebar - Modern Collapsible Style -->
-    <left>
+    <!-- SIDEBAR: DO NOT TOUCH -->
+    <!-- left>
         <VBox styleClass="sidebar" spacing="10" prefWidth="220">
             <Label text="MAIN MENU" styleClass="menu-title"/>
-
-            <Button fx:id="statisticsBtn" text="Statistics" styleClass="side-btn" >
-
-            </Button>
-
-            <Button fx:id="farmersBtn" text="Farmers" styleClass="side-btn">
-
-            </Button>
-
-            <Button fx:id="parcelsBtn" text="Parcels" styleClass="side-btn">
-
-            </Button>
-
-            <Button fx:id="harvestBtn" text="Harvest" styleClass="side-btn">
-
-            </Button>
-
+            <Button fx:id="statisticsBtn" text="Statistics" styleClass="side-btn"/>
+            <Button fx:id="farmersBtn" text="Farmers" styleClass="side-btn"/>
+            <Button fx:id="parcelsBtn" text="Parcels" styleClass="side-btn"/>
+            <Button fx:id="harvestBtn" text="Harvest" styleClass="side-btn"/>
             <Separator styleClass="menu-separator"/>
-
             <Label text="SYSTEM" styleClass="menu-title"/>
-
-            <Button fx:id="settingsBtn" text="Settings" styleClass="side-btn">
-
-            </Button>
-
-            <Button fx:id="logsBtn" text="System Logs" styleClass="side-btn">
-
-            </Button>
-
-            <!-- Bottom Spacer to push content up -->
+            <Button fx:id="settingsBtn" text="Settings" styleClass="side-btn"/>
+            <Button fx:id="logsBtn" text="System Logs" styleClass="side-btn"/>
             <Region VBox.vgrow="ALWAYS"/>
-
-            <!-- Sidebar Footer -->
             <VBox styleClass="sidebar-footer" spacing="5">
                 <Label text="v2.4.1" styleClass="version-label"/>
                 <Label text="© 2023 AgriSoft" styleClass="copyright-label"/>
             </VBox>
         </VBox>
-    </left>
+    </leftT -->
 
-
+    <!-- MAIN CONTENT -->
     <center>
+        <VBox alignment="TOP_CENTER" spacing="20">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
 
-        <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Nombre des employés par offre" />
+            <!-- Title -->
+            <Label text="Statistiques des Offres et Employés"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
-        <BarChart fx:id="barChart" layoutX="50" layoutY="50" prefHeight="400" prefWidth="600">
-            <xAxis>
-                <CategoryAxis label="Offre ID" />
-            </xAxis>
-            <yAxis>
-                <NumberAxis label="Number of Employés" />
-            </yAxis>
-        </BarChart>
+            <!-- Counters -->
+            <HBox spacing="50" alignment="CENTER">
+                <Label text="Total Employés :" style="-fx-font-size: 16px;"/>
+                <Label fx:id="totalEmployesLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Total Offres :" style="-fx-font-size: 16px;"/>
+                <Label fx:id="totalOffresLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            </HBox>
 
+            <!-- Charts -->
+            <HBox spacing="50" alignment="CENTER">
+                <BarChart fx:id="barChart" prefHeight="400" prefWidth="500">
+                    <xAxis>
+                        <CategoryAxis label="Offre ID"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Employés Confirmés"/>
+                    </yAxis>
+                </BarChart>
+
+                <PieChart fx:id="pieChart" prefHeight="400" prefWidth="400"/>
+            </HBox>
+        </VBox>
     </center>
 </BorderPane>

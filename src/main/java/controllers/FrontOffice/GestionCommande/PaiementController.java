@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import controllers.FrontOffice.Home;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -742,21 +743,33 @@ public class PaiementController implements Initializable {
         livraisonService.ajouter(livraison);
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/GestionCommande/SuiviLivraison.fxml"));
-            Parent root = loader.load();
 
-            SuiviLivraisonController controller = loader.getController();
-            controller.setCommandeId(commande.getId());
 
-            // Créer une nouvelle scène avec le root chargé
-            Scene scene = new Scene(root);
+// 1. Load Home.fxml (which contains the navbar)
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
-            // Appliquer le CSS à la scène
+            // 2. Load the delivery tracking content
+            FXMLLoader deliveryLoader = new FXMLLoader(getClass().getResource("/FrontOffice/GestionCommande/SuiviLivraison.fxml"));
+            Parent deliveryContent = deliveryLoader.load();
+
+            // 3. Configure the delivery tracking controller
+            SuiviLivraisonController deliveryController = deliveryLoader.getController();
+            deliveryController.setCommandeId(commande.getId());
+
+            // 4. Set the delivery content in Home's mainContentPane
+            homeController.getMainContentPane().getChildren().setAll(deliveryContent);
+
+            // 5. Update the stage
+            Stage stage = (Stage) numeroRueField.getScene().getWindow();
+            Scene scene = new Scene(homeRoot);
+
+            // Apply CSS if needed
             scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
 
-            // Récupérer le stage actuel
-            Stage stage = (Stage) numeroRueField.getScene().getWindow();
-            stage.setScene(scene);  // Remplacer la scène de l'application
+            stage.setScene(scene);
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }

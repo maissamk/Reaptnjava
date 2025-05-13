@@ -1,6 +1,7 @@
 package controllers.FrontOffice.parcelles;
 
 import controllers.FrontOffice.BaseFrontController;
+import controllers.FrontOffice.Home;
 import controllers.FrontOffice.contrats.Ajoutercontrat;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -11,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import Models.ParcelleProprietes;
 import services.ParcelleProprietesService;
@@ -41,6 +43,7 @@ public class Ajouterparcelles {
     @FXML private Label fileNameLabel;
     @FXML private Button afficherButton;
     @FXML private Button ajouterContratButton;
+    @FXML private Button parcelleButton;
 
     // Map display elements
     @FXML private WebView mapWebView;
@@ -124,6 +127,35 @@ public class Ajouterparcelles {
 
         // Initialize Leaflet map
         initializeMap();
+
+        parcelleButton.setOnAction(event -> handleParcelle());
+    }
+
+
+    @FXML
+    private void handleParcelle() {
+        try {
+            // Load Home.fxml which contains the navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
+
+            // Load the parcelle list content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/parcelles/Afficherparcelles.fxml"));
+            Parent content = contentLoader.load();
+
+            // Set the content in Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
+
+            // Update the stage
+            Stage stage = (Stage) parcelleButton.getScene().getWindow();
+            stage.setScene(new Scene(homeRoot));
+            stage.show();
+
+        } catch (IOException e) {
+            showAlert("Erreur", "Échec du chargement : " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void initializeMap() {
@@ -329,20 +361,22 @@ public class Ajouterparcelles {
     @FXML
     public void handleAjouterContrat() {
         try {
-            // Load base layout
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
-            Parent baseRoot = baseLoader.load();
-            BaseFrontController baseController = baseLoader.getController();
+            // Load Home.fxml which contains the navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
-            // Load contract form
-            Parent content = FXMLLoader.load(getClass().getResource("/FrontOffice/contrats/Ajoutercontrat.fxml"));
+            // Load the contract form content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/contrats/Ajoutercontrat.fxml"));
+            Parent content = contentLoader.load();
 
-            // Inject into content pane
-            baseController.getContentPane().getChildren().setAll(content);
+            // Set the content in Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
 
-            // Update current window
+            // Update the stage
             Stage stage = (Stage) ajouterContratButton.getScene().getWindow();
-            stage.setScene(new Scene(baseRoot));
+            stage.setScene(new Scene(homeRoot));
+            stage.show();
 
         } catch (IOException e) {
             showAlert("Erreur Navigation",
@@ -368,33 +402,40 @@ public class Ajouterparcelles {
         }
     }
 
+
+
+    //handle acceil nav vers la page d acceil
+
     @FXML
     private void handleAfficherListe() {
         try {
-            // Load base layout
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
-            Parent baseRoot = baseLoader.load();
-            BaseFrontController baseController = baseLoader.getController();
+            // Load Home.fxml which contains the navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
-            // Load parcel list
-            Parent content = FXMLLoader.load(getClass().getResource("/FrontOffice/parcelles/Afficherparcelles.fxml"));
+            // Load the parcelle list content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/parcelles/Afficherparcelles.fxml"));
+            Parent content = contentLoader.load();
 
-            // Inject into content pane
-            baseController.getContentPane().getChildren().setAll(content);
+            // Set the content in Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
 
-            // Update current window
+            // Update the stage
             Stage stage = (Stage) afficherButton.getScene().getWindow();
-            stage.setScene(new Scene(baseRoot));
+            stage.setScene(new Scene(homeRoot));
+            stage.show();
 
         } catch (IOException e) {
             showAlert("Erreur Navigation",
                     "Impossible de charger l'interface :\n"
-                            + "1. Vérifiez que baseFront.fxml existe\n"
+                            + "1. Vérifiez que Home.fxml existe\n"
                             + "2. Vérifiez les chemins FXML\n"
                             + "Erreur technique : " + e.getMessage());
             e.printStackTrace();
         }
     }
+
 
     @FXML
     private void handleEnregistrer() {
@@ -418,16 +459,20 @@ public class Ajouterparcelles {
         boolean estDisponible = disponibleCheckBox.isSelected();
 
         // Improved image handling
-        String imagePath = "/images/default.png"; // Default image path
+        String imagePath = "default.png"; // Default image name
 
         if (selectedFile != null) {
             try {
                 // Generate unique filename
                 String fileName = System.currentTimeMillis() + "_" + selectedFile.getName();
 
+                // Define the target directory
+                File destDir = new File("C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/images/");
+
                 // Ensure directory exists
-                File destDir = new File("src/main/resources/images");
-                if (!destDir.exists()) destDir.mkdirs();
+                if (!destDir.exists()) {
+                    destDir.mkdirs();
+                }
 
                 // Path for the destination file
                 File destFile = new File(destDir, fileName);
@@ -442,15 +487,14 @@ public class Ajouterparcelles {
                     }
                 }
 
-                // Store path with leading slash to ensure it works with resource loading
-                imagePath = "/images/" + fileName;
+                // Store just the filename (or relative path as needed)
+                imagePath = fileName;
 
             } catch (IOException e) {
                 showAlert("Erreur", "Erreur lors de la copie de l'image : " + e.getMessage());
                 return;
             }
         }
-
         // Create and populate the parcelle object
         ParcelleProprietes parcelle = new ParcelleProprietes();
         parcelle.setTitre(titre);
@@ -731,6 +775,5 @@ public class Ajouterparcelles {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
 
 }

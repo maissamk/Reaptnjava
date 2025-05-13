@@ -4,6 +4,7 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 import controllers.FrontOffice.BaseFrontController;
+import controllers.FrontOffice.Home;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -181,14 +182,22 @@ public class Affichercontrat {
     @FXML
     private void handleAfficherParcelles() {
         try {
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
-            Parent baseRoot = baseLoader.load();
-            BaseFrontController controller = baseLoader.getController();
-            Parent content = FXMLLoader.load(getClass().getResource("/FrontOffice/parcelles/Afficherparcelles.fxml"));
-            controller.getContentPane().getChildren().setAll(content);
+            // Load Home.fxml which contains the navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
+            // Load the parcelle list content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/parcelles/Afficherparcelles.fxml"));
+            Parent content = contentLoader.load();
+
+            // Set the content in Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
+
+            // Update the stage
             Stage stage = (Stage) btnRetour.getScene().getWindow();
-            stage.setScene(new Scene(baseRoot));
+            stage.setScene(new Scene(homeRoot));
+            stage.show();
         } catch (IOException e) {
             showAlert("Erreur", "Navigation impossible : " + e.getMessage());
         }
@@ -196,20 +205,34 @@ public class Affichercontrat {
 
 
 
+
     private void openDetailView(Contrat contrat) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/contrats/DetailleContrat.fxml"));
-            Parent root = loader.load();
+            // Load Home.fxml which contains the navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
-            DetailContrat controller = loader.getController();
-            controller.initData(contrat); // Passage du contrat sélectionné
+            // Load the detail content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/contrats/DetailleContrat.fxml"));
+            Parent content = contentLoader.load();
 
+            // Get the detail controller and pass the selected Contrat
+            DetailContrat controller = contentLoader.getController();
+            controller.initData(contrat);
+
+            // Set the content in Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
+
+            // Update the stage
             Stage stage = (Stage) btnRetour.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(homeRoot));
+            stage.show();
         } catch (IOException e) {
             showAlert("Erreur", e.getMessage());
         }
     }
+
 
     private void openModificationWindow(Contrat contrat) {
         try {
@@ -277,163 +300,27 @@ public class Affichercontrat {
         }
     }
 
+    // Remplacer la méthode envoyerPourSignature dans la classe Affichercontrat
     private void envoyerPourSignature(Contrat contrat) {
         try {
-            // Génération PDF
-            String pdfPath = generatePDFForSignature(contrat);
-            File pdfFile = new File(pdfPath);
+            // Ouvrir la fenêtre de signature
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontOffice/contrats/SignatureContrat.fxml"));
+            Parent root = loader.load();
 
-            // Configuration requête
-            // CORRECTION: Utiliser la bonne URL d'API selon la version de l'API YouSign (v3)
-            URL url = new URL("https://api-sandbox.yousign.app/v3");
+            // Récupérer le contrôleur et initialiser avec le contrat sélectionné
+            SignatureContratController controller = loader.getController();
+            controller.initWithContrat(contrat);
 
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
+            // Afficher dans une nouvelle fenêtre
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Signature Électronique - Contrat N°" + contrat.getId());
+            stage.showAndWait();
 
-            // CORRECTION: Utiliser le bon format d'autorisation et clé API
-            conn.setRequestProperty("Authorization", "Bearer CSF81RXIvlkd9QUtvzsM0EwLmVGd5Tn2");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setDoOutput(true);
-
-            // Construction du corps de la requête selon la documentation v3
-            JSONObject body = new JSONObject();
-            body.put("name", "Contrat Agricole #" + contrat.getId());
-            body.put("delivery_mode", "email");
-            body.put("timezone", "Europe/Paris");
-
-            // Paramètres de notification
-            JSONObject notification = new JSONObject();
-            notification.put("procedure", true);
-            body.put("notification", notification);
-
-            // Configuration de la procédure
-            JSONObject config = new JSONObject();
-            config.put("type", "electronic_signature");
-            body.put("config", config);
-
-            // Ajouter le fichier encodé en base64
-            JSONArray documents = new JSONArray();
-            JSONObject document = new JSONObject();
-            document.put("name", pdfFile.getName());
-            document.put("type", "signable");
-            document.put("content", encodeFileToBase64(pdfFile));
-            documents.put(document);
-            body.put("documents", documents);
-
-            // Ajouter les signataires
-            JSONArray signers = new JSONArray();
-
-            // Premier signataire (acheteur)
-            JSONObject acheteur = new JSONObject();
-            acheteur.put("first_name", splitName(contrat.getNom_acheteur())[0]);
-            acheteur.put("last_name", splitName(contrat.getNom_acheteur())[1]);
-            acheteur.put("email", "yosrsfaihi@gmail.com");
-            acheteur.put("phone", "+33600000000");
-
-            // Méthode d'authentification pour l'acheteur
-            JSONObject acheteurAuth = new JSONObject();
-            acheteurAuth.put("type", "email");
-            acheteur.put("verification", acheteurAuth);
-
-            signers.put(acheteur);
-
-            // Deuxième signataire (vendeur)
-            JSONObject vendeur = new JSONObject();
-            vendeur.put("first_name", splitName(contrat.getNom_vendeur())[0]);
-            vendeur.put("last_name", splitName(contrat.getNom_vendeur())[1]);
-            vendeur.put("email", "yosrsfaihi@gmail.com");
-            vendeur.put("phone", "+33600000000");
-
-            // Méthode d'authentification pour le vendeur
-            JSONObject vendeurAuth = new JSONObject();
-            vendeurAuth.put("type", "email");
-            vendeur.put("verification", vendeurAuth);
-
-            signers.put(vendeur);
-
-            body.put("signers", signers);
-
-            // Configurer les champs de signature pour chaque signataire
-            JSONArray signatureFields = new JSONArray();
-
-            // Champ de signature pour l'acheteur (premier signataire)
-            JSONObject acheteurSignature = new JSONObject();
-            acheteurSignature.put("document_index", 0);
-            acheteurSignature.put("signer_index", 0);
-            acheteurSignature.put("page", 1);
-            acheteurSignature.put("x", 50);
-            acheteurSignature.put("y", 700);
-            signatureFields.put(acheteurSignature);
-
-            // Champ de signature pour le vendeur (deuxième signataire)
-            JSONObject vendeurSignature = new JSONObject();
-            vendeurSignature.put("document_index", 0);
-            vendeurSignature.put("signer_index", 1);
-            vendeurSignature.put("page", 1);
-            vendeurSignature.put("x", 300);
-            vendeurSignature.put("y", 700);
-            signatureFields.put(vendeurSignature);
-
-            body.put("signature_fields", signatureFields);
-
-            // Logging pour debugging
-            System.out.println("Request body: " + body.toString());
-
-            // Envoi de la requête
-            try (OutputStream os = conn.getOutputStream();
-                 OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8")) {
-                osw.write(body.toString());
-                osw.flush();
-            }
-
-            // Traitement de la réponse
-            int responseCode = conn.getResponseCode();
-            System.out.println("Response Code: " + responseCode);
-
-            if (responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_OK) {
-                // Lecture de la réponse
-                StringBuilder response = new StringBuilder();
-                try (BufferedReader br = new BufferedReader(
-                        new InputStreamReader(conn.getInputStream(), "utf-8"))) {
-                    String responseLine;
-                    while ((responseLine = br.readLine()) != null) {
-                        response.append(responseLine.trim());
-                    }
-                }
-
-                // Parsing de la réponse JSON
-                JSONObject jsonResponse = new JSONObject(response.toString());
-                System.out.println("Success response: " + jsonResponse.toString());
-
-                // Stockage des IDs dans l'objet contrat
-                if (jsonResponse.has("id")) {
-                    contrat.setSignature_id(jsonResponse.getString("id"));
-                }
-
-                // Mise à jour du statut du contrat
-                contrat.setStatus("Envoyé pour signature");
-                service.update(contrat);
-                loadData();
-
-                showAlert("Succès", "Demande de signature envoyée avec succès!");
-            } else {
-                // Lecture du message d'erreur
-                StringBuilder errorResponse = new StringBuilder();
-                try (BufferedReader br = new BufferedReader(
-                        new InputStreamReader(conn.getErrorStream(), "utf-8"))) {
-                    String responseLine;
-                    while ((responseLine = br.readLine()) != null) {
-                        errorResponse.append(responseLine.trim());
-                    }
-                }
-
-                System.err.println("Error response: " + errorResponse.toString());
-                showAlert("Erreur", "Échec de l'envoi : " + responseCode + "\n" + errorResponse.toString());
-            }
-
-        } catch (Exception e) {
-            showAlert("Erreur", "Erreur lors de l'envoi : " + e.getMessage());
+            // Après fermeture de la fenêtre, actualiser la liste
+            loadData();
+        } catch (IOException e) {
+            showAlert("Erreur", "Impossible d'ouvrir l'interface de signature : " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -548,21 +435,26 @@ public class Affichercontrat {
     @FXML
     private void handleRetour() {
         try {
-            FXMLLoader baseLoader = new FXMLLoader(getClass().getResource("/FrontOffice/baseFront.fxml"));
-            Parent baseRoot = baseLoader.load();
+            // Load Home.fxml which contains the navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/FrontOffice/Home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            Home homeController = homeLoader.getController();
 
-            BaseFrontController controller = baseLoader.getController();
-            Parent content = FXMLLoader.load(getClass().getResource("/FrontOffice/contrats/Ajoutercontrat.fxml"));
-            controller.getContentPane().getChildren().setAll(content);
+            // Load the add contract content
+            FXMLLoader contentLoader = new FXMLLoader(getClass().getResource("/FrontOffice/contrats/Ajoutercontrat.fxml"));
+            Parent content = contentLoader.load();
 
+            // Set the content in Home's content pane
+            homeController.getMainContentPane().getChildren().setAll(content);
+
+            // Update the stage
             Stage stage = (Stage) btnRetour.getScene().getWindow();
-            stage.setScene(new Scene(baseRoot));
-
+            stage.setScene(new Scene(homeRoot));
+            stage.show();
         } catch (IOException e) {
             showAlert("Erreur", "Navigation impossible : " + e.getMessage());
         }
     }
-
     private void showAlert(String titre, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titre);

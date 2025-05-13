@@ -2,6 +2,12 @@ package controllers.BackOffice.material;
 
 import Models.MaterielLocation;
 import Models.MaterielVente;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import controllers.BackOffice.HomeBack;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,6 +30,9 @@ import javafx.stage.Stage;
 import services.MaterielService;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -40,6 +49,7 @@ public class IndexMaterielController {
     private int currentLocationPage = 0;
 
     private static final int ITEMS_PER_PAGE = 6;
+    private final String IMAGE_BASE_PATH = "C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/images/";
 
     // Composants FXML pour la vente
     @FXML private GridPane venteGridContainer;
@@ -63,6 +73,11 @@ public class IndexMaterielController {
         loadLocationData();
         addVenteBtn.setOnAction(this::goToAddVente);
         addLocationBtn.setOnAction(this::goToAddLocation);
+
+        // Setup dynamic search listeners
+        searchVenteField.textProperty().addListener((obs, oldVal, newVal) -> handleSearchVente());
+        searchLocationField.textProperty().addListener((obs, oldVal, newVal) -> handleSearchLocation());
+
         setupPaginationListeners();
     }
 
@@ -239,18 +254,29 @@ public class IndexMaterielController {
     }
     private void handleEditVente(MaterielVente materiel) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Backoffice/materials/EditMaterielVente.fxml"));
-            Parent root = loader.load();
+            // 1. Load the HomeBack layout with navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
+            Parent homeRoot = homeLoader.load();
+            HomeBack homeController = homeLoader.getController();
 
-            EditMaterielVenteController controller = loader.getController();
-            controller.setMaterielToEdit(materiel);
+            // 2. Load the edit content
+            FXMLLoader editLoader = new FXMLLoader(getClass().getResource("/Backoffice/materials/EditMaterielVente.fxml"));
+            Parent editContent = editLoader.load();
+            EditMaterielVenteController editController = editLoader.getController();
+            editController.setMaterielToEdit(materiel);
 
+            // 3. Put the edit form in HomeBack's content pane
+            homeController.getContentPane().getChildren().setAll(editContent);
+
+            // 4. Create and show the stage (same as original)
             Stage stage = new Stage();
             stage.setTitle("Modifier Matériel à Vendre");
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(homeRoot));
             stage.showAndWait();
 
+            // 5. Refresh data (same as original)
             loadVenteData();
+
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'ouvrir l'éditeur", Alert.AlertType.ERROR);
         }
@@ -284,13 +310,31 @@ public class IndexMaterielController {
         // Image
         ImageView imageView = new ImageView();
         try {
-            String imagePath = "file:src/main/resources/images_materiels/" + materiel.getImage();
-            imageView.setImage(new Image(imagePath, 280, 150, false, true));
+            if (materiel.getImage() != null && !materiel.getImage().isEmpty()) {
+                String imagePath = IMAGE_BASE_PATH + materiel.getImage();
+                File imageFile = new File(imagePath);
+
+                if (imageFile.exists()) {
+                    imageView.setImage(new Image(imageFile.toURI().toString(), 280, 150, false, true));
+                } else {
+                    loadDefaultImage(imageView);
+                }
+            } else {
+                loadDefaultImage(imageView);
+            }
         } catch (Exception e) {
-            imageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png"), 280, 150, false, true));
+            System.err.println("Error loading image: " + e.getMessage());
+            loadDefaultImage(imageView);
         }
         imageView.setFitWidth(280);
         imageView.setFitHeight(150);
+
+        // QR Code
+        ImageView qrCodeView = generateQRCodeForMaterial(materiel);
+        qrCodeView.setFitWidth(80);
+        qrCodeView.setFitHeight(80);
+        qrCodeView.setStyle("-fx-border-color: #ddd; -fx-border-width: 1px;");
+
         // Details
         Label nameLabel = new Label(materiel.getNom());
         nameLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
@@ -319,7 +363,11 @@ public class IndexMaterielController {
 
         buttonBox.getChildren().addAll(showBtn, editBtn, deleteBtn);
 
-        card.getChildren().addAll(imageView, nameLabel, priceLabel, statusLabel, buttonBox);
+        // Add QR code to the card
+        HBox infoBox = new HBox(10);
+        infoBox.getChildren().addAll(qrCodeView, new VBox(5, nameLabel, priceLabel, statusLabel));
+
+        card.getChildren().addAll(imageView, infoBox, buttonBox);
 
         return card;
     }
@@ -332,13 +380,30 @@ public class IndexMaterielController {
         // Image
         ImageView imageView = new ImageView();
         try {
-            String imagePath = "file:src/main/resources/images_materiels/" + materiel.getImage();
-            imageView.setImage(new Image(imagePath, 280, 150, false, true));
+            if (materiel.getImage() != null && !materiel.getImage().isEmpty()) {
+                String imagePath = IMAGE_BASE_PATH + materiel.getImage();
+                File imageFile = new File(imagePath);
+
+                if (imageFile.exists()) {
+                    imageView.setImage(new Image(imageFile.toURI().toString(), 280, 150, false, true));
+                } else {
+                    loadDefaultImage(imageView);
+                }
+            } else {
+                loadDefaultImage(imageView);
+            }
         } catch (Exception e) {
-            imageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png"), 280, 150, false, true));
+            System.err.println("Error loading image: " + e.getMessage());
+            loadDefaultImage(imageView);
         }
         imageView.setFitWidth(280);
         imageView.setFitHeight(150);
+
+        // QR Code
+        ImageView qrCodeView = generateQRCodeForMaterial(materiel);
+        qrCodeView.setFitWidth(80);
+        qrCodeView.setFitHeight(80);
+        qrCodeView.setStyle("-fx-border-color: #ddd; -fx-border-width: 1px;");
 
         // Details
         Label nameLabel = new Label(materiel.getNom());
@@ -367,9 +432,93 @@ public class IndexMaterielController {
         deleteBtn.setOnAction(e -> handleDeleteLocation(materiel));
 
         buttonBox.getChildren().addAll(showBtn, editBtn, deleteBtn);
-        card.getChildren().addAll(imageView, nameLabel, priceLabel, statusLabel, buttonBox);
+
+        // Add QR code to the card
+        HBox infoBox = new HBox(10);
+        infoBox.getChildren().addAll(qrCodeView, new VBox(5, nameLabel, priceLabel, statusLabel));
+
+        card.getChildren().addAll(imageView, infoBox, buttonBox);
 
         return card;
+    }
+
+    private void loadDefaultImage(ImageView imageView) {
+        try {
+            imageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png"), 280, 150, false, true));
+        } catch (Exception ex) {
+            System.err.println("Could not load default image: " + ex.getMessage());
+        }
+    }
+
+    private ImageView generateQRCodeForMaterial(Object materiel) {
+        try {
+            String qrContent;
+            if (materiel instanceof MaterielVente) {
+                MaterielVente mv = (MaterielVente) materiel;
+                qrContent = String.format("Matériel Vente\nNom: %s\nPrix: %.2f TND\nDisponible: %s\nDescription: %s",
+                        mv.getNom(), mv.getPrix(), mv.isDisponibilite() ? "Oui" : "Non", mv.getDescription());
+            } else if (materiel instanceof MaterielLocation) {
+                MaterielLocation ml = (MaterielLocation) materiel;
+                qrContent = String.format("Matériel Location\nNom: %s\nPrix: %.2f TND/jour\nDisponible: %s\nDescription: %s",
+                        ml.getNom(), ml.getPrix(), ml.isDisponibilite() ? "Oui" : "Non", ml.getDescription());
+            } else {
+                return new ImageView();
+            }
+
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+            BitMatrix bitMatrix = qrCodeWriter.encode(qrContent, BarcodeFormat.QR_CODE, 200, 200);
+
+            ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+            MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+            byte[] pngData = pngOutputStream.toByteArray();
+
+            return new ImageView(new Image(new ByteArrayInputStream(pngData)));
+        } catch (WriterException | IOException e) {
+            System.err.println("Error generating QR code: " + e.getMessage());
+            return new ImageView();
+        }
+    }
+
+    @FXML
+    private void handleSearchVente() {
+        String query = searchVenteField.getText().trim().toLowerCase();
+
+        if (query.isEmpty()) {
+            loadVenteData();
+            return;
+        }
+
+        List<MaterielVente> filtered = materielService.findAllVente().stream()
+                .filter(m -> m.getNom().toLowerCase().contains(query) ||
+                        m.getDescription().toLowerCase().contains(query) ||
+                        String.valueOf(m.getPrix()).contains(query))
+                .toList();
+
+        venteList.clear();
+        venteList.addAll(filtered);
+        currentVentePage = 0;
+        refreshVenteList();
+    }
+
+    @FXML
+    private void handleSearchLocation() {
+        String query = searchLocationField.getText().trim().toLowerCase();
+
+        if (query.isEmpty()) {
+            loadLocationData();
+            return;
+        }
+
+        List<MaterielLocation> filtered = materielService.findAllLocation().stream()
+                .filter(m -> m.getNom().toLowerCase().contains(query) ||
+                        m.getDescription().toLowerCase().contains(query) ||
+                        String.valueOf(m.getPrix()).contains(query))
+                .toList();
+
+        locationList.clear();
+        locationList.addAll(filtered);
+        currentLocationPage = 0;
+        refreshLocationList();
     }
 
     private void handleShowVente(MaterielVente materiel) {
@@ -434,25 +583,7 @@ public class IndexMaterielController {
         });
     }
 
-    @FXML
-    private void handleSearchVente() {
-        String query = searchVenteField.getText().trim();
-        List<MaterielVente> filtered = materielService.searchVente(query);
-        venteList.clear();
-        venteList.addAll(filtered);
-        currentVentePage = 0;
-        refreshVenteList();
-    }
 
-    @FXML
-    private void handleSearchLocation() {
-        String query = searchLocationField.getText().trim();
-        List<MaterielLocation> filtered = materielService.searchLocation(query);
-        locationList.clear();
-        locationList.addAll(filtered);
-        currentLocationPage = 0;
-        refreshLocationList();
-    }
 
     private void setupPaginationListeners() {
         ventePagination.currentPageIndexProperty().addListener((observable, oldValue, newValue) -> {
@@ -469,15 +600,27 @@ public class IndexMaterielController {
     @FXML
     private void goToAddVente(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Backoffice/materials/AddMaterielVente.fxml"));
-            Parent root = loader.load();
+            // 1. Load the HomeBack layout with navbar
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
+            Parent homeRoot = homeLoader.load();
+            HomeBack homeController = homeLoader.getController();
 
+            // 2. Load the add content
+            FXMLLoader addLoader = new FXMLLoader(getClass().getResource("/Backoffice/materials/AddMaterielVente.fxml"));
+            Parent addContent = addLoader.load();
+
+            // 3. Put the add form in HomeBack's content pane
+            homeController.getContentPane().getChildren().setAll(addContent);
+
+            // 4. Create and show the stage (same as original)
             Stage stage = new Stage();
             stage.setTitle("Ajouter Matériel à Vendre");
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(homeRoot));
             stage.showAndWait();
 
+            // 5. Refresh data (same as original)
             loadVenteData();
+
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'ouvrir le formulaire d'ajout", Alert.AlertType.ERROR);
         }
@@ -499,6 +642,39 @@ public class IndexMaterielController {
             showAlert("Erreur", "Impossible d'ouvrir le formulaire d'ajout", Alert.AlertType.ERROR);
         }
     }
+    @FXML
+    void gotohisotrique(ActionEvent event) {
+        try {
+            // 1. Load the main HomeBack layout (contains navbar)
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
+            Parent homeRoot = homeLoader.load();
+            HomeBack homeController = homeLoader.getController();
+
+            // 2. Load the historique content
+            FXMLLoader histLoader = new FXMLLoader(getClass().getResource("/Backoffice/materials/HistoriqueController.fxml"));
+            Parent histContent = histLoader.load();
+
+            // 3. Set the historique content in HomeBack's content pane
+            homeController.getContentPane().getChildren().setAll(histContent);
+
+            // 4. Create and configure the new window
+            Stage newStage = new Stage();
+            newStage.setTitle("Historique des Matériels");
+            newStage.setScene(new Scene(homeRoot));
+
+            // Set full screen dimensions
+            Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+            newStage.setWidth(screenBounds.getWidth());
+            newStage.setHeight(screenBounds.getHeight());
+
+            newStage.show();
+
+        } catch (IOException e) {
+            showAlert("Erreur", "Impossible d'ouvrir l'historique", Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     void gotocategorie(ActionEvent event) {
         try {

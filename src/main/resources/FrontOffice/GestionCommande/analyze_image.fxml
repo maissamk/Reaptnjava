@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.Line?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.FrontOffice.GestionCommande.AnalyzeImageController"
+            styleClass="root"
+            stylesheets="@/css/plante.css">
+
+
+
+    <!-- Contenu principal -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="content-scroll">
+            <VBox styleClass="content-container">
+                <!-- Bannière d'introduction -->
+                <HBox styleClass="welcome-banner">
+                    <VBox styleClass="welcome-text-container" HBox.hgrow="ALWAYS">
+                        <Text text="Bienvenue sur ReapTN" styleClass="welcome-title"/>
+                        <Text text="Système Intelligent de Diagnostic des Plantes" styleClass="app-subtitle"/>
+
+                        <Text text="Analysez vos plantes en un instant" styleClass="welcome-subtitle"/>
+                        <Text text="Notre technologie IA identifie les plantes et détecte les maladies pour vous aider à prendre soin de votre jardin."
+                              styleClass="welcome-description"/>
+                    </VBox>
+                    <StackPane styleClass="welcome-image-container">
+                        <!-- Ici vous pourriez ajouter une image illustrative -->
+                        <Text text="🔍🌱"  styleClass="welcome-image-placeholder"/>
+                    </StackPane>
+                </HBox>
+
+                <!-- Carte pour l'analyse d'image -->
+                <GridPane styleClass="analysis-card">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="60"/>
+                        <ColumnConstraints percentWidth="40"/>
+                    </columnConstraints>
+
+                    <!-- Section de sélection d'image -->
+                    <!-- Sélection & aperçu -->
+                    <VBox spacing="10"
+                          AnchorPane.topAnchor="0"
+                          AnchorPane.leftAnchor="0"
+                          AnchorPane.rightAnchor="0">
+                        <Text text="Prenez ou téléchargez une photo claire de votre plante 🌱 pour commencer l'analyse"
+                              styleClass="section-description"/>
+
+
+                        <Button fx:id="btnChoose" text="Choisir une image" />
+                        <ImageView fx:id="imageView"
+                                   fitWidth="560"
+                                   fitHeight="300"
+                                   preserveRatio="true"
+                                   styleClass="button-primary"/>
+                    </VBox>
+
+
+                    <!-- Instructions et statut -->
+                    <VBox styleClass="instructions-section" GridPane.columnIndex="1">
+                        <Label text="Comment ça marche" styleClass="section-title"/>
+
+                        <VBox styleClass="step-list">
+                            <HBox styleClass="step-item">
+                                <StackPane styleClass="step-icon-container">
+                                    <Text text="1" styleClass="step-number"/>
+                                </StackPane>
+                                <Text text="Choisissez ou prenez une photo nette de votre plante" styleClass="step-text"/>
+                            </HBox>
+
+                            <HBox styleClass="step-item">
+                                <StackPane styleClass="step-icon-container">
+                                    <Text text="2" styleClass="step-number"/>
+                                </StackPane>
+                                <Text text="Notre IA analyse l'image et identifie l'espèce" styleClass="step-text"/>
+                            </HBox>
+
+                            <HBox styleClass="step-item">
+                                <StackPane styleClass="step-icon-container">
+                                    <Text text="3" styleClass="step-number"/>
+                                </StackPane>
+                                <Text text="Consultez les résultats et recevez des conseils personnalisés" styleClass="step-text"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Statut d'analyse -->
+                        <VBox styleClass="analysis-status">
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <ProgressIndicator fx:id="progressIndicator"
+                                                   visible="false"
+                                                   styleClass="progress-spinner"/>
+                                <Label fx:id="lblError" styleClass="error-message"/>
+                            </HBox>
+                        </VBox>
+                    </VBox>
+                </GridPane>
+
+                <!-- Carte des résultats -->
+                <VBox styleClass="results-card">
+                    <Label text="Résultats de l'analyse" styleClass="card-title"/>
+
+                    <TabPane styleClass="results-tabs">
+                        <!-- Onglet d'identification -->
+                        <Tab text="Identification des Espèces" closable="false">
+                            <VBox styleClass="tab-content">
+                                <HBox styleClass="results-header">
+                                    <StackPane styleClass="results-icon">
+                                        <Text text="🌿" styleClass="icon-text"/>
+                                    </StackPane>
+                                    <VBox>
+                                        <Label text="Espèces correspondantes" styleClass="results-title"/>
+                                        <Text text="Identification basée sur les caractéristiques visuelles" styleClass="results-subtitle"/>
+                                    </VBox>
+                                </HBox>
+
+                                <ScrollPane fitToWidth="true" styleClass="results-scroll">
+                                    <ListView fx:id="listViewSuggestions" styleClass="results-list"/>
+                                </ScrollPane>
+
+                                <VBox styleClass="info-panel">
+                                    <Text text="Cliquez sur une espèce pour afficher plus d'informations et des conseils de soin"
+                                          styleClass="info-text"/>
+                                </VBox>
+                            </VBox>
+                        </Tab>
+
+                        <!-- Onglet de diagnostic -->
+                        <Tab text="Diagnostic de Santé" closable="false">
+                            <VBox styleClass="tab-content">
+                                <HBox styleClass="results-header">
+                                    <StackPane styleClass="results-icon health-icon">
+                                        <Text text="🩺" styleClass="icon-text"/>
+                                    </StackPane>
+                                    <VBox>
+                                        <Label text="Diagnostic de santé" styleClass="results-title"/>
+                                        <Text text="Analyse des problèmes potentiels et solutions recommandées" styleClass="results-subtitle"/>
+                                    </VBox>
+                                </HBox>
+
+                                <ScrollPane fitToWidth="true" styleClass="results-scroll">
+                                    <ListView fx:id="listViewHealth" styleClass="results-list"/>
+                                </ScrollPane>
+
+                                <VBox styleClass="info-panel">
+                                    <Text text="Les traitements suggérés sont fournis à titre indicatif. Consultez un professionnel pour des cas graves."
+                                          styleClass="info-text"/>
+                                </VBox>
+                            </VBox>
+                        </Tab>
+                    </TabPane>
+                </VBox>
+
+                <!-- Section d'aide -->
+                <HBox styleClass="help-section">
+                    <VBox styleClass="help-text-container" HBox.hgrow="ALWAYS">
+                        <Label text="Besoin d'aide supplémentaire ?" styleClass="help-title"/>
+                        <Text text="Notre équipe d'experts en agriculture est disponible pour vous aider avec des conseils personnalisés"
+                              styleClass="help-description"/>
+                        <HBox styleClass="help-actions">
+                            <Button text="Contacter un expert" styleClass="button-primary"/>
+                            <Button text="Consulter la base de connaissances" styleClass="button-outline"/>
+                        </HBox>
+                    </VBox>
+                    <StackPane styleClass="help-image-container">
+                        <Text text="👨‍🌾" styleClass="help-image-placeholder"/>
+                    </StackPane>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+
+</BorderPane>

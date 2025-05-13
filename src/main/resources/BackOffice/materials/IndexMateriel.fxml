@@ -20,6 +20,7 @@
             <Region HBox.hgrow="ALWAYS" />
             <Button onAction="#gotocategorie" style="-fx-background-color: #388e3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Catégories" />
             <Button onAction="#showStatistics" style="-fx-background-color: #81c784; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Statistiques" />
+            <Button onAction="#gotohisotrique" style="-fx-background-color: #388e3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Historique " />
         </HBox>
     </top>
 

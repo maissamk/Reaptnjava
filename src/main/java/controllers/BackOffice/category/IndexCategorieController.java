@@ -1,6 +1,7 @@
 package controllers.BackOffice.category;
 
 import Models.Categorie;
+import controllers.BackOffice.HomeBack;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -153,34 +155,46 @@ public class IndexCategorieController {
     private void showCategorieDetails(Categorie categorie) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Backoffice/category/ShowCategorie.fxml"));
-            Parent root = loader.load();
+            Parent content = loader.load();
 
             ShowCategorieController controller = loader.getController();
             controller.setCategorie(categorie);
 
-            Stage stage = new Stage();
-            stage.setTitle("Détails de la Catégorie");
-            stage.setScene(new Scene(root));
-            stage.show();
+            // Get reference to HomeBack's contentPane
+            Stage currentStage = (Stage) categoriesGrid.getScene().getWindow();
+            Scene scene = currentStage.getScene();
+            StackPane contentPane = (StackPane) scene.lookup("#contentPane"); // Match your HomeBack's StackPane ID
+
+            contentPane.getChildren().setAll(content);
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'afficher les détails", Alert.AlertType.ERROR);
         }
     }
-
     private void showEditForm(Categorie categorie) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Backoffice/category/EditCategorie.fxml"));
-            Parent root = loader.load();
+            // 1. Load the main HomeBack layout (which contains navbar)
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/BackOffice/HomeBack.fxml"));
+            Parent homeRoot = homeLoader.load();
+            HomeBack homeController = homeLoader.getController();
 
-            EditCategorieController controller = loader.getController();
-            controller.setCategorieToEdit(categorie);
+            // 2. Load the edit form content
+            FXMLLoader editLoader = new FXMLLoader(getClass().getResource("/Backoffice/category/EditCategorie.fxml"));
+            Parent editContent = editLoader.load();
+            EditCategorieController editController = editLoader.getController();
+            editController.setCategorieToEdit(categorie);
 
+            // 3. Put the edit form in HomeBack's content pane
+            homeController.getContentPane().getChildren().setAll(editContent);
+
+            // 4. Create and show the stage
             Stage stage = new Stage();
             stage.setTitle("Modifier la Catégorie");
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(homeRoot));
             stage.showAndWait();
 
+            // 5. Refresh data after window closes
             loadData();
+
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'ouvrir l'éditeur", Alert.AlertType.ERROR);
         }
@@ -207,10 +221,8 @@ public class IndexCategorieController {
             newStage.setWidth(screenBounds.getWidth());
             newStage.setHeight(screenBounds.getHeight());
 
-
             // Show new window
             newStage.show();
-
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'ouvrir la gestion des matériels", Alert.AlertType.ERROR);
             e.printStackTrace();
