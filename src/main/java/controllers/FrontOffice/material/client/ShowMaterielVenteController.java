@@ -63,6 +63,8 @@ public class ShowMaterielVenteController implements Initializable {
     private MaterielVente currentMateriel;
     private int currentUserId;
     private SimpleImageAnalysisService imageAnalysisService;
+    private final String IMAGE_BASE_PATH = "C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/images/";
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -93,14 +95,21 @@ public class ShowMaterielVenteController implements Initializable {
 
         // Load image with fallback
         try {
-            String imagePath = "file:src/main/resources/images_materiels/" + currentMateriel.getImage();
-            imageView.setImage(new Image(imagePath));
-        } catch (Exception e) {
-            try {
-                imageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png")));
-            } catch (Exception ex) {
-                System.err.println("Could not load default image: " + ex.getMessage());
+            if (currentMateriel.getImage() != null && !currentMateriel.getImage().isEmpty()) {
+                String imagePath = IMAGE_BASE_PATH + currentMateriel.getImage();
+                File imageFile = new File(imagePath);
+
+                if (imageFile.exists()) {
+                    imageView.setImage(new Image(imageFile.toURI().toString()));
+                } else {
+                    loadDefaultImage();
+                }
+            } else {
+                loadDefaultImage();
             }
+        } catch (Exception e) {
+            System.err.println("Error loading image: " + e.getMessage());
+            loadDefaultImage();
         }
 
         imageView.setFitWidth(300);
@@ -122,6 +131,16 @@ public class ShowMaterielVenteController implements Initializable {
 
         acheter.setDisable(!isAvailable);
     }
+
+
+    private void loadDefaultImage() {
+        try {
+            imageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png")));
+        } catch (Exception ex) {
+            System.err.println("Could not load default image: " + ex.getMessage());
+        }
+    }
+
 
     @FXML
     public void Acheter(ActionEvent event) {

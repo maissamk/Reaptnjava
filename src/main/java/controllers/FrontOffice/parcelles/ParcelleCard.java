@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import Models.ParcelleProprietes;
 
+import java.io.File;
 import java.io.IOException;
 
 public class ParcelleCard {
@@ -48,21 +49,28 @@ public class ParcelleCard {
         setupStatusStyle();
     }
 
-    private void loadImage(String imagePath) {
+    private void loadImage(String imageFileName) {
         try {
-            // D'abord, vérifiez si le chemin commence déjà par un slash
-            String resourcePath = imagePath;
-            if (!resourcePath.startsWith("/")) {
-                resourcePath = "/" + imagePath;
+            // Full folder path where images are stored
+            String basePath = "C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/images/";
+
+            // Combine base path with the filename
+            String fullPath = basePath + imageFileName;
+
+            // Check if the file exists before trying to load it
+            File file = new File(fullPath);
+            if (!file.exists()) {
+                System.out.println("Image file does not exist: " + fullPath);
+                imageView.setImage(new Image(getClass().getResourceAsStream("/images/defaut1.jpeg")));
+                return;
             }
 
-            // Essayez de charger l'image
-            Image image = new Image(getClass().getResourceAsStream(resourcePath));
+            // Load image from file system
+            Image image = new Image("file:" + fullPath);
 
-            // Vérifiez si l'image a été correctement chargée
+            // Check if loading failed
             if (image.isError()) {
-                System.out.println("Erreur de chargement de l'image: " + resourcePath);
-                // Si l'image n'a pas été chargée, essayez une méthode alternative
+                System.out.println("Erreur de chargement de l'image: " + fullPath);
                 image = new Image(getClass().getResourceAsStream("/images/defaut1.jpeg"));
             }
 
@@ -70,12 +78,14 @@ public class ParcelleCard {
             imageView.setPreserveRatio(true);
             imageView.setFitWidth(280);
             imageView.setFitHeight(150);
+
         } catch (Exception e) {
             System.out.println("Exception lors du chargement de l'image: " + e.getMessage());
-            // En cas d'erreur, chargez l'image par défaut
             imageView.setImage(new Image(getClass().getResourceAsStream("/images/defaut1.jpeg")));
         }
     }
+
+
 
     private void setupCardHover() {
         card.setOnMouseEntered(e -> {

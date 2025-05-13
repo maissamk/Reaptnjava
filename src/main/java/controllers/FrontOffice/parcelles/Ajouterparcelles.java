@@ -459,16 +459,20 @@ public class Ajouterparcelles {
         boolean estDisponible = disponibleCheckBox.isSelected();
 
         // Improved image handling
-        String imagePath = "images/default.png"; // Default image path without leading slash
+        String imagePath = "default.png"; // Default image name
 
         if (selectedFile != null) {
             try {
                 // Generate unique filename
                 String fileName = System.currentTimeMillis() + "_" + selectedFile.getName();
 
+                // Define the target directory
+                File destDir = new File("C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/images/");
+
                 // Ensure directory exists
-                File destDir = new File("src/main/resources/images");
-                if (!destDir.exists()) destDir.mkdirs();
+                if (!destDir.exists()) {
+                    destDir.mkdirs();
+                }
 
                 // Path for the destination file
                 File destFile = new File(destDir, fileName);
@@ -483,15 +487,14 @@ public class Ajouterparcelles {
                     }
                 }
 
-                // Store path relative to resources without leading slash
-                imagePath = "images/" + fileName;
+                // Store just the filename (or relative path as needed)
+                imagePath = fileName;
 
             } catch (IOException e) {
                 showAlert("Erreur", "Erreur lors de la copie de l'image : " + e.getMessage());
                 return;
             }
         }
-
         // Create and populate the parcelle object
         ParcelleProprietes parcelle = new ParcelleProprietes();
         parcelle.setTitre(titre);

@@ -16,6 +16,7 @@ import javafx.scene.image.ImageView;
 import services.MaterielService;
 import utils.SessionManager;
 
+import java.io.File;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -39,6 +40,7 @@ public class ShowMaterielLocationController implements Initializable {
 
     private final MaterielService service = new MaterielService();
     private MaterielLocation currentMateriel;
+    private final String IMAGE_BASE_PATH = "C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/images/";
     @FXML private ImageView qrCodeImageView;
     @FXML private Button generateQRButton;
     @Override
@@ -78,16 +80,25 @@ public class ShowMaterielLocationController implements Initializable {
         if (currentMateriel == null) return;
 
         // Load image with fallback
+        // Load image with fallback
         try {
-            String imagePath = "file:src/main/resources/images_materiels/" + currentMateriel.getImage();
-            imageView.setImage(new Image(imagePath));
-        } catch (Exception e) {
-            try {
-                imageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png")));
-            } catch (Exception ex) {
-                System.err.println("Could not load default image: " + ex.getMessage());
+            if (currentMateriel.getImage() != null && !currentMateriel.getImage().isEmpty()) {
+                String imagePath = IMAGE_BASE_PATH + currentMateriel.getImage();
+                File imageFile = new File(imagePath);
+
+                if (imageFile.exists()) {
+                    imageView.setImage(new Image(imageFile.toURI().toString()));
+                } else {
+                    loadDefaultImage();
+                }
+            } else {
+                loadDefaultImage();
             }
+        } catch (Exception e) {
+            System.err.println("Error loading image: " + e.getMessage());
+            loadDefaultImage();
         }
+
 
         imageView.setFitWidth(300);
         imageView.setFitHeight(200);
@@ -104,6 +115,13 @@ public class ShowMaterielLocationController implements Initializable {
         louer.setDisable(!isAvailable);
     }
 
+    private void loadDefaultImage() {
+        try {
+            imageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png")));
+        } catch (Exception ex) {
+            System.err.println("Could not load default image: " + ex.getMessage());
+        }
+    }
     @FXML
     public void louer(ActionEvent event) {
         if (SessionManager.getInstance().getCurrentUser() != null) {

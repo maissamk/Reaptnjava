@@ -66,23 +66,24 @@ public class ProfileController {
             try {
                 String avatarPath;
                 if (currentUser.getAvatar() == null || currentUser.getAvatar().isEmpty()) {
-                    avatarPath = "/images/defaultavatar.png";
+                    // Load default avatar from resources if no avatar is set
+                    avatarImage.setImage(new Image(getClass().getResourceAsStream("/images/defaultavatar.png")));
+                    return;
                 } else {
-                    avatarPath = "/images/avatars/" + currentUser.getAvatar();
+                    // Construct the full path to the avatar file
+                    avatarPath = "C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/avatars/" + currentUser.getAvatar();
                 }
 
-                // Add random query parameter to bypass cache
-                String uniquePath = avatarPath + "?t=" + System.currentTimeMillis();
-
-                System.out.println("Loading avatar from: " + uniquePath);
+                System.out.println("Loading avatar from: " + avatarPath);
 
                 // Clear previous image first
                 avatarImage.setImage(null);
 
-                // Load new image with InputStream to ensure fresh load
-                InputStream imageStream = getClass().getResourceAsStream(avatarPath);
-                if (imageStream != null) {
-                    Image avatar = new Image(imageStream);
+                // Load image from file system
+                File file = new File(avatarPath);
+                if (file.exists()) {
+                    String fileUrl = file.toURI().toString();
+                    Image avatar = new Image(fileUrl);
                     avatarImage.setImage(avatar);
                 } else {
                     System.err.println("Avatar file not found: " + avatarPath);

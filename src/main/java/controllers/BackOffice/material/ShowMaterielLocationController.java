@@ -17,7 +17,7 @@ public class ShowMaterielLocationController {
 
     public void setMateriel(MaterielLocation materiel) {
         try {
-            imageView.setImage(new Image("file:src/main/resources/images_materiels/" + materiel.getImage()));
+            imageView.setImage(new Image("file:C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/images/" + materiel.getImage()));
         } catch (Exception e) {
             imageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png")));
         }

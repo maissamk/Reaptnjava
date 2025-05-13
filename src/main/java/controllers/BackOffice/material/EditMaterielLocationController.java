@@ -80,7 +80,7 @@ public class EditMaterielLocationController {
             String imagePath = imageField.getText();
             if (!imagePath.isEmpty() && !imagePath.equals(materielToEdit.getImage())) {
                 String imageFileName = Paths.get(imagePath).getFileName().toString();
-                Path destination = Paths.get("src/main/resources/images_materiels/", imageFileName);
+                Path destination = Paths.get("C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/images/", imageFileName);
                 Files.copy(Paths.get(imagePath), destination, StandardCopyOption.REPLACE_EXISTING);
                 materielToEdit.setImage(imageFileName);
             }

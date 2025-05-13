@@ -8,10 +8,7 @@ import javafx.stage.Stage;
 import Models.ParcelleProprietes;
 import services.ParcelleProprietesService;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -149,30 +146,56 @@ public class Modifierparcelles {
         parcelleToEdit.setEst_disponible(disponibleCheckBox.isSelected());
         parcelleToEdit.setDate_misajour_annonce(Timestamp.valueOf(LocalDateTime.now()));
 
-        // GESTION DE L'IMAGE - CORRECTION ICI
+        // IMAGE HANDLING WITH ABSOLUTE PATH
         if (selectedFile != null) {
             try {
-                String fileName = selectedFile.getName();
-                File destDir = new File("src/main/resources/images");
-                if (!destDir.exists()) destDir.mkdirs();
+                // 1. Generate unique filename
+                String originalName = selectedFile.getName();
+                String fileExtension = originalName.substring(originalName.lastIndexOf("."));
+                String fileName = "parcel_" + System.currentTimeMillis() + fileExtension;
 
-                File destFile = new File(destDir, fileName);
+                // 2. Define your ABSOLUTE base path
+                String basePath = "C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/images/";
 
-                // Copier le fichier dans le dossier images
-                try (FileInputStream fis = new FileInputStream(selectedFile);
-                     FileOutputStream fos = new FileOutputStream(destFile)) {
+                // 3. Verify and create directory structure
+                File uploadDir = new File(basePath);
+                if (!uploadDir.exists()) {
+                    if (!uploadDir.mkdirs()) {
+                        showAlert("Error", "Failed to create directory: " + basePath);
+                        return;
+                    }
+                    System.out.println("Created directory: " + uploadDir.getAbsolutePath());
+                }
+
+                // 4. Check write permissions
+                if (!uploadDir.canWrite()) {
+                    showAlert("Error", "No write permissions for: " + basePath);
+                    return;
+                }
+
+                // 5. Create destination file
+                File destFile = new File(uploadDir, fileName);
+
+                // 6. Copy the file
+                try (InputStream in = new FileInputStream(selectedFile);
+                     OutputStream out = new FileOutputStream(destFile)) {
                     byte[] buffer = new byte[1024];
-                    int len;
-                    while ((len = fis.read(buffer)) > 0) {
-                        fos.write(buffer, 0, len);
+                    int bytesRead;
+                    while ((bytesRead = in.read(buffer)) > 0) {
+                        out.write(buffer, 0, bytesRead);
                     }
                 }
 
-                // Sauvegarder le chemin relatif
-                parcelleToEdit.setImage("images/" + fileName);
+                // 7. Store the ABSOLUTE path in database
+                parcelleToEdit.setImage(destFile.getAbsolutePath());
 
-            } catch (IOException e) {
-                showAlert("Erreur", "Échec de la copie de l'image : " + e.getMessage());
+                // Debug output
+                System.out.println("Successfully saved to: " + destFile.getAbsolutePath());
+                System.out.println("Stored in DB: " + parcelleToEdit.getImage());
+
+            } catch (Exception e) {
+                showAlert("Error", "Failed to save image: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }

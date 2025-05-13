@@ -7,7 +7,7 @@
 <?import javafx.scene.text.*?>
 
 <?import java.net.URL?>
-<AnchorPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.User.Login">
+<AnchorPane prefHeight="700.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FrontOffice.User.Login">
     <stylesheets>
         <URL value="@../../css/login.css" />
     </stylesheets>
@@ -26,17 +26,17 @@
         <AnchorPane.rightAnchor>150.0</AnchorPane.rightAnchor>
 
         <!-- Left side with logo -->
-        <ImageView fitHeight="200.0" fitWidth="273.0" layoutX="50.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fitHeight="200.0" fitWidth="273.0" layoutX="300.0" layoutY="170.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@/images/logoapp.jpg" />
             </image>
         </ImageView>
 
         <!-- Vertical separator -->
-        <Separator layoutX="350.0" layoutY="100.0" orientation="VERTICAL" prefHeight="300.0" prefWidth="2.0" style="-fx-background-color: #4a934a;" />
+        <Separator layoutX="600.0" layoutY="100.0" orientation="VERTICAL" prefHeight="300.0" prefWidth="2.0" style="-fx-background-color: #4a934a;" />
 
         <!-- Right side with form - perfectly centered content -->
-        <VBox alignment="TOP_CENTER" layoutX="350.0" prefHeight="500.0" prefWidth="350.0" spacing="15" style="-fx-padding: 30 0 0 0;">
+        <VBox alignment="TOP_CENTER" layoutX="650.0" prefHeight="500.0" prefWidth="350.0" spacing="15" style="-fx-padding: 30 0 0 0;">
             <!-- Title -->
             <Label text="Se Connecter" textFill="#4a934a">
                 <font>

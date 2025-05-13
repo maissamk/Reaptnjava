@@ -23,6 +23,7 @@ import services.MaterielService;
 import utils.SessionManager;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,6 +41,10 @@ public class IndexMaterielController {
     private int currentLocationPage = 0;
 
     private static final int ITEMS_PER_PAGE = 6;
+
+    private final String IMAGE_BASE_PATH = "C:/Users/romdh/Downloads/pi2025/pi2025/public/uploads/images/";
+
+
 
     // Composants FXML pour la vente
     @FXML private GridPane venteGridContainer;
@@ -180,10 +185,21 @@ public class IndexMaterielController {
         // Image with natural frame
         ImageView imageView = new ImageView();
         try {
-            String imagePath = "file:src/main/resources/images_materiels/" + materiel.getImage();
-            imageView.setImage(new Image(imagePath, 280, 150, false, true));
+            if (materiel.getImage() != null && !materiel.getImage().isEmpty()) {
+                String imagePath = IMAGE_BASE_PATH + materiel.getImage();
+                File imageFile = new File(imagePath);
+
+                if (imageFile.exists()) {
+                    imageView.setImage(new Image(imageFile.toURI().toString(), 280, 150, false, true));
+                } else {
+                    loadDefaultImage(imageView);
+                }
+            } else {
+                loadDefaultImage(imageView);
+            }
         } catch (Exception e) {
-            imageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png"), 280, 150, false, true));
+            System.err.println("Error loading image: " + e.getMessage());
+            loadDefaultImage(imageView);
         }
         imageView.setFitWidth(280);
         imageView.setFitHeight(150);
@@ -251,10 +267,21 @@ public class IndexMaterielController {
         // Image with natural frame
         ImageView imageView = new ImageView();
         try {
-            String imagePath = "file:src/main/resources/images_materiels/" + materiel.getImage();
-            imageView.setImage(new Image(imagePath, 280, 150, false, true));
+            if (materiel.getImage() != null && !materiel.getImage().isEmpty()) {
+                String imagePath = IMAGE_BASE_PATH + materiel.getImage();
+                File imageFile = new File(imagePath);
+
+                if (imageFile.exists()) {
+                    imageView.setImage(new Image(imageFile.toURI().toString(), 280, 150, false, true));
+                } else {
+                    loadDefaultImage(imageView);
+                }
+            } else {
+                loadDefaultImage(imageView);
+            }
         } catch (Exception e) {
-            imageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png"), 280, 150, false, true));
+            System.err.println("Error loading image: " + e.getMessage());
+            loadDefaultImage(imageView);
         }
         imageView.setFitWidth(280);
         imageView.setFitHeight(150);
@@ -325,6 +352,14 @@ public class IndexMaterielController {
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'afficher les détails", Alert.AlertType.ERROR);
             e.printStackTrace();
+        }
+    }
+
+    private void loadDefaultImage(ImageView imageView) {
+        try {
+            imageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png"), 280, 150, false, true));
+        } catch (Exception ex) {
+            System.err.println("Could not load default image: " + ex.getMessage());
         }
     }
 
